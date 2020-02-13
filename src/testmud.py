@@ -179,7 +179,7 @@ class Server:
         self.userIndex[id(user)] = user
 
     def ListUsers(self):
-        return [v for v in self.userIndex.itervalues()]
+        return [v for v in self.userIndex.values()]
 
 
 def Run(host, port):
