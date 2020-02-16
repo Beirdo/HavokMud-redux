@@ -2,6 +2,7 @@ import logging
 import stackless
 import time
 
+from HavokMud.ansicolors import AnsiColors
 from HavokMud.commandhandler import CommandHandler
 from HavokMud.user import User
 
@@ -18,6 +19,8 @@ class Connection:
         self.handler = None
         self.read_buffer = ""
         self.string_mode = True
+        self.ansi_mode = True
+        self.ansi = AnsiColors()
 
         self.user = User(self)
         self.user_id = id(self.user)
@@ -38,7 +41,8 @@ class Connection:
 
     def write(self, s):
         if self.string_mode:
-            s = s.encode("utf-8")
+            s = self.ansi.convert_string(s, self.ansi_mode)
+            s = s.encode("ascii")
         self.client_socket.send(s)
 
     def write_line(self, s):
@@ -63,7 +67,11 @@ class Connection:
                         line = line[:i - 1] + line[i + 1:]
                 return line
 
-            v = self.client_socket.recv(1000)
+            try:
+                v = self.client_socket.recv(1000)
+            except Exception:
+                v = b""
+
             if self.string_mode:
                 v = v.decode("utf-8")
 

@@ -22,6 +22,7 @@ RUN conda config --add channels stackless
 RUN conda install -y stackless
 RUN conda update -y conda
 RUN conda install boto3
+RUN pip install ansicolors
 
 RUN useradd -m -G sudo -d /home/havokmud -s /bin/bash -c "HavokMud Account" havokmud
 WORKDIR /home/havokmud

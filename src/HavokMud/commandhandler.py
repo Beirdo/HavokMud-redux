@@ -118,7 +118,7 @@ class CommandHandler(BaseHandler):
                 prefix = "You say: "
             else:
                 prefix = second_party_prefix
-            user.connection.handler.append_line(prefix + "\"%s\"" % line)
+            user.connection.handler.append_line(prefix + "\"%s$c0007\"" % line)
 
     def command_quit(self, tokens):
         self.append_output(None)
