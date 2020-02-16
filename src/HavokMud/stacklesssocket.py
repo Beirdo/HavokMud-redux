@@ -33,6 +33,8 @@ import stackless
 import weakref
 
 # Cache socket module entries we may monkeypatch.
+from _socket import SOCK_DGRAM, error, SOCK_STREAM, SOL_SOCKET, SO_REUSEADDR
+
 _old_socket = stdsocket.socket
 _old_SocketIO = stdsocket.SocketIO
 _old_realsocket = stdsocket._realsocket
@@ -148,10 +150,10 @@ class _new_socket(object):
 
 
 class _fakesocket(asyncore.dispatcher):
-    connectChannel = None
-    acceptChannel = None
-    recvChannel = None
-    wasConnected = False
+    connect_channel = None
+    accept_channel = None
+    recv_channel = None
+    was_connected = False
 
     def __init__(self, realSocket):
         # This is worth doing.  I was passing in an invalid socket which
@@ -163,13 +165,13 @@ class _fakesocket(asyncore.dispatcher):
         asyncore.dispatcher.__init__(self, realSocket)
         self.socket = realSocket
 
-        self.recvChannel = stackless.channel()
-        self.recvChannel.preference = 0
-        self.readBytes = bytearray()
-        self.readIdx = 0
+        self.recv_channel = stackless.channel()
+        self.recv_channel.preference = 0
+        self.read_bytes = bytearray()
+        self.read_index = 0
 
-        self.sendBuffer = bytearray()
-        self.sendToBuffers = []
+        self.send_buffer = bytearray()
+        self.send_to_buffers = []
 
     def __del__(self):
         # There are no more users (sockets or files) of this fake socket, we
@@ -192,82 +194,80 @@ class _fakesocket(asyncore.dispatcher):
     def writable(self):
         if self.socket.type != SOCK_DGRAM and not self.connected:
             return True
-        return len(self.sendBuffer) or len(self.sendToBuffers)
+        return len(self.send_buffer) or len(self.send_to_buffers)
 
     def accept(self):
-        if not self.acceptChannel:
-            self.acceptChannel = stackless.channel()
-        return self.acceptChannel.receive()
+        if not self.accept_channel:
+            self.accept_channel = stackless.channel()
+        return self.accept_channel.receive()
 
     def connect(self, address):
         asyncore.dispatcher.connect(self, address)
         # UDP sockets do not connect.
         if self.socket.type != SOCK_DGRAM and not self.connected:
-            if not self.connectChannel:
-                self.connectChannel = stackless.channel()
+            if not self.connect_channel:
+                self.connect_channel = stackless.channel()
                 # Prefer the sender.  Do not block when sending, given that
                 # there is a tasklet known to be waiting, this will happen.
-                self.connectChannel.preference = 1
-            self.connectChannel.receive()
+                self.connect_channel.preference = 1
+            self.connect_channel.receive()
 
     def send(self, data, flags=0):
         if not self.connected:
             # The socket was never connected.
-            if not self.wasConnected:
+            if not self.was_connected:
                 raise error(10057, "Socket is not connected")
 
             # The socket has been closed already.
-            raise error(EBADF, 'Bad file descriptor')
+            raise error(stdsocket.EBADF, 'Bad file descriptor')
 
-        data = data.encode("utf-8")
-        self.sendBuffer.extend(data)
+        self.send_buffer.extend(data)
         stackless.schedule()
         return len(data)
 
     def sendall(self, data, flags=0):
         if not self.connected:
             # The socket was never connected.
-            if not self.wasConnected:
+            if not self.was_connected:
                 raise error(10057, "Socket is not connected")
 
             # The socket has been closed already.
-            raise error(EBADF, 'Bad file descriptor')
+            raise error(stdsocket.EBADF, 'Bad file descriptor')
 
         # WARNING: this will busy wait until all data is sent
         # It should be possible to do away with the busy wait with
         # the use of a channel.
-        data = data.encode("utf-8")
-        self.sendBuffer.extend(data)
-        while self.sendBuffer:
+        self.send_buffer.extend(data)
+        while self.send_buffer:
             stackless.schedule()
         return len(data)
 
-    def sendto(self, sendData, flags, sendAddress):
-        waitChannel = None
-        for idx, (data, address, channel, sentBytes) in enumerate(self.sendToBuffers):
-            if address == sendAddress:
-                self.sendToBuffers[idx] = (data + sendData, address, channel, sentBytes)
-                waitChannel = channel
+    def sendto(self, send_data, flags, send_address):
+        wait_channel = None
+        for idx, (data, address, channel, sent_bytes) in enumerate(self.send_to_buffers):
+            if address == send_address:
+                self.send_to_buffers[idx] = (data + send_data, address, channel, sent_bytes)
+                wait_channel = channel
                 break
-        if waitChannel is None:
-            waitChannel = stackless.channel()
-            self.sendToBuffers.append((sendData, sendAddress, waitChannel, 0))
-        return waitChannel.receive()
+        if wait_channel is None:
+            wait_channel = stackless.channel()
+            self.send_to_buffers.append((send_data, send_address, wait_channel, 0))
+        return wait_channel.receive()
 
     # Read at most byteCount bytes.
-    def recv(self, byteCount, flags=0):
+    def recv(self, byte_count, flags=0):
         b = bytearray()
-        self.recv_into(b, byteCount, flags)
+        self.recv_into(b, byte_count, flags)
         return b
 
-    def recvfrom(self, byteCount, flags=0):
+    def recvfrom(self, byte_count, flags=0):
         if self.socket.type == SOCK_STREAM:
-            return self.recv(byteCount), None
+            return self.recv(byte_count), None
 
         # recvfrom() must not concatenate two or more packets.
         # Each call should return the first 'byteCount' part of the packet.
-        data, address = self.recvChannel.receive()
-        return data[:byteCount], address
+        (data, address) = self.recv_channel.receive()
+        return data[:byte_count], address
 
     def recv_into(self, buffer, nbytes=0, flags=0):
         if len(buffer):
@@ -278,43 +278,43 @@ class _fakesocket(asyncore.dispatcher):
         # call should be split into strings of length less than or equal
         # to 'byteCount', and returned by one or more recv() calls.
 
-        remainingBytes = self.readIdx != len(self.readBytes)
+        remaining_bytes = self.read_index != len(self.read_bytes)
         # TODO: Verify this connectivity behaviour.
 
         if not self.connected:
             # Sockets which have never been connected do this.
-            if not self.wasConnected:
+            if not self.was_connected:
                 raise error(10057, 'Socket is not connected')
 
             # Sockets which were connected, but no longer are, use
             # up the remaining input.  Observed this with urllib.urlopen
             # where it closes the socket and then allows the caller to
             # use a file to access the body of the web page.
-        elif not remainingBytes:
-            self.readBytes = self.recvChannel.receive()
-            self.readIdx = 0
-            remainingBytes = len(self.readBytes)
+        elif not remaining_bytes:
+            self.read_bytes = self.recv_channel.receive()
+            self.read_index = 0
+            remaining_bytes = len(self.read_bytes)
 
-        if nbytes == 1 and remainingBytes:
-            buffer[:] = self.readBytes[self.readIdx]
-            self.readIdx += 1
+        if nbytes == 1 and remaining_bytes:
+            buffer[:] = self.read_bytes[self.read_index]
+            self.read_index += 1
             return 1
 
         if nbytes == 0:
-            nbytes = len(self.readBytes)
+            nbytes = len(self.read_bytes)
             if nbytes == 0:
                 buffer[:] = []
                 return 0
 
-        if self.readIdx == 0 and nbytes >= len(self.readBytes):
-            buffer[:] = self.readBytes
-            self.readBytes = bytearray()
+        if self.read_index == 0 and nbytes >= len(self.read_bytes):
+            buffer[:] = self.read_bytes
+            self.read_bytes = bytearray()
             return nbytes
 
-        idx = self.readIdx + nbytes
-        buffer[:] = self.readBytes[self.readIdx:idx]
-        self.readBytes = self.readBytes[idx:]
-        self.readIdx = 0
+        idx = self.read_index + nbytes
+        buffer[:] = self.read_bytes[self.read_index:idx]
+        self.read_bytes = self.read_bytes[idx:]
+        self.read_index = 0
         return nbytes
 
     def close(self):
@@ -322,39 +322,39 @@ class _fakesocket(asyncore.dispatcher):
 
         self.connected = False
         self.accepting = False
-        self.sendBuffer = None  # breaks the loop in sendall
+        self.send_buffer = None  # breaks the loop in sendall
 
         # Clear out all the channels with relevant errors.
-        while self.acceptChannel and self.acceptChannel.balance < 0:
-            self.acceptChannel.send_exception(error, 9, 'Bad file descriptor')
-        while self.connectChannel and self.connectChannel.balance < 0:
-            self.connectChannel.send_exception(error, 10061, 'Connection refused')
-        while self.recvChannel and self.recvChannel.balance < 0:
+        while self.accept_channel and self.accept_channel.balance < 0:
+            self.accept_channel.send_exception(error, 9, 'Bad file descriptor')
+        while self.connect_channel and self.connect_channel.balance < 0:
+            self.connect_channel.send_exception(error, 10061, 'Connection refused')
+        while self.recv_channel and self.recv_channel.balance < 0:
             # The closing of a socket is indicted by receiving nothing.  The
             # exception would have been sent if the server was killed, rather
             # than closed down gracefully.
-            self.recvChannel.send(bytearray())
-            # self.recvChannel.send_exception(error, 10054, 'Connection reset by peer')
+            self.recv_channel.send(bytearray())
+            # self.recv_channel.send_exception(error, 10054, 'Connection reset by peer')
 
     # asyncore doesn't support this.  Why not?
     def fileno(self):
         return self.socket.fileno()
 
     def handle_accept(self):
-        if self.acceptChannel and self.acceptChannel.balance < 0:
+        if self.accept_channel and self.accept_channel.balance < 0:
             t = asyncore.dispatcher.accept(self)
             if t is None:
                 return
-            currentSocket, clientAddress = t
-            currentSocket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-            currentSocket.wasConnected = True
-            stackless.tasklet(self.acceptChannel.send)((currentSocket, clientAddress))
+            (current_socket, client_address) = t
+            current_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+            current_socket.wasConnected = True
+            stackless.tasklet(self.accept_channel.send)((current_socket, client_address))
 
     # Inform the blocked connect call that the connection has been made.
     def handle_connect(self):
         if self.socket.type != SOCK_DGRAM:
-            self.wasConnected = True
-            self.connectChannel.send(None)
+            self.was_connected = True
+            self.connect_channel.send(None)
 
     # Asyncore says its done but self.readBuffer may be non-empty
     # so can't close yet.  Do nothing and let 'recv' trigger the close.
@@ -379,221 +379,30 @@ class _fakesocket(asyncore.dispatcher):
                     self.close()
 
             # Do not block.
-            if self.recvChannel.balance < 0:
+            if self.recv_channel.balance < 0:
                 # The channel prefers the sender.  This means if there are waiting
                 # receivers, the first will be scheduled with the given data.
-                self.recvChannel.send(ret)
+                self.recv_channel.send(ret)
             else:
                 # No waiting receivers.  The send needs to block in a tasklet.
-                stackless.tasklet(self.recvChannel.send)(ret)
+                stackless.tasklet(self.recv_channel.send)(ret)
         except stdsocket.error as err:
             # If there's a read error assume the connection is
             # broken and drop any pending output
-            if self.sendBuffer:
-                self.sendBuffer = bytearray()
-            self.recvChannel.send_exception(stdsocket.error, err)
+            if self.send_buffer:
+                self.send_buffer = bytearray()
+            self.recv_channel.send_exception(stdsocket.error, err)
 
     def handle_write(self):
-        if len(self.sendBuffer):
-            sentBytes = asyncore.dispatcher.send(self, self.sendBuffer[:512])
-            self.sendBuffer = self.sendBuffer[sentBytes:]
-        elif len(self.sendToBuffers):
-            data, address, channel, oldSentBytes = self.sendToBuffers[0]
-            sentBytes = self.socket.sendto(data, 0, address)
-            totalSentBytes = oldSentBytes + sentBytes
-            if len(data) > sentBytes:
-                self.sendToBuffers[0] = data[sentBytes:], address, channel, totalSentBytes
+        if len(self.send_buffer):
+            sent_bytes = asyncore.dispatcher.send(self, self.send_buffer[:512])
+            self.send_buffer = self.send_buffer[sent_bytes:]
+        elif len(self.send_to_buffers):
+            (data, address, channel, old_sent_bytes) = self.send_to_buffers[0]
+            sent_bytes = self.socket.sendto(data, 0, address)
+            total_sent_bytes = old_sent_bytes + sent_bytes
+            if len(data) > sent_bytes:
+                self.send_to_buffers[0] = data[sent_bytes:], address, channel, total_sent_bytes
             else:
-                del self.sendToBuffers[0]
-                stackless.tasklet(channel.send)(totalSentBytes)
-
-
-if __name__ == '__main__':
-    import sys
-    import struct
-
-    # Test code goes here.
-    testAddress = "127.0.0.1", 3000
-    info = -12345678
-    data = struct.pack("i", info)
-    dataLength = len(data)
-
-
-    def TestTCPServer(address):
-        global info, data, dataLength
-
-        print("server listen socket creation")
-        listenSocket = stdsocket.socket(AF_INET, SOCK_STREAM)
-        listenSocket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-        listenSocket.bind(address)
-        listenSocket.listen(5)
-
-        NUM_TESTS = 2
-
-        i = 1
-        while i < NUM_TESTS + 1:
-            # No need to schedule this tasklet as the accept should yield most
-            # of the time on the underlying channel.
-            print("server connection wait", i)
-            currentSocket, clientAddress = listenSocket.accept()
-            print("server", i, "listen socket", currentSocket.fileno(), "from", clientAddress)
-
-            if i == 1:
-                print("server closing (a)", i, "fd", currentSocket.fileno(), "id", id(currentSocket))
-                currentSocket.close()
-                print("server closed (a)", i)
-            elif i == 2:
-                print("server test", i, "send")
-                currentSocket.send(data)
-                print("server test", i, "recv")
-                if currentSocket.recv(4) != "":
-                    print("server recv(1)", i, "FAIL")
-                    break
-                try:
-                    v = currentSocket.recv(4)
-                    print("server recv(2)", i, "FAIL, expected error")
-                except error:
-                    pass
-            else:
-                print("server closing (b)", i, "fd", currentSocket.fileno(), "id", id(currentSocket))
-                currentSocket.close()
-
-            print("server test", i, "OK")
-            i += 1
-
-        if i != NUM_TESTS + 1:
-            print("server: FAIL", i)
-        else:
-            print("server: OK", i)
-
-        print("Done server")
-
-
-    def TestTCPClient(address):
-        global info, data, dataLength
-
-        # Attempt 1:
-        clientSocket = stdsocket.socket()
-        clientSocket.connect(address)
-        print("client connection (1) fd", clientSocket.fileno(), "id", id(clientSocket.socket), "waiting to recv")
-        if clientSocket.recv(5) != "":
-            print("client test", 1, "FAIL")
-        else:
-            print("client test", 1, "OK")
-
-        # Attempt 2:
-        clientSocket = stdsocket.socket()
-        clientSocket.connect(address)
-        print("client connection (2) fd", clientSocket.fileno(), "id", id(clientSocket.socket), "waiting to recv")
-        s = clientSocket.recv(dataLength)
-        if s == "":
-            print("client test", 2, "FAIL (disconnect)")
-        else:
-            t = struct.unpack("i", s)
-            if t[0] == info:
-                print("client test", 2, "OK")
-            else:
-                print("client test", 2, "FAIL (wrong data)")
-
-        print("client exit")
-
-
-    def TestMonkeyPatchUrllib(uri):
-        # replace the system socket with this module
-        # oldSocket = sys.modules["socket"]
-        # sys.modules["socket"] = __import__(__name__)
-        install()
-        try:
-            import urllib.request  # must occur after monkey-patching!
-            f = urllib.request.urlopen(uri)
-            if not isinstance(f.fp.fp._file._sock, _fakesocket):
-                raise AssertionError("failed to apply monkeypatch, got %s" % f.fp._sock.__class__)
-            s = f.read()
-            if len(s) != 0:
-                print("Fetched", len(s), "bytes via replaced urllib")
-            else:
-                raise AssertionError("no text received?")
-        finally:
-            # sys.modules["socket"] = oldSocket
-            uninstall()
-
-
-    def TestMonkeyPatchUDP(address):
-        # replace the system socket with this module
-        # oldSocket = sys.modules["socket"]
-        # sys.modules["socket"] = __import__(__name__)
-        install()
-        try:
-            def UDPServer(address):
-                listenSocket = stdsocket.socket(AF_INET, SOCK_DGRAM)
-                listenSocket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-                listenSocket.bind(address)
-
-                # Apparently each call to recvfrom maps to an incoming
-                # packet and if we only ask for part of that packet, the
-                # rest is lost.  We really need a proper unittest suite
-                # which tests this module against the normal socket
-                # module.
-                print("waiting to receive")
-                data, address = listenSocket.recvfrom(256)
-                print("received", data, len(data))
-                if len(data) != 256:
-                    raise RuntimeError("Unexpected UDP packet size")
-
-            def UDPClient(address):
-                clientSocket = stdsocket.socket(AF_INET, SOCK_DGRAM)
-                # clientSocket.connect(address)
-                print("sending 512 byte packet")
-                buffer = bytearray("-" + ("*" * 510) + "-", "utf-8")
-                sentBytes = clientSocket.sendto(buffer, 0, address)
-                print("sent 512 byte packet", sentBytes)
-
-            stackless.tasklet(UDPServer)(address)
-            stackless.tasklet(UDPClient)(address)
-            stackless.run()
-        finally:
-            # sys.modules["socket"] = oldSocket
-            uninstall()
-
-
-    if len(sys.argv) == 2:
-        if sys.argv[1] == "client":
-            print("client started")
-            TestTCPClient(testAddress)
-            print("client exited")
-        elif sys.argv[1] == "slpclient":
-            print("client started")
-            stackless.tasklet(TestTCPClient)(testAddress)
-            stackless.run()
-            print("client exited")
-        elif sys.argv[1] == "server":
-            print("server started")
-            TestTCPServer(testAddress)
-            print("server exited")
-        elif sys.argv[1] == "slpserver":
-            print("server started")
-            stackless.tasklet(TestTCPServer)(testAddress)
-            stackless.run()
-            print("server exited")
-        else:
-            print("Usage:", sys.argv[0], "[client|server|slpclient|slpserver]")
-
-        sys.exit(1)
-    else:
-        print("* Running client/server test")
-        install()
-        try:
-            stackless.tasklet(TestTCPServer)(testAddress)
-            stackless.tasklet(TestTCPClient)(testAddress)
-            stackless.run()
-        finally:
-            uninstall()
-
-        print("* Running urllib test")
-        stackless.tasklet(TestMonkeyPatchUrllib)("http://python.org/")
-        stackless.run()
-
-        print("* Running udp test")
-        TestMonkeyPatchUDP(testAddress)
-
-        print("result: SUCCESS")
+                del self.send_to_buffers[0]
+                stackless.tasklet(channel.send)(total_sent_bytes)

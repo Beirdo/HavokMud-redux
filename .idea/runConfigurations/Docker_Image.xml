@@ -1,0 +1,22 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Docker Image" type="docker-deploy" factoryName="docker-image" server-name="Docker">
+    <deployment type="docker-image">
+      <settings>
+        <option name="command" value="/bin/bash" />
+        <option name="containerName" value="havokmud" />
+        <option name="entrypoint" value="" />
+        <option name="imageTag" value="havokmud:0.0" />
+        <option name="portBindings">
+          <list>
+            <DockerPortBindingImpl>
+              <option name="containerPort" value="3000" />
+              <option name="hostPort" value="3000" />
+            </DockerPortBindingImpl>
+          </list>
+        </option>
+        <option name="commandLineOptions" value="-it" />
+      </settings>
+    </deployment>
+    <method v="2" />
+  </configuration>
+</component>

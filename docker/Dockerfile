@@ -32,3 +32,5 @@ ADD src /home/havokmud/src/havokmud
 RUN chown -R havokmud /home/havokmud
 USER havokmud
 EXPOSE 3000
+
+WORKDIR /home/havokmud/src/havokmud
