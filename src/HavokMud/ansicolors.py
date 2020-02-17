@@ -5,7 +5,7 @@ from colors import color
 
 class AnsiColors(object):
     default = "0007"  # light grey on black
-    colorCodeRe = re.compile(r'(?P<preamble>.*?)\$C(?P<code>\d\d\d\S)(?P<text>.*?)(?=(?P<eol>\r\n)|$|\$C\d\d\d\S)', re.I)
+    colorCodeRe = re.compile(r'(?P<preamble>.*?)\$C(?P<code>\d\d\d\S)(?P<text>.*?)(?=(?P<eol>[\r\n]+)|$|\$C\d\d\d\S)', re.I)
     styles = ["none", "bold", "faint", "italic", "underline", "blink", "negative"]
     colors = ['black', 'red', "green", "yellow", "blue", "magenta", "cyan", "white"]
     fg_map = {
@@ -47,14 +47,21 @@ class AnsiColors(object):
         pass
 
     def convert_string(self, input, ansi=True):
+        # print(input)
         iter = self.colorCodeRe.finditer(input)
         parts = [item.groupdict() for item in iter]
         if not parts:
             parts = [{"text": input, "code": self.default}]
-        preamble = parts[0].pop("preamble", None)
-        if preamble:
-            parts.insert(0, {"text": preamble, "code": self.default})
-        parts.append({"text": "", "code": self.default})
+
+        # print(parts)
+        count = 0
+        parts_in = list(parts)
+        for (index, part) in enumerate(parts_in):
+            preamble = parts[index + count].pop("preamble", None)
+            if preamble:
+                parts.insert(index + count, {"text": preamble, "code": self.default})
+                count += 1
+
         # print(parts)
 
         output = ""

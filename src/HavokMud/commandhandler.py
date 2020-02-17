@@ -18,6 +18,7 @@ class CommandHandler(BaseHandler):
             "handler": "CommandHandler.handler_standard",
             "help": "Use LIST USERS to list online users\r\nUse LIST COMMANDS to list commands",
         },
+        "welcome": "CommandHandler.handler_standard",
     }
 
     def __init__(self, server, connection):
@@ -166,3 +167,6 @@ class CommandHandler(BaseHandler):
             self.command_help(["help"])
         else:
             self.append_line("Whatcha talkin' about, Willis?")
+
+    def command_welcome(self, tokens):
+        self.append_output({"template": "welcome_page.jinja", "params": {"tokens": tokens}})

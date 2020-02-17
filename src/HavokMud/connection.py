@@ -5,6 +5,7 @@ import time
 from HavokMud.ansicolors import AnsiColors
 from HavokMud.commandhandler import CommandHandler
 from HavokMud.user import User
+from HavokMud.jinjaprocessor import jinja_processor
 
 
 class Connection:
@@ -16,6 +17,8 @@ class Connection:
 
         self.output_channel = stackless.channel()
         self.input_channel = stackless.channel()
+        self.jinja_in_channel = jinja_processor.in_channel
+        self.jinja_out_channel = stackless.channel()
         self.handler = None
         self.read_buffer = ""
         self.string_mode = True
@@ -93,7 +96,14 @@ class Connection:
             if data is None:
                 self.user.disconnect = True
                 continue
-            self.write(data)
+
+            if isinstance(data, str):
+                self.write(data)
+            elif isinstance(data, dict):
+                data["channel"] = self.jinja_out_channel
+                self.jinja_in_channel.send(data)
+                data = self.jinja_out_channel.receive()
+                self.write(data)
 
     def read_tasklet(self):
         while not self.disconnected:
