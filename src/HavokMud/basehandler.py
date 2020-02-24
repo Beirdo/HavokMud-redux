@@ -8,6 +8,8 @@ class BaseHandler(object):
         self.connection = connection
         self.output = []
         self.output_lock = Lock()
+        self.echo = True
+        self.account = connection.user.account
 
     def send_prompt(self, prompt):
         raise RuntimeError("Function %s not implemented in class %s" %
@@ -29,3 +31,13 @@ class BaseHandler(object):
 
     def append_output(self, output):
         self.connection.output_channel.send(output)
+
+    def set_echo(self, value):
+        old_echo = self.echo
+        self.echo = value
+        self.connection.set_echo(value)
+        if not old_echo and value:
+            self.append_line("")
+
+    def disconnect(self):
+        self.append_output(None)

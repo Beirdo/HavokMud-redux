@@ -1,6 +1,9 @@
 import logging
 import stackless
+import time
 import traceback
+
+from HavokMud.account import Account
 
 
 class RemoteDisconnectionError(RuntimeError):
@@ -11,6 +14,7 @@ class User:
     def __init__(self, connection):
         self.connection = connection
         self.server = self.connection.server
+        self.account = Account(self.server, self.connection, None)
         self.disconnect = False
 
         self.server.register_user(self)
@@ -42,7 +46,8 @@ class User:
     def handle_command(self):
         handler = self.connection.handler
         if handler is None:
-            raise RuntimeError("No handler installed!")
+            time.sleep(0.5)
+            return
 
         handler.send_prompt("> ")
 

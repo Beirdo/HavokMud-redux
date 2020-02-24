@@ -1,0 +1,11 @@
+{% if not account.players -%}
+Currently no players, please create one.
+{% else -%}
+Player Name
+======================
+{% for player in account.players -%}
+player
+{% endfor -%}
+{% endif -}
+
+Hit enter to continue

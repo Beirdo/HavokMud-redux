@@ -15,6 +15,8 @@ class Server:
 
         self.user_lock = Lock()
         self.user_index = weakref.WeakValueDictionary()
+        self.wizlocked = False
+        self.wizlock_reason = None
 
         stackless.tasklet(self.run)()
 
@@ -44,3 +46,12 @@ class Server:
     def list_users(self):
         with self.user_lock:
             return list(self.user_index.values())
+
+    def is_wizlocked(self):
+        return self.wizlocked
+
+    def set_wizlock(self, value, reason):
+        if value:
+            self.wizlock_reason = reason
+
+        self.wizlocked = value

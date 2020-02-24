@@ -19,6 +19,7 @@ class CommandHandler(BaseHandler):
             "help": "Use LIST USERS to list online users\r\nUse LIST COMMANDS to list commands",
         },
         "welcome": "CommandHandler.handler_standard",
+        "echo": "CommandHandler.handler_standard",
     }
 
     def __init__(self, server, connection):
@@ -170,3 +171,12 @@ class CommandHandler(BaseHandler):
 
     def command_welcome(self, tokens):
         self.append_output({"template": "welcome_page.jinja", "params": {"tokens": tokens}})
+
+    def command_echo(self, tokens):
+        if len(tokens) < 2:
+            echo = not self.echo
+        else:
+            token = tokens[1].lower()
+            echo = (token == "on")
+        self.set_echo(echo)
+

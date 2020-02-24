@@ -1,0 +1,19 @@
+
+
+$c0009-=$c0015Havok Account Menu [{{ account.email }}]$c0009=-
+
+$c00151) $c0012ANSI Colors.
+$c00152) $c0012Change your password.
+$c00153) $c0012View the MOTD.
+$c00154) $c0012View the credits.
+{% if account.confirmed -%}
+$c00155) $c0012List characters.
+$c00156) $c0012Create a new character.
+$c00157) $c0012Play an existing character.
+{% else -%}
+$c0015E) $c0012Enter email confirmation code.
+$c0015R) $c0012Resend the confirmation email.
+{% endif -%}
+$c0015Q) $c0012Quit!
+
+$c0011Please pick an option:

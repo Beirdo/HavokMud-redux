@@ -1,0 +1,18 @@
+$c0009-=$c0015Havok Character Creation Menu$c0009=-
+
+Current Ability Roll: {{ ", ".join(map(str, player.rolls)) }}
+Available Rerolls: {{ player.rerolls }}
+
+$c00151) $c0012Name. [$c0015{{ player.name }}$c0012]
+$c00152) $c0012Sex.  [$c0015{{ player.sex }}$c0012]
+$c00153) $c0012Race. [$c0015{{ player.race }}$c0012]
+$c00154) $c0012Class. [$c0015{{ player.klass }}$c0012]
+$c00155) $c0012Character Stats. [$c0015{{ player.stats }}$c0012]
+$c00156) $c0012Alignment. [$c0015{{ player.alignment }}$c0012]
+{% if player.rerolls -%}
+$c0015R) $c0012Reroll Ability Scores.
+{% endif -%}
+
+$c0015D) $c0012Done!
+
+$c0011Please pick an option:

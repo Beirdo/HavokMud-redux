@@ -39,4 +39,5 @@ Setup the conda environment
 * conda config --add channels stackless
 * conda install stackless
 * conda update python
-* conda install boto3
+* conda install boto3 jinja2
+* pip install ansicolors python-statemachine
