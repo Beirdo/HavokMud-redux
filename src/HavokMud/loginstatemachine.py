@@ -178,7 +178,7 @@ class LoginStateMachine(StateMachine):
         if answer:
             self.append_line("$c0012A$c0010N$c0011S$c0014I$c0007 colors enabled.\r\n")
 
-        self.model.account.save()
+        self.model.account.save_to_db()
 
         if not self.model.account.confcode:
             return self.resend_confirm_email
@@ -257,7 +257,7 @@ class LoginStateMachine(StateMachine):
         self.set_echo(True)
         self.model.account.password = self.model.account.new_password
         self.model.account.new_password = None
-        self.model.account.save()
+        self.model.account.save_to_db()
 
         self.append_line("Password changed...")
         return self.show_account_menu
@@ -271,11 +271,11 @@ class LoginStateMachine(StateMachine):
         if self.model.account.confcode.lower() == confcode:
             self.model.account.confirmed = True
             self.model.account.confcode = None
-            self.model.account.save()
+            self.model.account.save_to_db()
             self.append_line("\r\nYour email is now confirmed, you can now play.  Thank you!")
         else:
             self.model.account.confirmed = False
-            self.model.account.save()
+            self.model.account.save_to_db()
             self.append_line("\r\nConfirmation code does not match our records.  Please try again,")
             self.append_line("or resend the confirmation email to get a new code.\r\n")
 
@@ -342,7 +342,7 @@ class LoginStateMachine(StateMachine):
 
         logger.info("%s [%s] new player" % (self.model.account.player.name, self.model.account.get_hostname()))
         self.model.account.player.complete = True
-        self.model.account.player.save()
+        self.model.account.player.save_to_db()
         return self.show_account_menu
 
     def on_choose_name(self):
@@ -373,7 +373,7 @@ class LoginStateMachine(StateMachine):
             self.model.account.player.roll_abilities()
 
         self.model.account.player.name = name
-        self.model.account.player.save()
+        self.model.account.player.save_to_db()
         return self.show_creation_menu
 
     def on_choose_sex(self):
@@ -512,7 +512,7 @@ class LoginStateMachine(StateMachine):
 
     def on_enter_reroll_abilities(self):
         self.model.account.player.reroll_abilities()
-        self.model.account.player.save()
+        self.model.account.player.save_to_db()
         self.go_to_creation_menu()
 
     def on_enter_playing(self):

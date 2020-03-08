@@ -1,8 +1,16 @@
-class Player(object):
+from HavokMud.database import user_db
+from HavokMud.database_object import DatabaseObject
+
+
+class Player(DatabaseObject):
+    __fixed_fields__ = ["server", "connection", "account"]
+    __database__ = user_db
+
     def __init__(self, server, connection, account):
         self.server = server
         self.connection = connection
         self.account = account
+        self.email = account.email
         self.rolls = [0, 0, 0, 0, 0, 0]
         self.rerolls = None
         self.name = None
@@ -24,10 +32,9 @@ class Player(object):
     def lookup_by_name(account, name):
         player = Player(account.server, account.connection, account)
 
-        # Look this up in DynamoDB
-        player.name = "Test"
-
         # if not in dynamo: return with empty email field
+        player.load_from_db(email=player.email, name=name)
+
         return player
 
     def reroll_abilities(self):
@@ -35,9 +42,5 @@ class Player(object):
         pass
 
     def roll_abilities(self):
-        # TODO
-        pass
-
-    def save(self):
         # TODO
         pass

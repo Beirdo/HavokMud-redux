@@ -27,7 +27,7 @@ if __name__ == "__main__":
                         format='%(asctime)s %(levelname)s %(message)s')
 
     try:
-        Server("0.0.0.0", 3000)
+        Server("0.0.0.0", 3000, True)  # use localstack for AWS resources for now
         while True:
             stackless.run()
     except KeyboardInterrupt:

@@ -1,0 +1,7 @@
+#! /usr/bin/env bash
+
+if [ "${BUILD_MODE}" = "testing" ] ; then
+    localstack restart
+fi
+
+python testmud.py

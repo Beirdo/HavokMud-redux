@@ -2,6 +2,8 @@ FROM continuumio/miniconda3
 
 USER root
 ENV TERM=vt100
+ARG ENV
+ENV BUILD_MODE=$ENV
 
 RUN apt-get update \
     && apt-get install -y \
@@ -23,6 +25,7 @@ RUN conda install -y stackless
 RUN conda update -y conda
 RUN conda install -y boto3 jinja2
 RUN pip install ansicolors python-statemachine
+RUN if [ "$ENV" = "testing" ] ; then pip install localstack ; fi
 
 RUN useradd -m -G sudo -d /home/havokmud -s /bin/bash -c "HavokMud Account" havokmud
 WORKDIR /home/havokmud

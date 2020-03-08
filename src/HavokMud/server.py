@@ -6,10 +6,11 @@ import weakref
 from threading import Lock
 
 from HavokMud.connection import Connection
+from HavokMud.database import Databases
 
 
 class Server:
-    def __init__(self, host, port):
+    def __init__(self, host, port, isLocal=False):
         self.host = host
         self.port = port
 
@@ -17,6 +18,7 @@ class Server:
         self.user_index = weakref.WeakValueDictionary()
         self.wizlocked = False
         self.wizlock_reason = None
+        self.dbs = Databases(isLocal)
 
         stackless.tasklet(self.run)()
 
