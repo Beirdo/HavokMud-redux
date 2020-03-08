@@ -1,7 +1,7 @@
 import hashlib
 import re
 
-emailRe = re.compile(r'^([a-z0-9_\-.+]+)@([a-z0-9_\-.]+)\.([a-z]{2,5})$', re.I)
+emailRe = re.compile(r'^([a-z0-9_\-.+]+)@([a-z0-9_\-.]+)\.([a-z]{2,20})$', re.I)
 
 
 def validate_email(email):
