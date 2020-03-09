@@ -1,0 +1,6 @@
+#! /usr/bin/env bash
+
+screen -d -m -e ^Bb -S havokmud /bin/bash
+screen -S havokmud -X python testmud.py
+screen -r -S havokmud
+

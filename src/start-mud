@@ -1,7 +1,23 @@
 #! /usr/bin/env bash
 
+screen -d -m -S havokmud
+docker network create havokmud
+
 if [ "${BUILD_MODE}" = "testing" ] ; then
-    localstack restart
+    #conda init bash
+    #conda activate HavokMud-redux
+    container=`docker ps --format '{{.Names}}' | grep localstack-main`
+    if [ "${container}" != "localstack-main" ]; then
+        screen -S havokmud -X screen -t localstack
+        screen -S havokmud -p localstack -X exec localstack start
+        sleep 5
+        docker rename localstack_main localstack-main
+        docker network connect havokmud localstack-main
+    fi
 fi
 
-python testmud.py
+docker rm havokmud
+screen -S havokmud -X screen -t mud
+screen -S havokmud -p mud -X exec docker run -p 3000:3000 --network havokmud --name havokmud -it havokmud:latest ./start-in-docker
+screen -S havokmud -p mud -X exec docker attach havokmud
+screen -r -S havokmud

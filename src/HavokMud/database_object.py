@@ -30,6 +30,7 @@ class DatabaseObject(object):
         if not self.__database__:
             raise ValueError("Database not defined in class %s" % self.__class__.__name__)
 
+        logger.info("Dir: %s" % dir(self.__database__))
         data = self.__database__.get_item(key)
         self.from_dict(data)
 

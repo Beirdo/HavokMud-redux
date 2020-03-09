@@ -1,7 +1,6 @@
 from decimal import Decimal
 
 import boto3
-from boto.dynamodb2.exceptions import ResourceNotFoundException
 
 
 def _dict_to_dynamodb(func):
@@ -33,7 +32,7 @@ def _convert_to_dynamodb(item):
 def _dynamodb_to_dict(func):
     def wrapper(self, keys):
         dynamo_data = func(keys)
-        data = {key: _convert_from_dynamodb(value) for (key, value) in dynamo_db.items()}
+        data = {key: _convert_from_dynamodb(value) for (key, value) in dynamo_data.items()}
         return data
 
     return wrapper
@@ -75,10 +74,15 @@ class Database(object):
     db_billing_mode = None
     db_provisioned_throughput = None
 
-    def __init__(self):
+    def __init__(self, region="us-east-1", endpoint=None, use_ssl=True):
+        self.endpoint = endpoint
+        self.region = region
+        self.use_ssl = use_ssl
         if not self.table:
             raise ValueError("Table not defined in class %s" % self.__class__.__name__)
-        self.dynamodb = boto3.client('dynamodb', region=self.region, endpoint=self.endpoint)
+        self.session = boto3.session.Session(region_name=self.region)
+        self.dynamodb = self.session.client('dynamodb', endpoint_url=self.endpoint, use_ssl=self.use_ssl)
+        self.create_table()
 
     def create_table(self):
         create = False
@@ -87,7 +91,7 @@ class Database(object):
             status = table_desc.get("Table", {}).get("TableStatus", None)
             if status == 'ACTIVE':
                 return
-        except ResourceNotFoundException:
+        except self.dynamodb.exceptions.ResourceNotFoundException as e:
             create = True
 
         if create:
@@ -118,7 +122,7 @@ class Database(object):
 
             self.dynamodb.create_table(**table_definition)
 
-        waiter = self.dynamodb.create_waiter('table_exists')
+        waiter = self.dynamodb.get_waiter('table_exists')
         waiter.wait(TableName=self.table)
 
     @_dynamodb_to_dict

@@ -7,6 +7,7 @@ from threading import Lock
 
 from HavokMud.connection import Connection
 from HavokMud.database import Databases
+from HavokMud.dnslookup import DNSLookup
 
 
 class Server:
@@ -19,6 +20,7 @@ class Server:
         self.wizlocked = False
         self.wizlock_reason = None
         self.dbs = Databases(isLocal)
+        self.dns_lookup = DNSLookup()
 
         stackless.tasklet(self.run)()
 

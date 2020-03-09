@@ -18,13 +18,17 @@ RUN apt-get update \
 	sudo \
 	apt-utils \
 	vim-tiny \
+	screen \
+	dnsutils \
+	netcat \
+	iputils-ping \
     && rm -rf /var/lib/apt/lists/*
 
 RUN conda config --add channels stackless
 RUN conda install -y stackless
 RUN conda update -y conda
 RUN conda install -y boto3 jinja2
-RUN pip install ansicolors python-statemachine
+RUN pip install ansicolors python-statemachine dnspython
 RUN if [ "$ENV" = "testing" ] ; then pip install localstack ; fi
 
 RUN useradd -m -G sudo -d /home/havokmud -s /bin/bash -c "HavokMud Account" havokmud
@@ -33,6 +37,7 @@ RUN chmod 700 /home/havokmud
 RUN mkdir -p /etc/sudoers.d
 RUN echo "havokmud ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/havokmud
 ADD src /home/havokmud/src/havokmud
+ADD docker/aws-$ENV /home/havokmud/.aws
 RUN chown -R havokmud /home/havokmud
 USER havokmud
 EXPOSE 3000

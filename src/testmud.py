@@ -10,6 +10,7 @@
 # improvement.
 #
 import logging
+import os
 import stackless
 
 import HavokMud.stacklesssocket
@@ -27,7 +28,9 @@ if __name__ == "__main__":
                         format='%(asctime)s %(levelname)s %(message)s')
 
     try:
-        Server("0.0.0.0", 3000, True)  # use localstack for AWS resources for now
+        env = os.environ.get("BUILD_MODE", "prod")
+        testing = (env.lower() == "testing")
+        Server("0.0.0.0", 3000, testing)  # use localstack for AWS resources in testing
         while True:
             stackless.run()
     except KeyboardInterrupt:

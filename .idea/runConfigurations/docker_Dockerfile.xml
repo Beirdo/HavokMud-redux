@@ -8,7 +8,7 @@
         <option name="containerName" value="" />
         <option name="contextFolderPath" value="." />
         <option name="entrypoint" value="" />
-        <option name="imageTag" value="havokmud:0.0" />
+        <option name="imageTag" value="havokmud:latest" />
         <option name="commandLineOptions" value="" />
         <option name="sourceFilePath" value="docker/Dockerfile" />
       </settings>

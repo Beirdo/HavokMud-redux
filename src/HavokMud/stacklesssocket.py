@@ -26,11 +26,14 @@
 # - Launching each bit of incoming data in its own tasklet on the recvChannel
 #   send is a little over the top.  It should be possible to add it to the
 #   rest of the queued data
-
+import array
 import asyncore
+import logging
 import socket as stdsocket  # We need the "socket" name for the function we export.
 import stackless
 import weakref
+
+logger = logging.getLogger(__name__)
 
 # Cache socket module entries we may monkeypatch.
 from _socket import SOCK_DGRAM, error, SOCK_STREAM, SOL_SOCKET, SO_REUSEADDR
@@ -203,6 +206,7 @@ class _fakesocket(asyncore.dispatcher):
 
     def connect(self, address):
         asyncore.dispatcher.connect(self, address)
+
         # UDP sockets do not connect.
         if self.socket.type != SOCK_DGRAM and not self.connected:
             if not self.connect_channel:
@@ -271,7 +275,7 @@ class _fakesocket(asyncore.dispatcher):
 
     def recv_into(self, buffer, nbytes=0, flags=0):
         if len(buffer):
-            nbytes = len(buffer)
+            nbytes = min(len(buffer), nbytes)
 
         # recv() must not concatenate two or more data fragments sent with
         # send() on the remote side. Single fragment sent with single send()
@@ -296,18 +300,18 @@ class _fakesocket(asyncore.dispatcher):
             remaining_bytes = len(self.read_bytes)
 
         if nbytes == 1 and remaining_bytes:
-            buffer[:] = self.read_bytes[self.read_index]
+            buffer[:1] = self.read_bytes[self.read_index]
             self.read_index += 1
             return 1
 
         if nbytes == 0:
-            nbytes = len(self.read_bytes)
+            nbytes = min(len(buffer), len(self.read_bytes))
             if nbytes == 0:
-                buffer[:] = []
                 return 0
 
         if self.read_index == 0 and nbytes >= len(self.read_bytes):
-            buffer[:] = self.read_bytes
+            nbytes = len(self.read_bytes)
+            buffer[:nbytes] = self.read_bytes
             self.read_bytes = bytearray()
             return nbytes
 
@@ -353,8 +357,12 @@ class _fakesocket(asyncore.dispatcher):
     # Inform the blocked connect call that the connection has been made.
     def handle_connect(self):
         if self.socket.type != SOCK_DGRAM:
+            if not self.connect_channel:
+                self.connect_channel = stackless.channel()
+                self.connect_channel.preference = 1
+
             self.was_connected = True
-            self.connect_channel.send(None)
+            stackless.tasklet(self.connect_channel.send)(None)
 
     # Asyncore says its done but self.readBuffer may be non-empty
     # so can't close yet.  Do nothing and let 'recv' trigger the close.

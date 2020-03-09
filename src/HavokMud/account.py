@@ -19,7 +19,8 @@ class Account(DatabaseObject):
         self.email = email
         self.password = None  # SHA512 digest
         self.new_password = None    # SHA512 digest
-        self.hostname = None  # TODO: add this from connection info
+        self.ip_address = None
+        self.hostname = None
         self.ansi_mode = False
         self.confcode = None
         self.confirmed = False
@@ -34,6 +35,10 @@ class Account(DatabaseObject):
 
         # if not in dynamo: will return with empty email field
         account.load_from_db(email=email)
+        if account:
+            account.ip_address = connection.client_address[0]
+            with account.hostname_lock:
+                account.hostname = server.dns_lookup.do_reverse_dns(account.ip_address)
         return account
 
     def send_confirmation_email(self):

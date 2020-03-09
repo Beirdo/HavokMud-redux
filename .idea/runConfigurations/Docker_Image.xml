@@ -5,7 +5,7 @@
         <option name="command" value="/bin/bash" />
         <option name="containerName" value="havokmud" />
         <option name="entrypoint" value="" />
-        <option name="imageTag" value="havokmud:0.0" />
+        <option name="imageTag" value="havokmud:latest" />
         <option name="portBindings">
           <list>
             <DockerPortBindingImpl>

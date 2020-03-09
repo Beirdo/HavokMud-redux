@@ -1,11 +1,12 @@
 import logging
 
-from HavokMud.database import Database
+from HavokMud.database.base import Database
 
 logger = logging.getLogger(__name__)
 
 
 class UserDB(Database):
+    table = "havokmud_players"
     db_attributes = [
         {
             'AttributeName': "email",

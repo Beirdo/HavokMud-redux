@@ -10,7 +10,7 @@ from HavokMud.user import User
 logger = logging.getLogger(__name__)
 
 
-class Connection:
+class Connection(object):
     telnet_cmd_with_options = range(251, 255)  # 251-254.  Remember end param is end + 1
 
     def __init__(self, server, client_socket, client_address):
@@ -31,7 +31,7 @@ class Connection:
         self.user = User(self)
         self.user_id = id(self.user)
 
-        logging.info("Connected %d from %s", self.user_id, self.client_address)
+        logging.info("Connected %d from %s:%s" % (self.user_id, self.client_address[0], self.client_address[1]))
 
         self.set_handler(LoginHandler(self.server, self))
 

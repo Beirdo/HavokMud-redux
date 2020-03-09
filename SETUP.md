@@ -40,4 +40,13 @@ Setup the conda environment
 * conda install stackless
 * conda update python
 * conda install boto3 jinja2
-* pip install ansicolors python-statemachine
+* pip install ansicolors python-statemachine dnspython
+
+Setup localstack for testing
+---
+* pip install localstack
+* localstack start  (runs in Docker)
+
+Setup screen
+---
+* apt-get install screen

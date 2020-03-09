@@ -101,12 +101,13 @@ class LoginStateMachine(StateMachine):
             self.append_line("Illegal email address, please try again.")
             return self.get_email
 
+        self.model.account = Account.lookup_by_email(self.model.server, self.model.connection, email)
+
         # Check if we have banned the source IP/hostname
         if self.model.account.is_sitelocked():
             self.append_line("Sorry, your site is temporarily banned.")
             return self.disconnect
 
-        self.model.account = Account.lookup_by_email(self.model.server, self.model.connection, email)
         if self.model.account.email == email:
             # Existing account
             return self.get_password
