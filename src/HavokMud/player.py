@@ -4,10 +4,12 @@ from HavokMud.database_object import DatabaseObject
 
 class Player(DatabaseObject):
     __fixed_fields__ = ["server", "connection", "account"]
-    __database__ = user_db
+    __database__ = None
 
     def __init__(self, server, connection, account):
+        DatabaseObject.__init__(self)
         self.server = server
+        self.__database__ = self.server.dbs.user_db
         self.connection = connection
         self.account = account
         self.email = account.email

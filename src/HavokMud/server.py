@@ -10,6 +10,9 @@ from HavokMud.database import Databases
 from HavokMud.dnslookup import DNSLookup
 
 
+logger = logging.getLogger(__name__)
+
+
 class Server:
     def __init__(self, host, port, isLocal=False):
         self.host = host
@@ -33,8 +36,12 @@ class Server:
         logging.info("Accepting connections on %s %s", self.host, self.port)
         try:
             while True:
-                (clientSocket, clientAddress) = listen_socket.accept()
-                Connection(self, clientSocket, clientAddress)
+                try:
+                    (clientSocket, clientAddress) = listen_socket.accept()
+                    Connection(self, clientSocket, clientAddress)
+                except Exception as e:
+                    logger.error("Exception %s" % e)
+                    pass
                 stackless.schedule()
         except socket.error:
             traceback.print_exc()

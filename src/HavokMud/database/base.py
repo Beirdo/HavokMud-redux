@@ -1,17 +1,29 @@
+import logging
 from decimal import Decimal
 
 import boto3
 
+logger = logging.getLogger(__name__)
+
 
 def _dict_to_dynamodb(func):
-    def wrapper(self, data):
-        dynamo_data = {key: _convert_to_dynamodb(value) for (key, value) in data.items}
-        return func(dynamo_data)
+    def wrapper(*args, **kwargs):
+        args = list(args)
+        data = args.pop(1)
+        logger.info("raw: %s" % data)
+        dynamo_data = {key: _convert_to_dynamodb(value) for (key, value) in data.items()}
+        args.insert(1, dynamo_data)
+        logger.info("converted: %s" % dynamo_data)
+        return func(*args, **kwargs)
 
     return wrapper
 
 
 def _convert_to_dynamodb(item):
+    if item is True or item is False:
+        return {'BOOL': item}
+    if item is None:
+        return {'NULL': True}
     if isinstance(item, dict):
         return {'M': {_convert_to_dynamodb(value) for (key, value) in item.items()}}
     if isinstance(item, (list, tuple, set)):
@@ -22,17 +34,15 @@ def _convert_to_dynamodb(item):
         return {'S': item}
     if isinstance(item, bytes):
         return {'B': item}
-    if item is True or item is False:
-        return {'BOOL': item}
-    if item is None:
-        return {'NULL': True}
     return {'S': str(item)}
 
 
 def _dynamodb_to_dict(func):
-    def wrapper(self, keys):
-        dynamo_data = func(keys)
+    def wrapper(*args, **kwargs):
+        dynamo_data = func(*args, **kwargs)
+        logger.info("Raw: %s" % dynamo_data)
         data = {key: _convert_from_dynamodb(value) for (key, value) in dynamo_data.items()}
+        logger.info("Converted: %s" % data)
         return data
 
     return wrapper
@@ -126,10 +136,11 @@ class Database(object):
         waiter.wait(TableName=self.table)
 
     @_dynamodb_to_dict
+    @_dict_to_dynamodb
     def get_item(self, keys):
         try:
-            return self.dynamodb.get_item(TableName=self.table, Key=keys, ConsistentRead=True)
-        except Exception:
+            return self.dynamodb.get_item(TableName=self.table, Key=keys, ConsistentRead=True).get("Item", {})
+        except Exception as e:
             return {}
 
     @_dict_to_dynamodb

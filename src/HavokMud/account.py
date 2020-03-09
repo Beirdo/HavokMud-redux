@@ -7,10 +7,12 @@ from HavokMud.database_object import DatabaseObject
 
 class Account(DatabaseObject):
     __fixed_fields__ = ["server", "connection", "hostname_lock", "player", "current_player"]
-    __database__ = account_db
+    __database__ = None
 
     def __init__(self, server, connection, email=None):
+        DatabaseObject.__init__(self)
         self.server = server
+        self.__database__ = self.server.dbs.account_db
         self.connection = connection
         self.hostname_lock = Lock()
         self.player = None
@@ -35,10 +37,10 @@ class Account(DatabaseObject):
 
         # if not in dynamo: will return with empty email field
         account.load_from_db(email=email)
-        if account:
-            account.ip_address = connection.client_address[0]
-            with account.hostname_lock:
-                account.hostname = server.dns_lookup.do_reverse_dns(account.ip_address)
+        account.ip_address = connection.client_address[0]
+        with account.hostname_lock:
+            account.hostname = server.dns_lookup.do_reverse_dns(account.ip_address)
+        connection.ansi_mode = account.ansi_mode
         return account
 
     def send_confirmation_email(self):

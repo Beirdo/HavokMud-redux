@@ -7,6 +7,9 @@ class DatabaseObject(object):
     __fixed_fields__ = []
     __database__ = None
 
+    def __init__(self):
+        self.__fixed_fields__.extend(["__fixed_fields__", "__database__"])
+
     def __setattr__(self, name, value):
         self.__dict__[name] = value
 
@@ -18,13 +21,20 @@ class DatabaseObject(object):
         return dict(filter(lambda x: x[0] not in self.__fixed_fields__, self.__dict__.items()))
 
     def from_dict(self, newdata):
+        logger.info("new data: %s" % newdata)
         oldfields = set(self.__dict__.keys())
         newfields = set(newdata.keys()) | set(self.__fixed_fields__)
         removefields = oldfields - newfields
+        logger.info("Removing fields: %s" % removefields)
         # noinspection PyTypeChecker
         newdict = dict(filter(lambda x: x[0] not in removefields, self.__dict__.items()))
         newdict.update(newdata)
-        self.__dict__ = newdict
+        logger.info("newdict: %s" % newdict)
+        for (key, value) in newdict.items():
+            setattr(self, key, value)
+        for field in removefields:
+            delattr(self, field)
+        logger.info("finished: %s" % dict(self.__dict__))
 
     def load_from_db(self, **key):
         if not self.__database__:

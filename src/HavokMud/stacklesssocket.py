@@ -274,6 +274,7 @@ class _fakesocket(asyncore.dispatcher):
         return data[:byte_count], address
 
     def recv_into(self, buffer, nbytes=0, flags=0):
+        logger.debug("recv_into: butlen: %s, nbytes: %s"  % (len(buffer), nbytes))
         if len(buffer):
             nbytes = min(len(buffer), nbytes)
 
@@ -299,15 +300,17 @@ class _fakesocket(asyncore.dispatcher):
             self.read_index = 0
             remaining_bytes = len(self.read_bytes)
 
+        if nbytes == 0:
+            nbytes = len(self.read_bytes)
+            if len(buffer):
+                nbytes = min(len(buffer), nbytes)
+            if nbytes == 0:
+                return 0
+
         if nbytes == 1 and remaining_bytes:
             buffer[:1] = self.read_bytes[self.read_index]
             self.read_index += 1
             return 1
-
-        if nbytes == 0:
-            nbytes = min(len(buffer), len(self.read_bytes))
-            if nbytes == 0:
-                return 0
 
         if self.read_index == 0 and nbytes >= len(self.read_bytes):
             nbytes = len(self.read_bytes)

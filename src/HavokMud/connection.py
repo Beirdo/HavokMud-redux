@@ -94,7 +94,7 @@ class Connection(object):
                 return None
 
             # Deal with any embedded telnet commands before decoding UTF-8
-            print(v)
+            # print(v)
             v = self.handle_telnet_commands(v)
 
             if not v:

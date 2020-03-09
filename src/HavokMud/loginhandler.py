@@ -19,7 +19,7 @@ class LoginHandler(BaseHandler):
             self.fsm.go_to_get_email()
 
     def handle_input(self, tokens):
-        print(tokens)
+    # print(tokens)
         self.tokens = tokens
         try:
             print("before", self.state)
