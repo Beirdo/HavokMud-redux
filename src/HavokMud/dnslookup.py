@@ -17,16 +17,19 @@ class DNSLookup(object):
         self.in_channel = stackless.channel()
 
         stackless.tasklet(self.dns_loop)()
+        stackless.schedule()
 
     def dns_loop(self):
         while True:
             request = self.in_channel.receive()
             retval = None
+            addr = ""
             try:
                 addr = dns.reversename.from_address(request.ipaddress)
             except Exception:
                 retval = "invalid.host.name"
 
+            answer = []
             if not retval:
                 try:
                     answer = dns.resolver.query(addr, "PTR")

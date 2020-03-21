@@ -10,7 +10,7 @@ class RemoteDisconnectionError(RuntimeError):
     pass
 
 
-class User:
+class User(object):
     def __init__(self, connection):
         self.connection = connection
         self.server = self.connection.server

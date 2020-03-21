@@ -13,7 +13,7 @@ from HavokMud.dnslookup import DNSLookup
 logger = logging.getLogger(__name__)
 
 
-class Server:
+class Server(object):
     def __init__(self, host, port, isLocal=False):
         self.host = host
         self.port = port
@@ -31,6 +31,7 @@ class Server:
         listen_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         listen_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         listen_socket.bind((self.host, self.port))
+        logger.info("Listening on %s" % listen_socket.fileno())
         listen_socket.listen(5)
 
         logging.info("Accepting connections on %s %s", self.host, self.port)
@@ -38,9 +39,10 @@ class Server:
             while True:
                 try:
                     (clientSocket, clientAddress) = listen_socket.accept()
+                    logger.info("Accepting on %s" % clientSocket.fileno())
                     Connection(self, clientSocket, clientAddress)
                 except Exception as e:
-                    logger.error("Exception %s" % e)
+                    logger.exception("Exception in accept loop")
                     pass
                 stackless.schedule()
         except socket.error:

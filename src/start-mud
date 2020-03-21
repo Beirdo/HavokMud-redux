@@ -1,5 +1,7 @@
 #! /usr/bin/env bash
 
+export BUILD_MODE=${BUILD_MODE:-testing}
+
 screen -d -m -S havokmud
 docker network create havokmud
 

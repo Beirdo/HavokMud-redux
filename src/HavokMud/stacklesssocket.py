@@ -31,6 +31,8 @@ import asyncore
 import logging
 import socket as stdsocket  # We need the "socket" name for the function we export.
 import stackless
+import sys
+import traceback
 import weakref
 
 logger = logging.getLogger(__name__)
@@ -49,12 +51,16 @@ def install():
     stdsocket._realsocket = _old_realsocket
     stdsocket.socket = _new_socket
     stdsocket.SocketIO = _new_SocketIO
+    stdsocket.SocketType = _new_socket
+    stdsocket._socketobject = _new_socket
 
 
 def uninstall():
     stdsocket._realsocket = _old_realsocket
     stdsocket.socket = _old_socket
     stdsocket.SocketIO = _old_SocketIO
+    stdsocket.SocketType = _old_socket
+    stdsocket._socketobject = _old_socket
 
 
 class _new_SocketIO(_old_SocketIO):
@@ -144,6 +150,7 @@ class _new_socket(object):
         # Close dispatcher if it isn't already closed
         if self.dispatcher._fileno is not None:
             try:
+                traceback.print_stack(file=sys.stdout)
                 self.dispatcher.close()
             finally:
                 self.dispatcher = None
@@ -192,7 +199,20 @@ class _fakesocket(asyncore.dispatcher):
     def add_channel(self, map=None):
         if map is None:
             map = self._map
-        map[self._fileno] = weakref.proxy(self)
+        # map[self._fileno] = weakref.proxy(self)
+        # if we leave in a weakref, then our listen socket gets reaped during gc
+        # even though it still should be running as this weakref somehow ends up
+        # being the only ref (?)
+        map[self._fileno] = self
+
+    def del_channel(self, map=None):
+        fd = self._fileno
+        if map is None:
+            map = self._map
+        if fd in map:
+            logger.debug("closing channel %s:%s" % (fd, self))
+            del map[fd]
+        self._fileno = None
 
     def writable(self):
         if self.socket.type != SOCK_DGRAM and not self.connected:
@@ -325,6 +345,10 @@ class _fakesocket(asyncore.dispatcher):
         return nbytes
 
     def close(self):
+        logger.debug("Closing %s (%s)" % (self._fileno, self.fileno()))
+        if self._fileno is None:
+            return
+
         asyncore.dispatcher.close(self)
 
         self.connected = False

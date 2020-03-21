@@ -83,6 +83,7 @@ class Database(object):
     db_global_secondary_indexes = None
     db_billing_mode = None
     db_provisioned_throughput = None
+    handler = None
 
     def __init__(self, region="us-east-1", endpoint=None, use_ssl=True):
         self.endpoint = endpoint

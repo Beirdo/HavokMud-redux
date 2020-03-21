@@ -9,6 +9,7 @@
 # Feel free to email me with any questions, comments, or suggestions for
 # improvement.
 #
+import gc
 import logging
 import os
 import stackless
@@ -26,6 +27,11 @@ HavokMud.stacklesssocket.install()
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG,
                         format='%(asctime)s %(levelname)s %(message)s')
+    logging.getLogger("botocore").setLevel(logging.INFO)
+    logging.getLogger("boto3").setLevel(logging.INFO)
+    logging.getLogger("urllib3").setLevel(logging.INFO)
+
+    gc.set_debug(gc.DEBUG_STATS)
 
     try:
         env = os.environ.get("BUILD_MODE", "prod")
