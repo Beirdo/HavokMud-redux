@@ -1,0 +1,26 @@
+{
+  "mud": {
+    "hostname": "havokmud.havokmud",
+    "bindIp": "0.0.0.0",
+    "port": 3000,
+    "name": "HavokMud",
+    "wizlocked": false,
+    "wizlock_reason": null
+  },
+  "dynamodb": {
+    "endpoint": "http://localstack-main:4569",
+    "useSsl": false
+  },
+  "email": {
+    "from": "havokmud-admin@gmail.com",
+    "endpoint": "http://localstack-main:4579"
+  },
+  "loggingLevels": {
+    "botocore": "INFO",
+    "boto3": "INFO",
+    "urllib3": "INFO",
+    "HavokMud.stacklesssocket": "INFO",
+    "HavokMud.database_object": "INFO",
+    "HavokMud.database": "INFO"
+  }
+}

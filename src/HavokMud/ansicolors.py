@@ -5,7 +5,8 @@ from colors import color
 
 class AnsiColors(object):
     default = "0007"  # light grey on black
-    colorCodeRe = re.compile(r'(?P<preamble>.*?)\$C(?P<code>\d\d\d\S)(?P<text>.*?)(?=(?P<eol>[\r\n]+)|$|\$C\d\d\d\S)', re.I)
+    colorCodeRe = re.compile(r'(?P<preamble>.*?)\$C(?P<code>\d\d\d\S)(?P<text>.*?)(?=(?P<eol>[\r\n]+)|$|\$C\d\d\d\S)',
+                             re.I)
     styles = ["none", "bold", "faint", "italic", "underline", "blink", "negative"]
     colors = ['black', 'red', "green", "yellow", "blue", "magenta", "cyan", "white"]
     fg_map = {
@@ -47,13 +48,10 @@ class AnsiColors(object):
         pass
 
     def convert_string(self, input, ansi=True):
-        # print(input)
-        iter = self.colorCodeRe.finditer(input)
-        parts = [item.groupdict() for item in iter]
+        parts = [item.groupdict() for item in self.colorCodeRe.finditer(input)]
         if not parts:
             parts = [{"text": input, "code": self.default}]
 
-        # print(parts)
         count = 0
         parts_in = list(parts)
         for (index, part) in enumerate(parts_in):
@@ -62,8 +60,6 @@ class AnsiColors(object):
                 parts.insert(index + count, {"text": preamble, "code": self.default})
                 count += 1
 
-        # print(parts)
-
         output = ""
         color_params = {}
         old_color_params = {}
@@ -71,7 +67,6 @@ class AnsiColors(object):
         for part in parts:
             if ansi:
                 color_params = self.convert_code(part.get("code", self.default))
-                # print(color_params)
             text = part.get("text", "")
             eol = part.get("eol", "")
             if not eol:
@@ -82,7 +77,6 @@ class AnsiColors(object):
                 output += color(text, **color_params)
             output += eol
 
-        # print(output.encode("ascii"))
         return output
 
     def convert_code(self, code):

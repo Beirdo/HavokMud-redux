@@ -9,20 +9,23 @@ from HavokMud.connection import Connection
 from HavokMud.database import Databases
 from HavokMud.dnslookup import DNSLookup
 
-
 logger = logging.getLogger(__name__)
 
 
 class Server(object):
-    def __init__(self, host, port, isLocal=False):
-        self.host = host
-        self.port = port
+    # These defaults are normally overwritten in the config file
+    bindIp = "0.0.0.0"
+    port = 3000
+    wizlocked = False
+    wizlock_reason = None
+
+    def __init__(self, config):
+        self.config = config
+        self.__dict__.update(self.config.get("mud", {}))
 
         self.user_lock = Lock()
         self.user_index = weakref.WeakValueDictionary()
-        self.wizlocked = False
-        self.wizlock_reason = None
-        self.dbs = Databases(isLocal)
+        self.dbs = Databases(self.config)
         self.dns_lookup = DNSLookup()
 
         stackless.tasklet(self.run)()
@@ -30,11 +33,11 @@ class Server(object):
     def run(self):
         listen_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         listen_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        listen_socket.bind((self.host, self.port))
+        listen_socket.bind((self.bindIp, self.port))
         logger.info("Listening on %s" % listen_socket.fileno())
         listen_socket.listen(5)
 
-        logging.info("Accepting connections on %s %s", self.host, self.port)
+        logger.info("Accepting connections on %s %s", self.bindIp, self.port)
         try:
             while True:
                 try:

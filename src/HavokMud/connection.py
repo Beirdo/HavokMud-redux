@@ -31,7 +31,7 @@ class Connection(object):
         self.user = User(self)
         self.user_id = id(self.user)
 
-        logging.info("Connected %d from %s:%s" % (self.user_id, self.client_address[0], self.client_address[1]))
+        logger.info("Connection from %s:%s" % (self.client_address[0], self.client_address[1]))
 
         self.set_handler(LoginHandler(self.server, self))
 
@@ -94,7 +94,6 @@ class Connection(object):
                 return None
 
             # Deal with any embedded telnet commands before decoding UTF-8
-            # print(v)
             v = self.handle_telnet_commands(v)
 
             if not v:
@@ -144,7 +143,7 @@ class Connection(object):
                     length += 1
                 end = index + length
                 # At this time, I don't want to do anything with these commands, just strip them out.
-                # print("Telnet command: %s %s" % (command, option))
+                # logger.debug("Telnet command: %s %s" % (command, option))
 
             input = input[:index] + input[end:]
 

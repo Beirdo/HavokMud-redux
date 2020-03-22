@@ -4,16 +4,13 @@ from .user_db import UserDB
 
 
 class Databases(object):
-    isLocal = False
-    endpoint = None
-    use_ssl = True
-
-    def __init__(self, isLocal=False):
+    def __init__(self, config):
         self.handler = DatabaseHandler.get_handler()
-        self.isLocal = isLocal
-        if self.isLocal:
-            self.endpoint = "http://localstack-main:4569"
-            self.use_ssl = False
+        self.config = config
+
+        dynamo_config = config.get("dynamodb", {})
+        self.endpoint = dynamo_config.get("endpoint", None)
+        self.use_ssl = dynamo_config.get("useSsl", True)
 
         self.account_db = AccountDB(endpoint=self.endpoint, use_ssl=self.use_ssl)
         self.user_db = UserDB(endpoint=self.endpoint, use_ssl=self.use_ssl)

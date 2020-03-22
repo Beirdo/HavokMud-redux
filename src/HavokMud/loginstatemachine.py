@@ -453,10 +453,12 @@ class LoginStateMachine(StateMachine):
         self.do_disconnect()
 
     def on_enter_show_account_menu(self):
-        self.append_output({"template": "account_menu.jinja", "params": {"account": self.model.account}})
+        self.append_output(
+            {"template": "account_menu.jinja", "params": {"server": self.model.server, "account": self.model.account}})
 
     def on_enter_show_player_list(self):
-        self.append_output({"template": "account_player_list.jinja", "params": {"account": self.model.account}})
+        self.append_output({"template": "account_player_list.jinja",
+                            "params": {"server": self.model.server, "account": self.model.account}})
 
     def on_enter_get_new_password(self):
         self.append_output("Please enter new password: ")
@@ -478,7 +480,8 @@ class LoginStateMachine(StateMachine):
 
     def on_enter_show_creation_menu(self):
         self.model.account.player = Player(self.model.server, self.model.connection, self.model.account)
-        self.append_output({"template": "creation_menu.jinja", "params": {"player": self.model.account.player}})
+        self.append_output({"template": "creation_menu.jinja",
+                            "params": {"server": self.model.server, "player": self.model.account.player}})
 
     def on_enter_choose_name(self):
         self.append_output("Choose the name of your new PC: ")

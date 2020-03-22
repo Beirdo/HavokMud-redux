@@ -64,7 +64,6 @@ class CommandHandler(BaseHandler):
             return
 
         result = self.defangle_verb(verb)
-        # print(result)
         if not result:
             self.append_line("Unknown command.  Type 'help' to see a list of available commands.")
             return
@@ -94,7 +93,6 @@ class CommandHandler(BaseHandler):
                 func = None
             else:
                 func = getattr(instance, funcname)
-                # print(handler, func)
                 if not hasattr(func, "__call__"):
                     func = None
 
@@ -179,4 +177,3 @@ class CommandHandler(BaseHandler):
             token = tokens[1].lower()
             echo = (token == "on")
         self.set_echo(echo)
-

@@ -1,6 +1,6 @@
 import stackless
 
-from jinja2 import Environment, PackageLoader, select_autoescape
+from jinja2 import Environment, PackageLoader
 
 
 class JinjaProcessor(object):
@@ -34,5 +34,6 @@ class JinjaProcessor(object):
             else:
                 out_data = ""
             out_channel.send(out_data)
+
 
 jinja_processor = JinjaProcessor()

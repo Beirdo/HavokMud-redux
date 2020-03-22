@@ -5,6 +5,7 @@ import traceback
 
 from HavokMud.account import Account
 
+logger = logging.getLogger(__name__)
 
 class RemoteDisconnectionError(RuntimeError):
     pass
@@ -59,8 +60,7 @@ class User(object):
         handler.handle_input(tokens)
 
     def on_remote_disconnection(self):
-        logging.info("Disconnected %d (remote)", id(self))
+        logger.info("Disconnected %d (remote)", id(self))
 
     def on_user_disconnection(self):
-        logging.info("Disconnected %d (local)", id(self))
-
+        logger.info("Disconnected %d (local)", id(self))

@@ -10,33 +10,44 @@
 # improvement.
 #
 import gc
+import json
 import logging
 import os
 import stackless
+import sys
 
 import HavokMud.stacklesssocket
-# sys.modules["socket"] = stacklesssocket
 from HavokMud.server import Server
 
-# Monkeypatch in the 'stacklesssocket' module, so we get blocking sockets
-# which are Stackless compatible.  This example code will avoid any use of
-# the Stackless sockets except through normal socket usage.
+logger = logging.getLogger(__name__)
 
+# Monkeypatch in the 'stacklesssocket' module, so we get blocking sockets
+# which are Stackless compatible.
 HavokMud.stacklesssocket.install()
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG,
-                        format='%(asctime)s %(levelname)s %(message)s')
-    logging.getLogger("botocore").setLevel(logging.INFO)
-    logging.getLogger("boto3").setLevel(logging.INFO)
-    logging.getLogger("urllib3").setLevel(logging.INFO)
+    format = '%(asctime)s %(levelname)s [PID %(process)d] (%(name)s:%(lineno)d) %(message)s'
+    logging.basicConfig(level=logging.DEBUG, format=format)
 
-    gc.set_debug(gc.DEBUG_STATS)
+    configDir = os.path.expanduser("~/.havokmud")
+    configFile = os.path.join(configDir, "config.json")
+    try:
+        with open(configFile) as f:
+            config = json.load(f)
+    except Exception:
+        logger.critical("Could not load configuration file %s" % configFile)
+        logger.exception("Exception stack:")
+        sys.exit(1)
+
+    loggingConfig = config.get("loggingLevels", {})
+    for (module, levelname) in loggingConfig.items():
+        logging.getLogger(module).setLevel(getattr(logging, levelname, "DEBUG"))
+
+    if config.get("mud", {}).get("debug_gc", False):
+        gc.set_debug(gc.DEBUG_STATS)
 
     try:
-        env = os.environ.get("BUILD_MODE", "prod")
-        testing = (env.lower() == "testing")
-        Server("0.0.0.0", 3000, testing)  # use localstack for AWS resources in testing
+        Server(config)
         while True:
             stackless.run()
     except KeyboardInterrupt:

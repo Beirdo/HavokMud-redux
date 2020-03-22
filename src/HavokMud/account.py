@@ -1,7 +1,6 @@
 import uuid
 from threading import Lock
 
-from HavokMud.database import account_db
 from HavokMud.database_object import DatabaseObject
 
 
@@ -20,7 +19,7 @@ class Account(DatabaseObject):
 
         self.email = email
         self.password = None  # SHA512 digest
-        self.new_password = None    # SHA512 digest
+        self.new_password = None  # SHA512 digest
         self.ip_address = None
         self.hostname = None
         self.ansi_mode = False

@@ -1,4 +1,3 @@
-from HavokMud.database import user_db
 from HavokMud.database_object import DatabaseObject
 
 

@@ -37,27 +37,23 @@ class DatabaseHandler(object):
     def handler_loop(self):
         while True:
             item = self.in_channel.receive()
-            logger.info("Item: %s" % item.__dict__)
-            response_channel = item.response_channel
-            table_name = item.table_name
-            if not table_name:
-                response_channel.send(None)
-                continue
+            stackless.tasklet(self.database_tasklet)(item)
 
+    def database_tasklet(self, item):
+        logger.debug("Item: %s" % item.__dict__)
+        response_channel = item.response_channel
+        table_name = item.table_name
+        response = None
+        if table_name:
             db = self.table_map.get(table_name, None)
-            if not db:
-                response_channel.send(None)
-                continue
+            if db:
+                func = getattr(db, item.command, None)
+                if func and hasattr(func, "__call__"):
+                    logger.debug("Func: %s, args: %s, kwargs: %s" % (func, item.args, item.kwargs))
+                    response = func(*item.args, **item.kwargs)
 
-            func = getattr(db, item.command, None)
-            if not func or not hasattr(func, "__call__"):
-                response_channel.send(None)
-                continue
-
-            logger.info("Func: %s, args: %s, kwargs: %s" % (func, item.args, item.kwargs))
-            response = func(*item.args, **item.kwargs)
-            logger.info("Response: %s" % response)
-            response_channel.send(response)
+        logger.debug("Response: %s" % response)
+        response_channel.send(response)
 
     def send_request(self, table_name, command, *args, **kwargs):
         request = DatabaseRequest(table_name, command, *args, **kwargs)

@@ -26,14 +26,10 @@
 # - Launching each bit of incoming data in its own tasklet on the recvChannel
 #   send is a little over the top.  It should be possible to add it to the
 #   rest of the queued data
-import array
 import asyncore
 import logging
 import socket as stdsocket  # We need the "socket" name for the function we export.
 import stackless
-import sys
-import traceback
-import weakref
 
 logger = logging.getLogger(__name__)
 
@@ -150,7 +146,6 @@ class _new_socket(object):
         # Close dispatcher if it isn't already closed
         if self.dispatcher._fileno is not None:
             try:
-                traceback.print_stack(file=sys.stdout)
                 self.dispatcher.close()
             finally:
                 self.dispatcher = None
@@ -294,7 +289,7 @@ class _fakesocket(asyncore.dispatcher):
         return data[:byte_count], address
 
     def recv_into(self, buffer, nbytes=0, flags=0):
-        logger.debug("recv_into: butlen: %s, nbytes: %s"  % (len(buffer), nbytes))
+        logger.debug("recv_into: buflen: %s, nbytes: %s" % (len(buffer), nbytes))
         if len(buffer):
             nbytes = min(len(buffer), nbytes)
 

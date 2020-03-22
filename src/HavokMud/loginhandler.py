@@ -19,12 +19,11 @@ class LoginHandler(BaseHandler):
             self.fsm.go_to_get_email()
 
     def handle_input(self, tokens):
-    # print(tokens)
         self.tokens = tokens
         try:
-            print("before", self.state)
+            logger.debug("before state: %s", self.state)
             self.fsm.process_input()
-            print("after", self.state)
+            logger.debug("after state: %s", self.state)
         except Exception as e:
             bug_uuid = str(uuid.uuid4())
             self.append_line("Something has gone wrong server-side.  If you wish to refer to this in a support request")

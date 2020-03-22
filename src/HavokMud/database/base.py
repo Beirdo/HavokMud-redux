@@ -10,10 +10,10 @@ def _dict_to_dynamodb(func):
     def wrapper(*args, **kwargs):
         args = list(args)
         data = args.pop(1)
-        logger.info("raw: %s" % data)
+        logger.debug("raw: %s" % data)
         dynamo_data = {key: _convert_to_dynamodb(value) for (key, value) in data.items()}
         args.insert(1, dynamo_data)
-        logger.info("converted: %s" % dynamo_data)
+        logger.debug("converted: %s" % dynamo_data)
         return func(*args, **kwargs)
 
     return wrapper
@@ -40,9 +40,9 @@ def _convert_to_dynamodb(item):
 def _dynamodb_to_dict(func):
     def wrapper(*args, **kwargs):
         dynamo_data = func(*args, **kwargs)
-        logger.info("Raw: %s" % dynamo_data)
+        logger.debug("Raw: %s" % dynamo_data)
         data = {key: _convert_from_dynamodb(value) for (key, value) in dynamo_data.items()}
-        logger.info("Converted: %s" % data)
+        logger.debug("Converted: %s" % data)
         return data
 
     return wrapper
