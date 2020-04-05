@@ -10,9 +10,9 @@ if [ "${BUILD_MODE}" = "testing" ] ; then
     #conda activate HavokMud-redux
     container=`docker ps --format '{{.Names}}' | grep localstack-main`
     if [ "${container}" != "localstack-main" ]; then
-        screen -S havokmud -X screen -t localstack
+        screen -S havokmud -X screen -e^fF -t localstack
         screen -S havokmud -p localstack -X exec localstack start
-        sleep 5
+        sleep 10
         docker rename localstack_main localstack-main
         docker network connect havokmud localstack-main
     fi

@@ -16,6 +16,10 @@
     "host": "172.18.0.1",
     "port": 6379
   },
+  "encryption": {
+    "endpoint": "http://localstack-main:4584",
+    "useSsl": false
+  },
   "email": {
     "mocked": true,
     "domain": "havokmud.testing.net",
