@@ -4,10 +4,13 @@ import stackless
 import traceback
 import weakref
 from threading import Lock
+from redis import Redis
 
+from HavokMud.account import Account
 from HavokMud.connection import Connection
 from HavokMud.database import Databases
 from HavokMud.dnslookup import DNSLookup
+from HavokMud.send_email import EmailHandler
 
 logger = logging.getLogger(__name__)
 
@@ -27,6 +30,19 @@ class Server(object):
         self.user_index = weakref.WeakValueDictionary()
         self.dbs = Databases(self.config)
         self.dns_lookup = DNSLookup()
+        self.email_handler = EmailHandler(config)
+
+        redis_config = self.config.get("redis", {})
+        self.redis = Redis(**redis_config)
+
+        self.domain = self.config.get("email", {}).get("domain", None)
+
+        # Prime up the redis cache
+        self.redis.delete("userdb/*")
+        self.redis.delete("passdb/*")
+        accounts = Account.get_all_accounts(self)
+        for account in accounts:
+            account.save_to_redis()
 
         stackless.tasklet(self.run)()
 

@@ -1,0 +1,479 @@
+{
+  "acolyte": {
+    "deity": {
+      "choice": "deity"
+    },
+    "languages": [
+      {
+        "choice": {
+          "count": 2,
+          "choices": "languages"
+        }
+      }
+    ],
+    "equipment": [
+      "holy symbpl",
+      {
+        "choice": [
+          "prayer book",
+          "prayer wheel"
+        ]
+      },
+      {
+        "incense sticks": 5
+      },
+      "vestments",
+      "set of common clothes",
+      {
+        "belt pouch": [
+          "15gp"
+        ]
+      }
+    ],
+    "features": {
+      "1": "shelter of the faithful"
+    }
+  },
+  "charlatan": {
+    "skill proficiencies": [
+      "deception",
+      "sleight of hand"
+    ],
+    "tool proficiencies": [
+      "disguise kit",
+      "forgery kit"
+    ],
+    "equipment": [
+      "fine set of clothes",
+      "disguise kit",
+      {
+        "choice": [
+          {
+            "stoppered bottles filled with colored liquid": 10
+          },
+          "set of weighted dice",
+          "deck of marked cards",
+          "signet ring of an imaginary duke",
+          {
+            "belt pouch": [
+              "15gp"
+            ]
+          }
+        ]
+      }
+    ],
+    "features": {
+      "1": "false identity"
+    },
+    "favorite scheme": {
+      "1": "I cheat at games of chance",
+      "2": "I shave coins or forge documents",
+      "3": "I insinuate myself into people's lives to prey on their weakness and secure their fortunes",
+      "4": "I put on new identities like clothes",
+      "5": "I run sleight of hand cons on street corners",
+      "6": "I convince people that worthless junk is work their hard-earned money"
+    }
+  },
+  "criminal": {
+    "skill proficiencies": [
+      "deception",
+      "stealth"
+    ],
+    "tool proficiencies": [
+      {
+        "choice": "gaming set"
+      },
+      "thieves' tools"
+    ],
+    "equipment": [
+      "crowbar",
+      "set of dark common clothes including a hood",
+      {
+        "belt pouch": "15gp"
+      }
+    ],
+    "criminal specialty": {
+      "1": "blackmailer",
+      "2": "burglar",
+      "3": "enforcer",
+      "4": "fence",
+      "5": "highway robber",
+      "6": "hired killer",
+      "7": "pickpocket",
+      "8": "smuggler"
+    },
+    "features": {
+      "1": "criminal contact"
+    },
+    "variant": [
+      "spy"
+    ]
+  },
+  "entertainer": {
+    "skill proficiencies": [
+      "acrobatics",
+      "performance"
+    ],
+    "tool proficiencies": [
+      "disguise kit",
+      {
+        "choice": "musical instrument"
+      }
+    ],
+    "equipment": [
+      {
+        "choice": "musical instrument"
+      },
+      {
+        "choice": [
+          "love letter",
+          "lock of hair",
+          "trinket"
+        ]
+      },
+      "costume",
+      {
+        "belt pouch": [
+          "15gp"
+        ]
+      }
+    ],
+    "entertainer routines": {
+      "1": "actor",
+      "2": "dancer",
+      "3": "fire-eater",
+      "4": "jester",
+      "5": "juggler",
+      "6": "instrumentalist",
+      "7": "poet",
+      "8": "singer",
+      "9": "storyteller",
+      "10": "tumbler"
+    },
+    "features": {
+      "1": "by popular demand"
+    },
+    "variant": [
+      "gladiator"
+    ]
+  },
+  "folk hero": {
+    "skill proficiencies": [
+      "animal handling",
+      "survival"
+    ],
+    "tool proficiencies": [
+      {
+        "choice": "artisan's tools"
+      },
+      "vehicles (land)"
+    ],
+    "equipment": [
+      {
+        "choice": "artisan's tools"
+      },
+      "shovel",
+      "iron pot",
+      "set of common clothes",
+      {
+        "belt pouch": "10gp"
+      }
+    ],
+    "defining event": {
+      "1": "I stood up to a tyrant's agent",
+      "2": "I saved people during a natural disaster",
+      "3": "I stood alone against a terrible monster",
+      "4": "I stole from a corrupt merchant to help the poor",
+      "5": "I led a militia to fight off an invading army",
+      "6": "I broke into a tyrant's castle and stole weapons to arm the people",
+      "7": "I trained the peasantry to use farm implements as weapons against a tyrant's soldiers",
+      "8": "A lord rescinded an unpopular decree after I led a symbolic act of protest against it",
+      "9": "A celestial, fey, or similar creature gave me a blessing or revealed my secret origin",
+      "10": "Recruited into a lord's army, I rose to leadership and was commended for my heroism"
+    },
+    "features": {
+      "1": "rustic hospitality"
+    }
+  },
+  "guild artisan": {
+    "skill proficiencies": [
+      "insight",
+      "persuasion"
+    ],
+    "tool proficiencies": [
+      {
+        "choice": "artisan's tools"
+      }
+    ],
+    "languages": [
+      {
+        "choice": "languages"
+      }
+    ],
+    "equipment": [
+      {
+        "choice": "artisan's tools"
+      },
+      "letter of introduction from your guild",
+      "set of traveler's clothes",
+      {
+        "belt pouch": [
+          "15gp"
+        ]
+      }
+    ],
+    "guild business": {
+      "1": "alchemists and apothecaries",
+      "2": "armorers, locksmiths, and finesmiths",
+      "3": "brewers, distillers, and vintners",
+      "4": "calligraphers, scribes, and scriveners",
+      "5": "carpenters, roofers, and plasterers",
+      "6": "cartographers, surveyors, and chart-makers",
+      "7": "cobblers and shoemakers",
+      "8": "cooks and bakers",
+      "9": "glassblowers and glaziers",
+      "10": "jewelers and gemcutters",
+      "11": "leatherworkers, skinners, and tanners",
+      "12": "masons and stonecutters",
+      "13": "painters, limners, and sign-makers",
+      "14": "potters and tile-makers",
+      "15": "shipwrights and sailmakers",
+      "16": "smiths and metal-forgers",
+      "17": "tinkers, pewterers, and casters",
+      "18": "wagon-makers and wheelwrights",
+      "19": "weavers and dyers",
+      "20": "woodcarvers, coopers, and bowyers"
+    },
+    "features": {
+      "1": "guild membership"
+    },
+    "variant": "guild merchant"
+  },
+  "hermit": {
+    "skill proficiencies": [
+      "medicine",
+      "religion"
+    ],
+    "tool proficiencies": [
+      "herbalism kit"
+    ],
+    "languages": [
+      {
+        "choice": "languages"
+      }
+    ],
+    "equipment": [
+      "scroll case stuffed full of notes from your studies or prayers",
+      "winter blanket",
+      "set of common clothes",
+      "herbalism kit",
+      {
+        "belt pouch": "5gp"
+      }
+    ],
+    "features": {
+      "1": "discovery"
+    }
+  },
+  "noble": {
+    "skill proficiencies": [
+      "history"
+      :
+      "persuasion"
+    ],
+    "tool proficiencies": [
+      {
+        "choice": "gaming set"
+      }
+    ],
+    "languages": [
+      {
+        "choice": "languages"
+      }
+    ],
+    "equipment": [
+      "set of fine clothes",
+      "signet ring",
+      "scroll of pedigree",
+      {
+        "purse": [
+          "25gp"
+        ]
+      }
+    ],
+    "features": {
+      "1": "position of privilege"
+    },
+    "variant": [
+      "knight"
+    ]
+  },
+  "outlander": {
+    "skill proficiencies": [
+      "athletics",
+      "survival"
+    ],
+    "tool proficiencies": [
+      {
+        "choice": "musical instrument"
+      }
+    ],
+    "languages": [
+      {
+        "choice": "languages"
+      }
+    ],
+    "origin": {
+      "1": "forester",
+      "2": "trapper",
+      "3": "homesteader",
+      "4": "guide",
+      "5": "exile or outcast",
+      "6": "bounty hunter",
+      "7": "pilgrim",
+      "8": "tribal nomad",
+      "9": "hunter-gatherer",
+      "10": "tribal marauder"
+    },
+    "features": [
+      "wanderer"
+    ]
+  },
+  "sage": {
+    "skill proficiencies": [
+      "arcana",
+      "history"
+    ],
+    "languages": [
+      {
+        "choice": "languages"
+      }
+    ],
+    "equipment": [
+      "bottle of black ink",
+      "quill",
+      "small knife",
+      "letter from a dead colleague posing a question you have not yet been able to answer",
+      "set of common clothes",
+      {
+        "belt pouch": [
+          "10gp"
+        ]
+      }
+    ],
+    "Specialty": {
+      "1": "alchemist",
+      "2": "astronomer",
+      "3": "discredited academic",
+      "4": "librarian",
+      "5": "professor",
+      "6": "researcher",
+      "7": "wizard's apprentice",
+      "8": "scribe"
+    },
+    "features": [
+      "researcher"
+    ]
+  },
+  "sailor": {
+    "skill proficiencies": [
+      "athletics",
+      "perception"
+    ],
+    "tool proficiencies": [
+      "navigator's tools",
+      "vehicles (water)"
+    ],
+    "equipment": [
+      "belaying pin (club)",
+      {
+        "silk rope": 50
+      },
+      {
+        "choice": "trinket"
+      },
+      "set of common clothes",
+      {
+        "belt pouch": [
+          "10gp"
+        ]
+      }
+    ],
+    "features": {
+      "1": "ship's passage"
+    },
+    "variant": [
+      "pirate"
+    ]
+  },
+  "soldier": {
+    "skill proficiencies": [
+      "athletics",
+      "intimidation"
+    ],
+    "tool proficiencies": [
+      {
+        "choice": "gaming set"
+      },
+      "vehicles (land)"
+    ],
+    "equipment": [
+      "insignia of rank",
+      {
+        "choice": [
+          "dagger",
+          "broken blade",
+          "piece of a banner"
+        ]
+      },
+      {
+        "choice": [
+          "set of bone dice",
+          "deck of cards"
+        ]
+      },
+      "set of common clothes",
+      {
+        "belt pouch": "10gp"
+      }
+    ],
+    "specialty": {
+      "1": "officer",
+      "2": "scout",
+      "3": "infantry",
+      "4": "cavalry",
+      "5": "healer",
+      "6": "quartermaster",
+      "7": "standard bearer",
+      "8": "support staff"
+    },
+    "features": {
+      "1": "military rank"
+    }
+  },
+  "urchin": {
+    "skill proficiencies": [
+      "sleight of hand",
+      "stealth"
+    ],
+    "tool proficiencies": [
+      "disguise kit",
+      "thieves' tools"
+    ],
+    "equipment": [
+      "small knife",
+      "map of the city you grew up in",
+      "pet mouse",
+      "token to remember your parents by",
+      "set of common clothes",
+      {
+        "belt pouch": [
+          "10gp"
+        ]
+      }
+    ],
+    "features": {
+      "1": "city secrets"
+    }
+  }
+}

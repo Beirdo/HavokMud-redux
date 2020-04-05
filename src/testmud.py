@@ -51,5 +51,5 @@ if __name__ == "__main__":
         while True:
             stackless.run()
     except KeyboardInterrupt:
-        logging.info("Server manually stopped")
+        logger.info("Server manually stopped")
         # traceback.print_exc()

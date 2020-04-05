@@ -1,0 +1,5850 @@
+{
+  "barbarian": {
+    "starting gold": {
+      "base": "10gp",
+      "multiplier": "2d4"
+    },
+    "hit die": {
+      "per-level": "1d12"
+    },
+    "hit points": {
+      "initial": [
+        12,
+        "constitution modifier"
+      ],
+      "per-level": [
+        "1d12",
+        "constitution modifier"
+      ]
+    },
+    "primary ability": "strength",
+    "saving throw proficiencies": [
+      "strength",
+      "constitution"
+    ],
+    "armor proficiencies": [
+      "light armor",
+      "medium armor",
+      "shields"
+    ],
+    "weapon proficiencies": [
+      "simple weapons",
+      "martial weapons"
+    ],
+    "proficiency bonus": {
+      "1": 2,
+      "5": 3,
+      "9": 4,
+      "13": 5,
+      "17": 6
+    },
+    "rage damage": {
+      "1": 2,
+      "9": 3,
+      "16": 4
+    },
+    "rage count": {
+      "1": 2,
+      "3": 3,
+      "6": 4,
+      "12": 5,
+      "17": 6,
+      "20": "unlimited"
+    },
+    "features": {
+      "1": [
+        "rage",
+        "unarmored defense"
+      ],
+      "2": [
+        "reckless attack",
+        "danger sense"
+      ],
+      "3": [
+        {
+          "choice": {
+            "path": [
+              "berzerker",
+              "totem warrior"
+            ]
+          }
+        },
+        {
+          "path": {
+            "berzerker": "frenzy",
+            "totem warrior": [
+              "spirit seeker",
+              {
+                "choice": {
+                  "totem spirit": [
+                    "bear",
+                    "eagle",
+                    "wolf"
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "4": [
+        "ability score improvement"
+      ],
+      "5": [
+        "extra attack",
+        "fast movement"
+      ],
+      "6": [
+        {
+          "path": {
+            "berzerker": "mindless rage",
+            "totem warrior": {
+              "choice": {
+                "aspect of the beast": [
+                  "bear",
+                  "eagle",
+                  "wolf"
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "7": [
+        "feral instinct"
+      ],
+      "8": [
+        "ability score improvement"
+      ],
+      "9": [
+        {
+          "brutal critical": 1
+        }
+      ],
+      "10": [
+        {
+          "path": {
+            "berzerker": "intimidating presence",
+            "totem warrior": "spirit walker"
+          }
+        }
+      ],
+      "11": [
+        "relentless rage"
+      ],
+      "12": [
+        "ability score improvement"
+      ],
+      "13": [
+        {
+          "brutal critical": 2
+        }
+      ],
+      "14": [
+        {
+          "path": {
+            "berzerker": "retaliation",
+            "totem warrior": {
+              "choice": {
+                "totemic attunement": [
+                  "bear",
+                  "eagle",
+                  "wolf"
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "15": [
+        "persistent rage"
+      ],
+      "16": [
+        "ability score improvement"
+      ],
+      "17": [
+        {
+          "brutal critical": 3
+        }
+      ],
+      "18": [
+        "indomitable might"
+      ],
+      "19": [
+        "ability score improvement"
+      ],
+      "20": [
+        "primal champion"
+      ]
+    },
+    "skills proficiency": {
+      "choice": {
+        "count": 2,
+        "choices": [
+          "animal handling",
+          "athletics",
+          "intimidation",
+          "nature",
+          "perception",
+          "survival"
+        ]
+      }
+    },
+    "equipment": [
+      {
+        "choice": [
+          "greataxe",
+          "martial melee weapon"
+        ]
+      },
+      {
+        "choice": [
+          {
+            "handaxe": 2
+          },
+          "simple weapon"
+        ]
+      },
+      "explorer's pack",
+      {
+        "javelin": 4
+      }
+    ]
+  },
+  "bard": {
+    "starting gold": {
+      "base": "10gp",
+      "multiplier": "5d4"
+    },
+    "hit die": {
+      "per-level": "1d8"
+    },
+    "hit points": {
+      "initial": [
+        8,
+        "constitution modifier"
+      ],
+      "per-level": [
+        "1d8",
+        "constitution modifier"
+      ]
+    },
+    "primary ability": "charisma",
+    "saving throw proficiencies": [
+      "dexterity",
+      "charisma"
+    ],
+    "armor proficiencies": [
+      "light armor"
+    ],
+    "weapon proficiencies": [
+      "simple weapons",
+      "hand crossbow",
+      "longsword",
+      "rapier",
+      "shortsword"
+    ],
+    "tool proficiencies": [
+      {
+        "choice": {
+          "count": 3,
+          "choices": "musical instruments"
+        }
+      }
+    ],
+    "equipment": [
+      {
+        "choice": [
+          "rapier",
+          "longsword",
+          {
+            "choice": "simple weapon"
+          }
+        ]
+      },
+      {
+        "choice": [
+          "diplomat's pack",
+          "entertainer's pack"
+        ]
+      },
+      {
+        "choice": [
+          "lute",
+          {
+            "choice": "musical instrument"
+          }
+        ]
+      },
+      "leather armor",
+      "dagger"
+    ],
+    "proficiency bonus": {
+      "1": 2,
+      "5": 3,
+      "9": 4,
+      "13": 5,
+      "17": 6
+    },
+    "cantrips known": {
+      "1": 2,
+      "4": 3,
+      "10": 4
+    },
+    "spells known": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      14,
+      15,
+      15,
+      16,
+      18,
+      19,
+      19,
+      20,
+      22,
+      22,
+      22
+    ],
+    "spell slots": [
+      [
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        1,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        1,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        3,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        1
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        3,
+        2,
+        2,
+        1,
+        1
+      ]
+    ],
+    "features": {
+      "1": [
+        "spellcasting",
+        {
+          "bardic inspiration": "d6"
+        }
+      ],
+      "2": [
+        "jack of all trades",
+        {
+          "song of rest": "d6"
+        }
+      ],
+      "3": [
+        {
+          "choice": {
+            "bard college": [
+              "college of lore",
+              "college of valor"
+            ]
+          }
+        },
+        {
+          "choice": {
+            "expertise": {
+              "skill proficiency": 2
+            }
+          }
+        },
+        {
+          "college": {
+            "college of lore": [
+              {
+                "choice": {
+                  "skill proficiency": 3
+                }
+              },
+              "cutting words"
+            ],
+            "college of valor": [
+              {
+                "armor proficiency": [
+                  "medium armor",
+                  "shields"
+                ],
+                "weapon proficiency": [
+                  "martial weapons"
+                ]
+              },
+              "combat inspiration"
+            ]
+          }
+        }
+      ],
+      "4": [
+        "ability score improvement"
+      ],
+      "5": [
+        {
+          "bardic inspiration": "d8"
+        },
+        "font of inspiration"
+      ],
+      "6": [
+        "countercharm",
+        {
+          "college": {
+            "college of lore": [
+              {
+                "choice": {
+                  "magical secrets": {
+                    "spells": 2
+                  }
+                }
+              }
+            ]
+          },
+          "college of valor": [
+            "extra attack"
+          ]
+        }
+      ],
+      "8": [
+        "ability score improvement"
+      ],
+      "9": [
+        {
+          "song of rest": "d8"
+        }
+      ],
+      "10": [
+        {
+          "bardic inspiration": "d10"
+        },
+        {
+          "choice": {
+            "expertise": {
+              "skill proficiency": 2
+            }
+          }
+        },
+        {
+          "choice": {
+            "magical secrets": {
+              "spells": 2
+            }
+          }
+        }
+      ],
+      "12": [
+        "ability score improvement"
+      ],
+      "13": [
+        {
+          "song of rest": "d10"
+        }
+      ],
+      "14": [
+        {
+          "choice": {
+            "magical secrets": {
+              "spells": 2
+            }
+          }
+        },
+        {
+          "college": {
+            "college of lore": [
+              "peerless skill"
+            ],
+            "college of valor": [
+              "battle magic"
+            ]
+          }
+        }
+      ],
+      "15": [
+        {
+          "bardic inspiration": "d12"
+        }
+      ],
+      "16": [
+        "ability score improvement"
+      ],
+      "17": [
+        {
+          "song of rest": "d12"
+        }
+      ],
+      "18": [
+        {
+          "choice": {
+            "magical secrets": {
+              "spells": 2
+            }
+          }
+        }
+      ],
+      "19": [
+        "ability score improvement"
+      ],
+      "20": [
+        "superior inspiration"
+      ]
+    },
+    "spell save": [
+      8,
+      "proficiency bonus",
+      "charisma modifier"
+    ],
+    "spell attack modifier": [
+      "proficiency bonus",
+      "charisma modifier"
+    ]
+  },
+  "cleric": {
+    "starting gold": {
+      "base": "10gp",
+      "multiplier": "5d4"
+    },
+    "hit die": {
+      "per-level": "1d8"
+    },
+    "hit points": {
+      "initial": [
+        8,
+        "constitution modifier"
+      ],
+      "per-level": [
+        "1d8",
+        "constitutional modifier"
+      ]
+    },
+    "primary ability": "wisdom",
+    "saving throw proficiencies": [
+      "wisdom",
+      "charisma"
+    ],
+    "armor proficiencies": [
+      "light armor",
+      "medium armor",
+      "shields"
+    ],
+    "weapon proficiencies": [
+      "simple weapons"
+    ],
+    "skill proficiencies": [
+      {
+        "choice": {
+          "count": 2,
+          "choices": [
+            "history",
+            "medicine",
+            "insight",
+            "persuasion",
+            "religion"
+          ]
+        }
+      }
+    ],
+    "equipment": [
+      {
+        "choice": [
+          "mace",
+          "warhammer"
+        ]
+      },
+      {
+        "choice": [
+          "scale mail",
+          "leather armor",
+          "chain mail"
+        ]
+      },
+      {
+        "choice": [
+          [
+            "light crossbow",
+            {
+              "crossbow bolt": 20
+            }
+          ],
+          "simple weapon"
+        ]
+      },
+      {
+        "choice": [
+          "priest's pack",
+          "explorer's pack"
+        ]
+      },
+      "shield",
+      "holy symbol"
+    ],
+    "proficiency bonus": {
+      "1": 2,
+      "5": 3,
+      "9": 4,
+      "13": 5,
+      "17": 6
+    },
+    "cantrips known": {
+      "1": 3,
+      "4": 4,
+      "10": 5
+    },
+    "spell slots": [
+      [
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        1,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        1,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        3,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        1
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        3,
+        2,
+        2,
+        1,
+        1
+      ]
+    ],
+    "features": {
+      "1": [
+        "spellcasting",
+        {
+          "choice": {
+            "divine domain": [
+              "knowledge",
+              "life",
+              "light",
+              "nature",
+              "tempest",
+              "trickery",
+              "war"
+            ]
+          }
+        },
+        {
+          "divine domain": {
+            "knowledge": [
+              "command",
+              "identify",
+              {
+                "choice": {
+                  "count": 2,
+                  "choices": "languages"
+                }
+              },
+              {
+                "choice": {
+                  "count": 2,
+                  "skill proficiencies": [
+                    "arcana",
+                    "history",
+                    "nature",
+                    "religion"
+                  ],
+                  "effect": "double"
+                }
+              }
+            ],
+            "life": [
+              "bless",
+              "cure wounds",
+              {
+                "armor proficiencies": [
+                  "heavy armor"
+                ]
+              },
+              "disciple of life"
+            ],
+            "light": [
+              "burning hands",
+              "faerie fire",
+              {
+                "cantrip": "light"
+              },
+              "warding flare"
+            ],
+            "nature": [
+              "animal friendship",
+              "speak with animals",
+              {
+                "choice": "cantrip (druid)"
+              },
+              {
+                "choice": [
+                  "animal handling",
+                  "nature",
+                  "survival"
+                ]
+              },
+              {
+                "armor proficiencies": "heavy armor"
+              }
+            ],
+            "tempest": [
+              "fog cloud",
+              "thunderwave",
+              {
+                "weapon proficiencies": "martial weapons"
+              },
+              {
+                "armor proficiencies": "heavy armor"
+              },
+              "wrath of the storm"
+            ],
+            "trickery": [
+              "charm person",
+              "disguise self",
+              "blessing of the trickster"
+            ],
+            "war": [
+              "divine favor",
+              "shield of faith",
+              {
+                "weapon proficiencies": "martial weapons"
+              },
+              {
+                "armor proficiencies": "heavy armor"
+              },
+              "war priest"
+            ]
+          }
+        }
+      ],
+      "2": [
+        {
+          "channel divinity": 1
+        },
+        {
+          "divine domain": {
+            "knowledge": [
+              "knowledge of the ages"
+            ],
+            "life": [
+              "preserve life"
+            ],
+            "light": [
+              "radiance of the dawn"
+            ],
+            "nature": [
+              "charm animals and plants"
+            ],
+            "tempest": [
+              "destructive wrath"
+            ],
+            "trickery": [
+              "invoke duplicity"
+            ],
+            "war": [
+              "guided strike"
+            ]
+          }
+        }
+      ],
+      "3": [
+        {
+          "divine domain": {
+            "knowledge": [
+              "augury",
+              "suggestion"
+            ],
+            "life": [
+              "lesser restoration",
+              "spiritual weapon"
+            ],
+            "light": [
+              "flaming sphere",
+              "scorching ray"
+            ],
+            "nature": [
+              "barkskin",
+              "spike growth"
+            ],
+            "tempest": [
+              "gust of wind",
+              "shatter"
+            ],
+            "trickery": [
+              "mirror image",
+              "pass without trace"
+            ],
+            "war": [
+              "magic weapon",
+              "spiritual weapon"
+            ]
+          }
+        }
+      ],
+      "4": [
+        "ability score improvement"
+      ],
+      "5": [
+        {
+          "destroy undead": 0.5
+        },
+        {
+          "divine domain": {
+            "knowledge": [
+              "nondetection",
+              "speak with dead"
+            ],
+            "life": [
+              "beacon of hope",
+              "revivify"
+            ],
+            "light": [
+              "daylight",
+              "fireball"
+            ],
+            "nature": [
+              "plant growth",
+              "wind wall"
+            ],
+            "tempest": [
+              "call lightning",
+              "sleet storm"
+            ],
+            "trickery": [
+              "blink",
+              "dispel magic"
+            ],
+            "war": [
+              "crusader's mantle",
+              "spirit guardians"
+            ]
+          }
+        }
+      ],
+      "6": [
+        {
+          "channel divinity": 2
+        },
+        {
+          "divine domain": {
+            "knowledge": [
+              "read thoughts"
+            ],
+            "life": [
+              "blessed healer"
+            ],
+            "light": [
+              "improved flare"
+            ],
+            "nature": [
+              "dampen elements"
+            ],
+            "tempest": [
+              "thunderbolt strike"
+            ],
+            "trickery": [
+              "cloak of shadows"
+            ],
+            "war": [
+              "war god's blessing"
+            ]
+          }
+        }
+      ],
+      "7": [
+        {
+          "divine domain": {
+            "knowledge": [
+              "arcane eye",
+              "confusion"
+            ],
+            "life": [
+              "death ward",
+              "guardian of faith"
+            ],
+            "light": [
+              "guardian of faith",
+              "wall of fire"
+            ],
+            "nature": [
+              "dominate beast",
+              "grasping vine"
+            ],
+            "tempest": [
+              "control water",
+              "ice storm"
+            ],
+            "trickery": [
+              "dimension door",
+              "polymorph"
+            ],
+            "war": [
+              "freedom of movement",
+              "stoneskin"
+            ]
+          }
+        }
+      ],
+      "8": [
+        "ability score improvement",
+        {
+          "destroy undead": 1
+        },
+        {
+          "divine domain": {
+            "knowledge": [
+              "potent spellcasting"
+            ],
+            "life": [
+              {
+                "divine strike": "1d8"
+              }
+            ],
+            "light": [
+              "potent spellcasting"
+            ],
+            "nature": [
+              {
+                "divine strike": "1d8"
+              }
+            ],
+            "tempest": [
+              {
+                "divine strike": "1d8"
+              }
+            ],
+            "trickery": [
+              {
+                "divine strike": "1d8"
+              }
+            ],
+            "war": [
+              {
+                "divine strike": "1d8"
+              }
+            ]
+          }
+        }
+      ],
+      "9": [
+        {
+          "divine domain": {
+            "knowledge": [
+              "legend lore",
+              "scrying"
+            ],
+            "life": [
+              "mass cure wounds",
+              "raise dead"
+            ],
+            "light": [
+              "flame strike",
+              "scrying"
+            ],
+            "nature": [
+              "insect plague",
+              "tree stride"
+            ],
+            "tempest": [
+              "destructive wave",
+              "insect plague"
+            ],
+            "trickery": [
+              "dominate person",
+              "modify memory"
+            ],
+            "war": [
+              "flame strike",
+              "hold monster"
+            ]
+          }
+        }
+      ],
+      "10": [
+        "divine intervention"
+      ],
+      "11": [
+        {
+          "destroy undead": 2
+        }
+      ],
+      "12": [
+        "ability score improvement"
+      ],
+      "14": [
+        {
+          "destroy undead": 3
+        },
+        {
+          "divine domain": {
+            "life": [
+              {
+                "divine strike": "2d8"
+              }
+            ],
+            "nature": [
+              {
+                "divine strike": "2d8"
+              }
+            ],
+            "tempest": [
+              {
+                "divine strike": "2d8"
+              }
+            ],
+            "trickery": [
+              {
+                "divine strike": "2d8"
+              }
+            ],
+            "war": [
+              {
+                "divine strike": "2d8"
+              }
+            ]
+          }
+        }
+      ],
+      "16": [
+        "ability score improvement"
+      ],
+      "17": [
+        {
+          "destroy undead": 4
+        },
+        {
+          "divine domain": {
+            "knowledge": [
+              "visions of the past"
+            ],
+            "life": [
+              "supreme healing"
+            ],
+            "light": [
+              "corona of light"
+            ],
+            "nature": [
+              "master of nature"
+            ],
+            "tempest": [
+              "stormborn"
+            ],
+            "trickery": [
+              "improved duplicity"
+            ],
+            "war": [
+              "avatar of battle"
+            ]
+          }
+        }
+      ],
+      "18": [
+        {
+          "channel divinity": 3
+        }
+      ],
+      "19": [
+        "ability score improvement"
+      ],
+      "20": [
+        "divine intervention improvement"
+      ]
+    },
+    "spell save": [
+      8,
+      "proficiency bonus",
+      "wisdom modifier"
+    ],
+    "spell attack modifier": [
+      "proficiency bonus",
+      "wisdom modifier"
+    ]
+  },
+  "druid": {
+    "starting gold": {
+      "base": "10gp",
+      "multiplier": "2d4"
+    },
+    "hit die": {
+      "per-level": "1d8"
+    },
+    "hit points": {
+      "initial": [
+        8,
+        "constitution modifier"
+      ],
+      "per-level": [
+        "1d8",
+        "constitution modifier"
+      ]
+    },
+    "primary ability": "wisdom",
+    "saving throw proficiencies": [
+      "intelligence",
+      "wisdom"
+    ],
+    "armor proficiencies": [
+      "light armor (non-metal)",
+      "medium armor (non-metal)",
+      "shields (non-metal)"
+    ],
+    "weapon proficiencies": [
+      "club",
+      "dagger",
+      "dart",
+      "javelin",
+      "mace",
+      "quarterstaff",
+      "scimitar",
+      "sickle",
+      "sling",
+      "spear"
+    ],
+    "tool proficiencies": [
+      "herbalism kit"
+    ],
+    "skill proficiencies": [
+      {
+        "choice": {
+          "count": 2,
+          "choices": [
+            "arcana",
+            "animal handline",
+            "insight",
+            "medicine",
+            "nature",
+            "perception",
+            "religion",
+            "survival"
+          ]
+        }
+      }
+    ],
+    "equipment": [
+      {
+        "choice": [
+          "wooden shield",
+          "simple weapon"
+        ]
+      },
+      {
+        "choice": [
+          "scimitar",
+          "simple melee weapon"
+        ]
+      },
+      "leather armor",
+      "explorer's pack",
+      "druidic focus"
+    ],
+    "languages": [
+      "druidic"
+    ],
+    "proficiency bonus": {
+      "1": 2,
+      "5": 3,
+      "9": 4,
+      "13": 5,
+      "17": 6
+    },
+    "cantrips known": {
+      "1": 2,
+      "4": 3,
+      "10": 4
+    },
+    "spell slots": [
+      [
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        1,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        1,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        3,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        1
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        3,
+        2,
+        2,
+        1,
+        1
+      ]
+    ],
+    "spell save": [
+      8,
+      "proficiency bonus",
+      "wisdom modifier"
+    ],
+    "spell attack modifier": [
+      "proficiency bonus",
+      "wisdom modifier"
+    ],
+    "features": {
+      "1": [
+        "spellcasting"
+      ],
+      "2": [
+        {
+          "wild shape": 0.25
+        },
+        {
+          "choice": {
+            "druidic circle": [
+              "circle of the land",
+              "circle of the moon"
+            ]
+          }
+        },
+        {
+          "druidic circle": {
+            "circle of the land": [
+              {
+                "choice": "cantrip"
+              },
+              "natural recovery",
+              {
+                "choice": {
+                  "land type": [
+                    "arctic",
+                    "coast",
+                    "desert",
+                    "forest",
+                    "grassland",
+                    "mountain",
+                    "swamp",
+                    "underdark"
+                  ]
+                }
+              }
+            ],
+            "circle of the moon": [
+              "combat wild shape",
+              {
+                "circle forms": 1
+              }
+            ]
+          }
+        }
+      ],
+      "3": [
+        {
+          "land type": {
+            "arctic": [
+              "hold person",
+              "spike growth"
+            ],
+            "coast": [
+              "mirror image",
+              "misty step"
+            ],
+            "desert": [
+              "blur",
+              "silence"
+            ],
+            "forest": [
+              "barkskin",
+              "spider climb"
+            ],
+            "grassland": [
+              "invisibility",
+              "pass without trace"
+            ],
+            "mountain": [
+              "spider climb",
+              "spike growth"
+            ],
+            "swamp": [
+              "darkness",
+              "Melf's acid arrow"
+            ],
+            "underdark": [
+              "spider climb",
+              "web"
+            ]
+          }
+        }
+      ],
+      "4": [
+        {
+          "wild shape": 0.5
+        },
+        "ability score improvement"
+      ],
+      "5": [
+        {
+          "land type": {
+            "arctic": [
+              "sleet storm",
+              "slow"
+            ],
+            "coast": [
+              "water breathing",
+              "water walk"
+            ],
+            "desert": [
+              "create food and water",
+              "protection from energy"
+            ],
+            "forest": [
+              "call lightning",
+              "plant growth"
+            ],
+            "grassland": [
+              "daylight",
+              "haste"
+            ],
+            "mountain": [
+              "lightning bolt",
+              "meld into stone"
+            ],
+            "swamp": [
+              "water walk",
+              "stinking cloud"
+            ],
+            "underdark": [
+              "gaseous form",
+              "stinking cloud"
+            ]
+          }
+        }
+      ],
+      "6": [
+        {
+          "druidic circle": {
+            "circle of the land": [
+              "land's stride"
+            ],
+            "circle of the moon": [
+              {
+                "circle forms": "level/3"
+              },
+              "primal strike"
+            ]
+          }
+        }
+      ],
+      "7": [
+        {
+          "land type": {
+            "arctic": [
+              "freedom of movement",
+              "ice storm"
+            ],
+            "coast": [
+              "control water",
+              "freedom of movement"
+            ],
+            "desert": [
+              "blight",
+              "hallucinatory terrain"
+            ],
+            "forest": [
+              "divination",
+              "freedom of movement"
+            ],
+            "grassland": [
+              "divination",
+              "freedom of movement"
+            ],
+            "mountain": [
+              "stone shape",
+              "stoneskin"
+            ],
+            "swamp": [
+              "freedom of movement",
+              "locate creature"
+            ],
+            "underdark": [
+              "greater invisibility",
+              "stone shape"
+            ]
+          }
+        }
+      ],
+      "8": [
+        {
+          "wild shape": 1
+        },
+        "ability score improvement"
+      ],
+      "9": [
+        {
+          "land type": {
+            "arctic": [
+              "commune with nature",
+              "cone of cold"
+            ],
+            "coast": [
+              "conjure elemental",
+              "scrying"
+            ],
+            "desert": [
+              "insect plague",
+              "wall of stone"
+            ],
+            "forest": [
+              "commune with nature",
+              "tree stride"
+            ],
+            "grassland": [
+              "dream",
+              "insect plague"
+            ],
+            "mountain": [
+              "passwall",
+              "wall of stone"
+            ],
+            "swamp": [
+              "insect plague",
+              "scrying"
+            ],
+            "underdark": [
+              "cloudkill",
+              "insect plague"
+            ]
+          }
+        }
+      ],
+      "10": [
+        {
+          "druidic circle": {
+            "circle of the land": [
+              "nature's ward"
+            ],
+            "circle of the moon": [
+              "elemental wild shape"
+            ]
+          }
+        }
+      ],
+      "12": [
+        "ability score improvement"
+      ],
+      "14": [
+        {
+          "druidic circle": {
+            "circle of the land": [
+              "nature's sanctuary"
+            ],
+            "circle of the moon": [
+              "thousand forms"
+            ]
+          }
+        }
+      ],
+      "16": [
+        "ability score improvement"
+      ],
+      "18": [
+        "timeless body",
+        "beast spells"
+      ],
+      "19": [
+        "ability score improvement"
+      ],
+      "20": [
+        "archdruid"
+      ]
+    }
+  },
+  "fighter": {
+    "starting gold": {
+      "base": "10gp",
+      "multiplier": "5d4"
+    },
+    "hit die": {
+      "per-level": "1d10"
+    },
+    "hit points": {
+      "initial": [
+        10,
+        "constitution modifier"
+      ],
+      "per-level": [
+        "1d10",
+        "constitution modifier"
+      ]
+    },
+    "primary ability": {
+      "or": [
+        "strength",
+        "dexterity"
+      ]
+    },
+    "saving throw proficiencies": [
+      "strength",
+      "constitution"
+    ],
+    "armor proficiencies": [
+      "all",
+      "shields"
+    ],
+    "weapon proficiencies": [
+      "simple weapons",
+      "martial weapons"
+    ],
+    "skill proficiencies": [
+      {
+        "choice": {
+          "count": 2,
+          "choices": [
+            "acrobatics",
+            "animal handling",
+            "athletics",
+            "history",
+            "insight",
+            "intimidation",
+            "perception",
+            "survival"
+          ]
+        }
+      }
+    ],
+    "equipment": [
+      {
+        "choice": [
+          "chain mail",
+          [
+            "leather armor",
+            "longbow",
+            {
+              "arrow": 20
+            }
+          ]
+        ]
+      },
+      {
+        "choice": [
+          [
+            "martial weapon",
+            "shield"
+          ],
+          {
+            "martial weapon": 2
+          }
+        ]
+      },
+      {
+        "choice": [
+          [
+            "light crossbow",
+            {
+              "crossbow bolt": 20
+            }
+          ],
+          {
+            "handaxe": 2
+          }
+        ]
+      },
+      {
+        "choice": [
+          "dungeoneer's pack",
+          "explorer's pack"
+        ]
+      }
+    ],
+    "proficiency bonus": {
+      "1": 2,
+      "5": 3,
+      "9": 4,
+      "13": 5,
+      "17": 6
+    },
+    "features": {
+      "1": [
+        "second wind",
+        {
+          "choice": {
+            "fighting style": [
+              "archery",
+              "defense",
+              "dueling",
+              "great weapon fighting",
+              "protection",
+              "two-weapon fighting"
+            ]
+          }
+        },
+        {
+          "fighting style": {
+            "archery": [
+              {
+                "attack bonus (ranged)": 2
+              }
+            ],
+            "defense": [
+              {
+                "armor bonus": 1
+              }
+            ],
+            "dueling": [
+              {
+                "damage bonus (one-handed melee)": 2
+              }
+            ],
+            "great weapon fighting": [
+              "great weapon fighting"
+            ],
+            "protection": [
+              "protection"
+            ],
+            "two-weapon fighting": [
+              "two-weapon fighting"
+            ]
+          }
+        }
+      ],
+      "2": [
+        {
+          "action surge": 1
+        }
+      ],
+      "3": [
+        {
+          "choice": {
+            "martial archetype": [
+              "champion",
+              "battle master",
+              "eldritch knight"
+            ]
+          }
+        },
+        {
+          "martial archetype": {
+            "champion": [
+              "improved critical"
+            ],
+            "battle master": [
+              {
+                "choice": {
+                  "maneuvers": [
+                    "commander's strike",
+                    "disarming attack",
+                    "distracting strike",
+                    "evasive footwork",
+                    "feinting attack",
+                    "goading attack",
+                    "lunging attack",
+                    "maneuvering attack",
+                    "menacing attack",
+                    "parry",
+                    "precision attack",
+                    "pushing attack",
+                    "rally",
+                    "riposte",
+                    "sweeping attack",
+                    "trip attack"
+                  ]
+                }
+              },
+              {
+                "superiority dice": "4d8"
+              },
+              {
+                "saving throws": {
+                  "maneuver": [
+                    8,
+                    "proficiency bonus",
+                    {
+                      "choice": [
+                        "strength modifier",
+                        "dexterity modifier"
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "choice": "artisan's tools"
+              }
+            ],
+            "eldritch knight": [
+              "spellcasting",
+              {
+                "choice": "cantrips (wizard)"
+              },
+              {
+                "cantrips known": {
+                  "3": 2,
+                  "10": 3
+                }
+              },
+              {
+                "spells known": [
+                  0,
+                  0,
+                  3,
+                  4,
+                  4,
+                  4,
+                  5,
+                  6,
+                  6,
+                  7,
+                  8,
+                  8,
+                  9,
+                  10,
+                  10,
+                  11,
+                  11,
+                  11,
+                  12,
+                  13
+                ]
+              },
+              {
+                "spell slots": [
+                  [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  [
+                    2,
+                    0,
+                    0,
+                    0
+                  ],
+                  [
+                    3,
+                    0,
+                    0,
+                    0
+                  ],
+                  [
+                    3,
+                    0,
+                    0,
+                    0
+                  ],
+                  [
+                    3,
+                    0,
+                    0,
+                    0
+                  ],
+                  [
+                    4,
+                    2,
+                    0,
+                    0
+                  ],
+                  [
+                    4,
+                    2,
+                    0,
+                    0
+                  ],
+                  [
+                    4,
+                    2,
+                    0,
+                    0
+                  ],
+                  [
+                    4,
+                    3,
+                    0,
+                    0
+                  ],
+                  [
+                    4,
+                    3,
+                    0,
+                    0
+                  ],
+                  [
+                    4,
+                    3,
+                    0,
+                    0
+                  ],
+                  [
+                    4,
+                    3,
+                    2,
+                    0
+                  ],
+                  [
+                    4,
+                    3,
+                    2,
+                    0
+                  ],
+                  [
+                    4,
+                    3,
+                    2,
+                    0
+                  ],
+                  [
+                    4,
+                    3,
+                    3,
+                    0
+                  ],
+                  [
+                    4,
+                    3,
+                    3,
+                    0
+                  ],
+                  [
+                    4,
+                    3,
+                    3,
+                    0
+                  ],
+                  [
+                    4,
+                    3,
+                    3,
+                    1
+                  ],
+                  [
+                    4,
+                    3,
+                    3,
+                    1
+                  ]
+                ]
+              },
+              {
+                "spell type": "wizard"
+              },
+              {
+                "choice": {
+                  "count": 3,
+                  "choices": "spells (wizard)",
+                  "level": 1
+                }
+              },
+              {
+                "spell save": [
+                  8,
+                  "proficiency bonus",
+                  "intelligence modifier"
+                ]
+              },
+              {
+                "spell attack modifier": [
+                  "proficiency bonus",
+                  "intelligence modifier"
+                ]
+              },
+              "weapon bond"
+            ]
+          }
+        }
+      ],
+      "4": [
+        "ability score improvement"
+      ],
+      "5": [
+        {
+          "extra attack": 1
+        }
+      ],
+      "6": [
+        "ability score improvement"
+      ],
+      "7": [
+        {
+          "martial archetype": {
+            "champion": [
+              "remarkable athlete"
+            ],
+            "battle master": [
+              {
+                "choice": {
+                  "maneuvers": [
+                    "commander's strike",
+                    "disarming attack",
+                    "distracting strike",
+                    "evasive footwork",
+                    "feinting attack",
+                    "goading attack",
+                    "lunging attack",
+                    "maneuvering attack",
+                    "menacing attack",
+                    "parry",
+                    "precision attack",
+                    "pushing attack",
+                    "rally",
+                    "riposte",
+                    "sweeping attack",
+                    "trip attack"
+                  ]
+                }
+              },
+              "know your enemy",
+              {
+                "superiority dice": "5d8"
+              }
+            ],
+            "eldritch knight": [
+              "war magic"
+            ]
+          }
+        }
+      ],
+      "8": [
+        "ability score improvement",
+        {
+          "martial archetype": {
+            "eldritch knight": [
+              {
+                "choice": {
+                  "count": 1,
+                  "choices": "spells (any)",
+                  "level": 2
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "9": [
+        {
+          "indomitable": 1
+        }
+      ],
+      "10": [
+        {
+          "martial archetype": {
+            "champion": [
+              {
+                "choice": {
+                  "additional fighting style": [
+                    "archery",
+                    "defense",
+                    "dueling",
+                    "great weapon fighting",
+                    "protection",
+                    "two-weapon fighting"
+                  ]
+                }
+              },
+              {
+                "additional fighting style": {
+                  "archery": [
+                    {
+                      "attack bonus (ranged)": 2
+                    }
+                  ],
+                  "defense": [
+                    {
+                      "armor bonus": 1
+                    }
+                  ],
+                  "dueling": [
+                    {
+                      "damage bonus (one-handed melee)": 2
+                    }
+                  ],
+                  "great weapon fighting": [
+                    "great weapon fighting"
+                  ],
+                  "protection": [
+                    "protection"
+                  ],
+                  "two-weapon fighting": [
+                    "two-weapon fighting"
+                  ]
+                }
+              }
+            ],
+            "battle master": [
+              {
+                "choice": {
+                  "maneuvers": [
+                    "commander's strike",
+                    "disarming attack",
+                    "distracting strike",
+                    "evasive footwork",
+                    "feinting attack",
+                    "goading attack",
+                    "lunging attack",
+                    "maneuvering attack",
+                    "menacing attack",
+                    "parry",
+                    "precision attack",
+                    "pushing attack",
+                    "rally",
+                    "riposte",
+                    "sweeping attack",
+                    "trip attack"
+                  ]
+                }
+              },
+              {
+                "superiority dice": "5d10"
+              }
+            ],
+            "eldritch knight": [
+              "eldritch strike"
+            ]
+          }
+        }
+      ],
+      "11": [
+        {
+          "extra attack": 2
+        }
+      ],
+      "12": [
+        "ability score improvement"
+      ],
+      "13": [
+        {
+          "indomitable": 2
+        }
+      ],
+      "14": [
+        "ability score improvement",
+        {
+          "martial archetype": {
+            "eldritch knight": [
+              {
+                "choice": {
+                  "count": 1,
+                  "choices": "spells (any)",
+                  "level": 3
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "15": [
+        {
+          "martial archetype": {
+            "champion": [
+              "superior critical"
+            ],
+            "battle master": [
+              {
+                "choice": {
+                  "maneuvers": [
+                    "commander's strike",
+                    "disarming attack",
+                    "distracting strike",
+                    "evasive footwork",
+                    "feinting attack",
+                    "goading attack",
+                    "lunging attack",
+                    "maneuvering attack",
+                    "menacing attack",
+                    "parry",
+                    "precision attack",
+                    "pushing attack",
+                    "rally",
+                    "riposte",
+                    "sweeping attack",
+                    "trip attack"
+                  ]
+                }
+              },
+              {
+                "superiority dice": "5d12"
+              },
+              "relentless"
+            ],
+            "eldritch knight": [
+              "arcane charge"
+            ]
+          }
+        }
+      ],
+      "16": [
+        "ability score improvement"
+      ],
+      "17": [
+        {
+          "action surge": 2
+        },
+        {
+          "indomitable": 3
+        }
+      ],
+      "18": [
+        {
+          "martial archetype": {
+            "champion": [
+              "survivor"
+            ],
+            "battle master": [
+              {
+                "superiority dice": "6d12"
+              }
+            ],
+            "eldritch knight": [
+              "improved war magic"
+            ]
+          }
+        }
+      ],
+      "19": [
+        "ability score improvement"
+      ],
+      "20": [
+        {
+          "extra attack": 3
+        },
+        {
+          "martial archetype": {
+            "eldritch knight": [
+              {
+                "choice": {
+                  "count": 1,
+                  "choices": "spells (any)",
+                  "level": 4
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "monk": {
+    "starting gold": {
+      "base": "1gp",
+      "multiplier": "5d4"
+    },
+    "hit die": {
+      "per-level": "1d8"
+    },
+    "hit points": {
+      "initial": [
+        8,
+        "constitution modifier"
+      ],
+      "per-level": [
+        "1d8",
+        "constitution modifier"
+      ]
+    },
+    "primary ability": {
+      "and": [
+        "wisdom",
+        "dexterity"
+      ]
+    },
+    "saving throw proficiencies": [
+      "strength",
+      "dexterity"
+    ],
+    "weapon proficiencies": [
+      "simple weapons",
+      "shortsword"
+    ],
+    "tool proficiencies": [
+      {
+        "choice": [
+          "artisan's tools",
+          "musical instrument"
+        ]
+      }
+    ],
+    "equipment": [
+      {
+        "choice": [
+          "shortsword",
+          "simple weapon"
+        ]
+      },
+      {
+        "choice": [
+          "dungeoneer's pack",
+          "explorer's pack"
+        ]
+      },
+      {
+        "dart": 10
+      }
+    ],
+    "skill proficiencies": [
+      {
+        "choice": {
+          "count": 2,
+          "choices": [
+            "acrobatics",
+            "athletics",
+            "history",
+            "insight",
+            "religion",
+            "stealth"
+          ]
+        }
+      }
+    ],
+    "proficiency bonus": {
+      "1": 2,
+      "5": 3,
+      "9": 4,
+      "13": 5,
+      "17": 6
+    },
+    "martial arts": {
+      "1": "1d4",
+      "5": "1d6",
+      "11": "1d8",
+      "17": "1d10"
+    },
+    "features": {
+      "1": [
+        "unarmored defense",
+        "martial arts"
+      ],
+      "2": [
+        "ki",
+        {
+          "unarmored movement": {
+            "2": 10,
+            "6": 15,
+            "10": 20,
+            "14": 25,
+            "18": 30
+          }
+        },
+        "flurry of blows",
+        "patient defense",
+        "step of the wind",
+        {
+          "ki save": [
+            8,
+            "proficiency bonus",
+            "wisdom modifier"
+          ]
+        }
+      ],
+      "3": [
+        {
+          "choice": {
+            "monastic tradition": [
+              "way of the opened hand",
+              "way of the shadow",
+              "way of the four elements"
+            ]
+          }
+        },
+        "deflect missiles",
+        {
+          "monastic tradition": {
+            "way of the open hand": [
+              "open hand technique"
+            ],
+            "way of the shadow": [
+              "shadow arts",
+              {
+                "cantrip": "minor illusion"
+              }
+            ],
+            "way of the four elements": [
+              "disciple of the elements",
+              "elemental attunement",
+              {
+                "choice": "elemental disciplines"
+              }
+            ]
+          }
+        }
+      ],
+      "4": [
+        "ability score improvement",
+        "slow fall"
+      ],
+      "5": [
+        "extra attack",
+        "stunning strike",
+        {
+          "max ki per spell": {
+            "5": 3,
+            "9": 4,
+            "13": 5,
+            "17": 6
+          }
+        }
+      ],
+      "6": [
+        "ki-empowered strikes",
+        {
+          "monastic tradition": {
+            "way of the open hand": [
+              "wholeness of body"
+            ],
+            "way of the shadow": [
+              "shadow step"
+            ],
+            "way of the four elements": [
+              {
+                "choice": "elemental disciplines"
+              }
+            ]
+          }
+        }
+      ],
+      "7": [
+        "evasion",
+        "stillness of mind"
+      ],
+      "8": [
+        "ability score improvement"
+      ],
+      "9": [
+        "unarmored movement improvement"
+      ],
+      "10": [
+        "purity of body"
+      ],
+      "11": [
+        {
+          "monastic tradition": {
+            "way of the open hand": [
+              "tranquility"
+            ],
+            "way of the shadow": [
+              "cloak of shadows"
+            ],
+            "way of the four elements": [
+              {
+                "choice": "elemental disciplines"
+              }
+            ]
+          }
+        }
+      ],
+      "12": [
+        "ability score improvement"
+      ],
+      "13": [
+        "tongue of the sun and moon"
+      ],
+      "14": [
+        "diamond soul"
+      ],
+      "15": [
+        "timeless body"
+      ],
+      "16": [
+        "ability score improvement"
+      ],
+      "17": [
+        {
+          "monastic tradition": {
+            "way of the open hand": [
+              "quivering palm"
+            ],
+            "way of the shadow": [
+              "opportunist"
+            ],
+            "way of the four elements": [
+              {
+                "choice": "elemental disciplines"
+              }
+            ]
+          }
+        }
+      ],
+      "18": [
+        "empty body"
+      ],
+      "19": [
+        "ability score improvement"
+      ],
+      "20": [
+        "perfect self"
+      ]
+    },
+    "elemental disciplines": [
+      {
+        "breath of winter": 17
+      },
+      {
+        "clench of the north wind": 6
+      },
+      "elemental attunement",
+      {
+        "eternal mountain defense": 11
+      },
+      "fangs of the fire snake",
+      "fist of four thunders",
+      "fist of unbroken air",
+      {
+        "flames of the phoenix": 11
+      },
+      {
+        "gong of the summit": 6
+      },
+      {
+        "mist stance": 11
+      },
+      {
+        "ride the wind": 11
+      },
+      {
+        "river of hungry flame": 17
+      },
+      "rush of the gale spirits",
+      "shape the flowing river",
+      "sweeping cinder strike",
+      "water whip",
+      {
+        "wave of rolling earth": 17
+      }
+    ]
+  },
+  "paladin": {
+    "starting gold": {
+      "base": "10gp",
+      "multiplier": "5d4"
+    },
+    "hit die": {
+      "per-level": "1d10"
+    },
+    "hit points": {
+      "initial": [
+        10,
+        "constitution modifier"
+      ],
+      "per-level": [
+        "1d10",
+        "constitution modifier"
+      ]
+    },
+    "primary ability": {
+      "and": [
+        "strength",
+        "charisma"
+      ]
+    },
+    "saving throw proficiencies": [
+      "wisdom",
+      "charisma"
+    ],
+    "armor proficiencies": [
+      "all",
+      "shields"
+    ],
+    "weapon proficiencies": [
+      "simple weapons",
+      "martial weapons"
+    ],
+    "equipment": [
+      {
+        "choice": [
+          [
+            "martial weapon",
+            "shield"
+          ],
+          {
+            "martial weapon": 2
+          }
+        ]
+      },
+      {
+        "choice": [
+          {
+            "javelin": 5
+          },
+          "simple melee weapon"
+        ]
+      },
+      {
+        "choice": [
+          "priest's pack",
+          "explorer's pack"
+        ]
+      },
+      "chain mail",
+      "holy symbol"
+    ],
+    "proficiency bonus": {
+      "1": 2,
+      "5": 3,
+      "9": 4,
+      "13": 5,
+      "17": 6
+    },
+    "spell slots": [
+      [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        3,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        3,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        2,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        2,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        2,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        2,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        1,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        1,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        2,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        2,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        1
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        1
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2
+      ]
+    ],
+    "features": {
+      "1": [
+        "divine sense",
+        "lay on hands"
+      ],
+      "2": [
+        {
+          "choice": {
+            "fighting style": [
+              "defense",
+              "dueling",
+              "great weapon fighting",
+              "protection"
+            ]
+          }
+        },
+        "spellcasting",
+        "divine smite",
+        {
+          "fighting style": {
+            "defense": [
+              {
+                "armor bonus": 1
+              }
+            ],
+            "dueling": [
+              {
+                "damage bonus (single melee weapon)": 2
+              }
+            ],
+            "great weapon fighting": [
+              "great weapon fighting"
+            ],
+            "protection": [
+              "protection"
+            ]
+          }
+        },
+        {
+          "spell type": "cleric"
+        },
+        {
+          "spell save": [
+            8,
+            "proficiency bonus",
+            "charisma modifier"
+          ]
+        },
+        {
+          "spell attack modifier": [
+            "proficiency bonus",
+            "charisma modifier"
+          ]
+        }
+      ],
+      "3": [
+        "divine health",
+        {
+          "choice": {
+            "sacred oath": [
+              "oath of devotion",
+              "oath of the ancients",
+              "oath of vengeance"
+            ]
+          }
+        },
+        {
+          "sacred oath": {
+            "oath of devotion": [
+              "protection from evil and good",
+              "sanctuary",
+              "sacred weapon",
+              "turn the unholy"
+            ],
+            "oath of the ancients": [
+              "ensnaring strike",
+              "speak with animals",
+              "nature's wrath",
+              "turn the faithless"
+            ],
+            "oath of vengeance": [
+              "bane",
+              "hunter's mark",
+              "abjure enemy",
+              "vow of enmity"
+            ]
+          }
+        },
+        "channel divinity"
+      ],
+      "4": [
+        "ability score improvement"
+      ],
+      "5": [
+        "extra attack",
+        {
+          "sacred oath": {
+            "oath of devotion": [
+              "lesser restoration",
+              "zone of truth"
+            ],
+            "oath of the ancients": [
+              "moonbeam",
+              "misty step"
+            ],
+            "oath of vengeance": [
+              "hold person",
+              "misty step"
+            ]
+          }
+        }
+      ],
+      "6": [
+        "aura of protection"
+      ],
+      "7": [
+        {
+          "sacred oath": {
+            "oath of devotion": [
+              "aura of devotion"
+            ],
+            "oath of the ancients": [
+              "aura of warding"
+            ],
+            "oath of vengeance": [
+              "relentless avenger"
+            ]
+          }
+        }
+      ],
+      "8": [
+        "ability score improvement"
+      ],
+      "9": [
+        {
+          "sacred oath": {
+            "oath of devotion": [
+              "beacon of hope",
+              "dispel magic"
+            ],
+            "oath of the ancients": [
+              "plant growth",
+              "protection from energy"
+            ],
+            "oath of vengeance": [
+              "haste",
+              "protection from energy"
+            ]
+          }
+        }
+      ],
+      "10": [
+        "aura of courage"
+      ],
+      "11": [
+        "improved divine smite"
+      ],
+      "12": [
+        "ability score improvement"
+      ],
+      "13": [
+        {
+          "sacred oath": {
+            "oath of devotion": [
+              "freedom of movement",
+              "guardian of faith"
+            ],
+            "oath of the ancients": [
+              "ice storm",
+              "stoneskin"
+            ],
+            "oath of vengeance": [
+              "banishment",
+              "dimension door"
+            ]
+          }
+        }
+      ],
+      "14": [
+        "cleansing touch"
+      ],
+      "15": [
+        {
+          "sacred oath": {
+            "oath of devotion": [
+              "purity of spirit"
+            ],
+            "oath of the ancients": [
+              "undying sentinel"
+            ],
+            "oath of vengeance": [
+              "soul of vengeance"
+            ]
+          }
+        }
+      ],
+      "16": [
+        "ability score improvement"
+      ],
+      "17": [
+        {
+          "sacred oath": {
+            "oath of devotion": [
+              "commune",
+              "flame strike"
+            ],
+            "oath of the ancients": [
+              "commune with nature",
+              "tree stride"
+            ],
+            "oath of vengeance": [
+              "hold monster",
+              "scrying"
+            ]
+          }
+        }
+      ],
+      "18": [
+        "aura improvements"
+      ],
+      "19": [
+        "ability score improvement"
+      ],
+      "20": [
+        {
+          "sacred oath": {
+            "oath of devotion": [
+              "holy nimbus"
+            ],
+            "oath of the ancients": [
+              "elder champion"
+            ],
+            "oath of vengeance": [
+              "avenging angel"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "ranger": {
+    "starting gold": {
+      "base": "10gp",
+      "multiplier": "5d4"
+    },
+    "hit die": {
+      "per-level": "1d10"
+    },
+    "hit points": {
+      "initial": [
+        10,
+        "constitution modifier"
+      ],
+      "per-level": [
+        "1d10",
+        "constitution modifier"
+      ]
+    },
+    "primary ability": {
+      "and": [
+        "dexterity",
+        "wisdom"
+      ]
+    },
+    "saving throw proficiencies": [
+      "strength",
+      "dexterity"
+    ],
+    "armor proficiencies": [
+      "light armor",
+      "medium armor",
+      "shields"
+    ],
+    "weapon proficiencies": [
+      "simple weapons",
+      "martial weapons"
+    ],
+    "skill proficiencies": [
+      {
+        "choice": {
+          "count": 3,
+          "choices": [
+            "animal handling",
+            "athletics",
+            "insight",
+            "investigation",
+            "nature",
+            "perception",
+            "stealth",
+            "survival"
+          ]
+        }
+      }
+    ],
+    "equipment": [
+      {
+        "choice": [
+          "scale mail",
+          "leather armor"
+        ]
+      },
+      {
+        "choice": [
+          {
+            "shortsword": 2
+          },
+          {
+            "simple melee weapon": 2
+          }
+        ]
+      },
+      {
+        "choice": [
+          "dungeoneer's pack",
+          "explorer's pack"
+        ]
+      },
+      "longbow",
+      {
+        "arrow": 20
+      }
+    ],
+    "proficiency bonus": {
+      "1": 2,
+      "5": 3,
+      "9": 4,
+      "13": 5,
+      "17": 6
+    },
+    "spell slots": [
+      [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        3,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        3,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        2,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        2,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        2,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        2,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        1,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        1,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        2,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        2,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        1
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        1
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2
+      ]
+    ],
+    "spells known": [
+      0,
+      2,
+      3,
+      3,
+      4,
+      4,
+      5,
+      5,
+      6,
+      6,
+      7,
+      7,
+      8,
+      8,
+      9,
+      9,
+      10,
+      10,
+      11,
+      11
+    ],
+    "features": {
+      "1": [
+        {
+          "choice": {
+            "favored enemy": [
+              "aberrations",
+              "beasts",
+              "celestials",
+              "constructs",
+              "dragons",
+              "elementals",
+              "fey",
+              "fiends",
+              "giants",
+              "monstrosities",
+              "oozes",
+              "plants",
+              "undead",
+              {
+                "humanoids": 2
+              }
+            ]
+          }
+        },
+        {
+          "languages": [
+            "favored enemy"
+          ]
+        },
+        {
+          "saving throw modifiers": {
+            "survival (tracking favored enemy)": [
+              "advantage"
+            ],
+            "intelligence (recalling info favored enenmy)": [
+              "advantage"
+            ]
+          }
+        },
+        {
+          "choice": {
+            "natural explorer": [
+              "arctic",
+              "coast",
+              "desert",
+              "forest",
+              "grassland",
+              "mountain",
+              "swamp",
+              "underdark"
+            ]
+          }
+        },
+        {
+          "skill proficiencies modifier": {
+            "intelligence (natural explorer)": "double",
+            "wisdom (natural explorer)": "double"
+          }
+        }
+      ],
+      "2": [
+        {
+          "choice": {
+            "fighting style": [
+              "archery",
+              "defense",
+              "dueling",
+              "two-weapon fighting"
+            ]
+          }
+        },
+        {
+          "fighting style": {
+            "archery": {
+              "attack bonus (ranged)": 2
+            },
+            "defense": {
+              "armor bonus": 1
+            },
+            "dueling": {
+              "damage bonus (single melee weapon)": 2
+            },
+            "two-weapon fighting": "two-weapon fighting"
+          }
+        },
+        "spellcasting",
+        {
+          "spell save": [
+            8,
+            "proficiency bonus",
+            "wisdom modifier"
+          ]
+        },
+        {
+          "spell attack modifier": [
+            "proficiency bonus",
+            "wisdom modifier"
+          ]
+        }
+      ],
+      "3": [
+        {
+          "choice": {
+            "ranger archetype": [
+              "hunter",
+              "beast master"
+            ]
+          }
+        },
+        {
+          "ranger archetype": {
+            "hunter": [
+              {
+                "choice": [
+                  "colossus slayer",
+                  "giant killer",
+                  "horde breaker"
+                ]
+              }
+            ],
+            "beast master": [
+              "ranger's companion"
+            ]
+          }
+        },
+        "primeval awareness"
+      ],
+      "4": [
+        "ability score improvement"
+      ],
+      "5": [
+        "extra attack"
+      ],
+      "6": [
+        {
+          "choice": {
+            "favored enemy": [
+              "aberrations",
+              "beasts",
+              "celestials",
+              "constructs",
+              "dragons",
+              "elementals",
+              "fey",
+              "fiends",
+              "giants",
+              "monstrosities",
+              "oozes",
+              "plants",
+              "undead",
+              {
+                "humanoids": 2
+              }
+            ]
+          }
+        },
+        {
+          "languages": [
+            "favored enemy"
+          ]
+        },
+        {
+          "choice": {
+            "natural explorer": [
+              "arctic",
+              "coast",
+              "desert",
+              "forest",
+              "grassland",
+              "mountain",
+              "swamp",
+              "underdark"
+            ]
+          }
+        }
+      ],
+      "7": [
+        {
+          "ranger archetype": {
+            "hunter": [
+              {
+                "choice": [
+                  "escape the horde",
+                  "multiattack defense",
+                  "steel will"
+                ]
+              }
+            ],
+            "beast master": [
+              "exceptional training"
+            ]
+          }
+        }
+      ],
+      "8": [
+        "ability score improvement",
+        "land's stride"
+      ],
+      "9": [],
+      "10": [
+        {
+          "choice": {
+            "natural explorer": [
+              "arctic",
+              "coast",
+              "desert",
+              "forest",
+              "grassland",
+              "mountain",
+              "swamp",
+              "underdark"
+            ]
+          }
+        },
+        "hide in plain sight"
+      ],
+      "11": [
+        {
+          "ranger archetype": {
+            "hunter": [
+              {
+                "choice": [
+                  "volley",
+                  "whirlwind attack"
+                ]
+              }
+            ],
+            "beast master": [
+              "bestial fury"
+            ]
+          }
+        }
+      ],
+      "12": [
+        "ability score improvement"
+      ],
+      "13": [],
+      "14": [
+        {
+          "choice": {
+            "favored enemy": [
+              "aberrations",
+              "beasts",
+              "celestials",
+              "constructs",
+              "dragons",
+              "elementals",
+              "fey",
+              "fiends",
+              "giants",
+              "monstrosities",
+              "oozes",
+              "plants",
+              "undead",
+              {
+                "humanoids": 2
+              }
+            ]
+          }
+        },
+        {
+          "languages": [
+            "favored enemy"
+          ]
+        },
+        "vanish"
+      ],
+      "15": [
+        {
+          "ranger archetype": {
+            "hunter": [
+              {
+                "choice": [
+                  "evasion",
+                  "stand against the tide",
+                  "uncanny dodge"
+                ]
+              }
+            ],
+            "beast master": [
+              "share spells"
+            ]
+          }
+        }
+      ],
+      "16": [
+        "ability score improvement"
+      ],
+      "17": [],
+      "18": [
+        "feral senses"
+      ],
+      "19": [
+        "ability score improvement"
+      ],
+      "20": [
+        "foe slayer"
+      ]
+    }
+  },
+  "rogue": {
+    "starting gold": {
+      "base": "10gp",
+      "multiplier": "4d4"
+    },
+    "hit die": {
+      "per-level": "1d8"
+    },
+    "hit points": {
+      "initial": [
+        8,
+        "constitution modifier"
+      ],
+      "per-level": [
+        "1d8",
+        "constitution modifier"
+      ]
+    },
+    "primary ability": "dexterity",
+    "saving throw proficiencies": [
+      "dexterity",
+      "intelligence"
+    ],
+    "armor proficiencies": [
+      "light weapon"
+    ],
+    "weapon proficiencies": [
+      "simple weapons",
+      "hand crossbow",
+      "longsword",
+      "rapier",
+      "shortsword"
+    ],
+    "tool proficiencies": [
+      "thieves' tools"
+    ],
+    "skill proficiencies": [
+      {
+        "choice": {
+          "count": 4,
+          "choices": [
+            "acrobatics",
+            "athletics",
+            "deception",
+            "insight",
+            "intimidation",
+            "investigation",
+            "perception",
+            "performance",
+            "persuasion",
+            "sleight of hand",
+            "stealth"
+          ]
+        }
+      }
+    ],
+    "proficiency bonus": {
+      "1": 2,
+      "5": 3,
+      "9": 4,
+      "13": 5,
+      "17": 6
+    },
+    "equipment": [
+      {
+        "choice": [
+          "rapier",
+          "shortsword"
+        ]
+      },
+      {
+        "choice": [
+          [
+            "shortbow",
+            {
+              "arrow": 20
+            }
+          ],
+          "shortsword"
+        ]
+      },
+      {
+        "choice": [
+          "burglar's pack",
+          "dungeoneer's pack",
+          "explorer's pack"
+        ]
+      },
+      "leather armor",
+      {
+        "dagger": 2
+      },
+      "thieves' tools"
+    ],
+    "sneak attack": [
+      "1d6",
+      "1d6",
+      "2d6",
+      "2d6",
+      "3d6",
+      "3d6",
+      "4d6",
+      "4d6",
+      "5d6",
+      "5d6",
+      "6d6",
+      "6d6",
+      "7d6",
+      "7d6",
+      "8d6",
+      "8d6",
+      "9d6",
+      "9d6",
+      "10d6",
+      "10d6"
+    ],
+    "features": {
+      "1": [
+        {
+          "choice": {
+            "expertise": {
+              "count": 2,
+              "choices": "skill proficiencies",
+              "effect": "double"
+            }
+          }
+        },
+        "sneak attack",
+        "thieves' cant"
+      ],
+      "2": [
+        "cunning action"
+      ],
+      "3": [
+        {
+          "choice": {
+            "roguish archetype": [
+              "thief",
+              "assassin",
+              "arcane trickster"
+            ]
+          }
+        },
+        {
+          "roguish archetype": {
+            "thief": [
+              "fast hands",
+              "second-story work"
+            ],
+            "assassin": [
+              {
+                "tool proficiencies": [
+                  "disguise kit",
+                  "poisoner's kit"
+                ]
+              },
+              "assassinate"
+            ],
+            "arcane trickster": [
+              {
+                "cantrips known": {
+                  "1": 0,
+                  "3": 3,
+                  "10": 4
+                }
+              },
+              {
+                "spells known": [
+                  3,
+                  4,
+                  4,
+                  4,
+                  5,
+                  6,
+                  6,
+                  7,
+                  8,
+                  8,
+                  9,
+                  10,
+                  10,
+                  11,
+                  11,
+                  11,
+                  12,
+                  13
+                ]
+              },
+              {
+                "spell slots": [
+                  [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  [
+                    2,
+                    0,
+                    0,
+                    0
+                  ],
+                  [
+                    3,
+                    0,
+                    0,
+                    0
+                  ],
+                  [
+                    3,
+                    0,
+                    0,
+                    0
+                  ],
+                  [
+                    3,
+                    0,
+                    0,
+                    0
+                  ],
+                  [
+                    4,
+                    2,
+                    0,
+                    0
+                  ],
+                  [
+                    4,
+                    2,
+                    0,
+                    0
+                  ],
+                  [
+                    4,
+                    2,
+                    0,
+                    0
+                  ],
+                  [
+                    4,
+                    3,
+                    0.0
+                  ],
+                  [
+                    4,
+                    3,
+                    0,
+                    0
+                  ],
+                  [
+                    4,
+                    3,
+                    0,
+                    0
+                  ],
+                  [
+                    4,
+                    3,
+                    2,
+                    0
+                  ],
+                  [
+                    4,
+                    3,
+                    2,
+                    0
+                  ],
+                  [
+                    4,
+                    3,
+                    2,
+                    0
+                  ],
+                  [
+                    4,
+                    3,
+                    3,
+                    0
+                  ],
+                  [
+                    4,
+                    3,
+                    3,
+                    0
+                  ],
+                  [
+                    4,
+                    3,
+                    3,
+                    0
+                  ],
+                  [
+                    4,
+                    3,
+                    3,
+                    1
+                  ],
+                  [
+                    4,
+                    3,
+                    3,
+                    1
+                  ]
+                ]
+              },
+              "spellcasting",
+              {
+                "spell save": [
+                  8,
+                  "proficiency bonus",
+                  "wisdom modifier"
+                ]
+              },
+              {
+                "spell attack modifier": [
+                  "proficiency bonus",
+                  "wisdom modifier"
+                ]
+              },
+              "mage hand legerdemain"
+            ]
+          }
+        }
+      ],
+      "4": [
+        "ability score improvement"
+      ],
+      "5": [
+        "uncanny dodge"
+      ],
+      "6": [
+        {
+          "choice": {
+            "expertise": {
+              "count": 2,
+              "choices": "skill proficiencies",
+              "effect": "double"
+            }
+          }
+        }
+      ],
+      "7": [
+        "evasion"
+      ],
+      "8": [
+        "ability score improvement"
+      ],
+      "9": [
+        {
+          "roguish archetype": {
+            "thief": [
+              "supreme sneak"
+            ],
+            "assassin": [
+              "infiltration expertise"
+            ],
+            "arcane trickster": [
+              "magical ambush"
+            ]
+          }
+        }
+      ],
+      "10": [
+        "ability score improvement"
+      ],
+      "11": [
+        "reliable talent"
+      ],
+      "12": [
+        "ability score improvement"
+      ],
+      "13": [
+        {
+          "roguish archetype": {
+            "thief": [
+              "use magic device"
+            ],
+            "assassin": [
+              "impostor"
+            ],
+            "arcane trickster": [
+              "versatile trickster"
+            ]
+          }
+        }
+      ],
+      "14": [
+        "blindsense"
+      ],
+      "15": [
+        "slippery mind"
+      ],
+      "16": [
+        "ability score improvement"
+      ],
+      "17": [
+        {
+          "roguish archetype": {
+            "thief": [
+              "thief's reflex"
+            ],
+            "assassin": [
+              "death strike"
+            ],
+            "arcane trickster": [
+              "spell thief"
+            ]
+          }
+        }
+      ],
+      "18": [
+        "elusive"
+      ],
+      "19": [
+        "ability score improvement"
+      ],
+      "20": [
+        "stroke of luck"
+      ]
+    }
+  },
+  "sorcerer": {
+    "starting gold": {
+      "base": "10gp",
+      "multiplier": "3d4"
+    },
+    "hit die": {
+      "per-level": "1d6"
+    },
+    "hit points": {
+      "initial": [
+        6,
+        "constitution modifier"
+      ],
+      "per-level": [
+        "1d6",
+        "constitution modifier"
+      ]
+    },
+    "primary ability": "charisma",
+    "saving throw proficiencies": [
+      "charisma",
+      "constitution"
+    ],
+    "weapon proficiencies": [
+      "dagger",
+      "dart",
+      "sling",
+      "quarterstaff",
+      "light crossbow"
+    ],
+    "skill proficiencies": [
+      {
+        "choice": {
+          "count": 2,
+          "choices": [
+            "arcana",
+            "deception",
+            "insight",
+            "intimidation",
+            "persuasion",
+            "religion"
+          ]
+        }
+      }
+    ],
+    "equipment": [
+      {
+        "choice": [
+          [
+            "light crossbow",
+            {
+              "crossbow bolt": 20
+            }
+          ],
+          "simple weapon"
+        ]
+      },
+      {
+        "choice": [
+          "compinent pouch",
+          "arcane focus"
+        ]
+      },
+      {
+        "choice": [
+          "dungeoneer's pack",
+          "explorer's pack"
+        ]
+      },
+      {
+        "dagger": 2
+      }
+    ],
+    "proficiency bonus": {
+      "1": 2,
+      "5": 3,
+      "9": 4,
+      "13": 5,
+      "17": 6
+    },
+    "cantrips known": {
+      "1": 4,
+      "4": 5,
+      "10": 6
+    },
+    "spells known": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      12,
+      13,
+      13,
+      14,
+      14,
+      15,
+      15,
+      15,
+      15
+    ],
+    "spell slots": [
+      [
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        1,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        1,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        3,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        1
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        3,
+        2,
+        2,
+        1,
+        1
+      ]
+    ],
+    "spell save": [
+      8,
+      "proficiency bonus",
+      "charisma modifier"
+    ],
+    "spell attack modifier": [
+      "proficiency bonus",
+      "charisma modifier"
+    ],
+    "spell slot cost": [
+      2,
+      3,
+      5,
+      6,
+      7
+    ],
+    "features": {
+      "1": [
+        "spellcasting",
+        {
+          "choice": {
+            "sorcerous origin": [
+              "draconic bloodline",
+              "wild magic"
+            ]
+          }
+        },
+        {
+          "sorcerous origin": {
+            "draconic bloodline": [
+              {
+                "choice": {
+                  "dragon ancestor": [
+                    "black",
+                    "blue",
+                    "brass",
+                    "bronze",
+                    "copper",
+                    "gold",
+                    "green",
+                    "red",
+                    "silver",
+                    "white"
+                  ]
+                }
+              },
+              {
+                "dragon ancestor": {
+                  "black": {
+                    "damage type": "acid"
+                  },
+                  "blue": {
+                    "damage type": "lightning"
+                  },
+                  "brass": {
+                    "damage type": "fire"
+                  },
+                  "bronze": {
+                    "damage type": "lightning"
+                  },
+                  "copper": {
+                    "damage type": "acid"
+                  },
+                  "gold": {
+                    "damage type": "fire"
+                  },
+                  "green": {
+                    "damage type": "poison"
+                  },
+                  "red": {
+                    "damage type": "fire"
+                  },
+                  "silver": {
+                    "damage type": "cold"
+                  },
+                  "white": {
+                    "damage type": "cold"
+                  }
+                }
+              },
+              {
+                "languages": [
+                  "draconic"
+                ]
+              },
+              {
+                "proficiency bonuses": {
+                  "charisma (dragons)": "double"
+                }
+              },
+              "draconic resilience"
+            ],
+            "wild magic": [
+              "wild magic surge",
+              "tides of chaos"
+            ]
+          }
+        }
+      ],
+      "2": [
+        "font of magic"
+      ],
+      "3": [
+        {
+          "choice": {
+            "metamagic": {
+              "count": 2,
+              "choices": [
+                "careful spell",
+                "distant spell",
+                "empowered spell",
+                "extended spell",
+                "heightened spell",
+                "quickened spell",
+                "subtle spell",
+                "twinned spell"
+              ]
+            }
+          }
+        }
+      ],
+      "4": [
+        "ability score improvement"
+      ],
+      "5": [],
+      "6": [
+        {
+          "sorcerous origin": {
+            "draconic bloodline": [
+              "elemental affinity"
+            ],
+            "wild magic": [
+              "bend luck"
+            ]
+          }
+        }
+      ],
+      "7": [],
+      "8": [
+        "ability score improvement"
+      ],
+      "9": [],
+      "10": [
+        {
+          "choice": {
+            "metamagic": [
+              "careful spell",
+              "distant spell",
+              "empowered spell",
+              "extended spell",
+              "heightened spell",
+              "quickened spell",
+              "subtle spell",
+              "twinned spell"
+            ]
+          }
+        }
+      ],
+      "11": [],
+      "12": [
+        "ability score improvement"
+      ],
+      "13": [],
+      "14": [
+        {
+          "sorcerous origin": {
+            "draconic bloodline": [
+              "dragon wings"
+            ],
+            "wild magic": [
+              "controlled chaos"
+            ]
+          }
+        }
+      ],
+      "15": [],
+      "16": [
+        "ability score improvement"
+      ],
+      "17": [
+        {
+          "choice": {
+            "metamagic": [
+              "careful spell",
+              "distant spell",
+              "empowered spell",
+              "extended spell",
+              "heightened spell",
+              "quickened spell",
+              "subtle spell",
+              "twinned spell"
+            ]
+          }
+        }
+      ],
+      "18": [
+        {
+          "sorcerous origin": {
+            "draconic bloodline": [
+              "draconic presence"
+            ],
+            "wild magic": [
+              "spell bombardment"
+            ]
+          }
+        }
+      ],
+      "19": [
+        "ability score improvement"
+      ],
+      "20": [
+        "sorcerous restoration"
+      ]
+    }
+  },
+  "warlock": {
+    "starting gold": {
+      "base": "10gp",
+      "multiplier": "4d4"
+    },
+    "hit die": {
+      "per-level": "1d8"
+    },
+    "hit points": {
+      "initial": [
+        8,
+        "constitution modifier"
+      ],
+      "per-level": [
+        "1d8",
+        "constitution modifier"
+      ]
+    },
+    "primary ability": "charisma",
+    "saving throw proficiencies": [
+      "wisdom",
+      "charisma"
+    ],
+    "armor proficiencies": [
+      "light armor"
+    ],
+    "weapon proficiencies": [
+      "simple weapons"
+    ],
+    "skill proficiencies": [
+      {
+        "choice": {
+          "count": 2,
+          "choices": [
+            "arcana",
+            "deception",
+            "history",
+            "intimidation",
+            "investigation",
+            "nature",
+            "religion"
+          ]
+        }
+      }
+    ],
+    "equipment": [
+      {
+        "choice": [
+          [
+            "light crossbow",
+            {
+              "crossbow bolt": 20
+            }
+          ],
+          "simple weapon"
+        ]
+      },
+      {
+        "choice": [
+          "component pouch",
+          "arcane focus"
+        ]
+      },
+      {
+        "choice": [
+          "scholar's pack",
+          "dungeoneer's pack"
+        ]
+      },
+      "leather armor",
+      {
+        "choice": "simple weapon"
+      },
+      {
+        "dagger": 2
+      }
+    ],
+    "proficiency bonus": {
+      "1": 2,
+      "5": 3,
+      "9": 4,
+      "13": 5,
+      "17": 6
+    },
+    "cantrips known": {
+      "1": 2,
+      "4": 3,
+      "10": 4
+    },
+    "spells known": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      10,
+      11,
+      11,
+      12,
+      12,
+      13,
+      13,
+      14,
+      14,
+      15,
+      15
+    ],
+    "spell slots": {
+      "1": 1,
+      "2": 2,
+      "11": 3,
+      "17": 4
+    },
+    "slot level": {
+      "1": 1,
+      "3": 2,
+      "5": 3,
+      "7": 4,
+      "9": 5
+    },
+    "invocations known": [
+      0,
+      2,
+      2,
+      2,
+      3,
+      3,
+      4,
+      4,
+      5,
+      5,
+      5,
+      6,
+      6,
+      6,
+      7,
+      7,
+      7,
+      8,
+      8,
+      8
+    ],
+    "spell save": [
+      8,
+      "proficiency bonus",
+      "charisma modifier"
+    ],
+    "spell attack modifier": [
+      "proficiency bonus",
+      "charisma modifier"
+    ],
+    "features": {
+      "1": [
+        {
+          "choice": {
+            "otherworldly patron": [
+              "archfey",
+              "fiend",
+              "great old one"
+            ]
+          }
+        },
+        {
+          "otherworldly patron": {
+            "archfey": [
+              "fey presence"
+            ],
+            "fiend": [
+              "dark one's blessing"
+            ],
+            "great old one": [
+              "awakended mind"
+            ]
+          }
+        },
+        "pact magic",
+        {
+          "choice": {
+            "count": 2,
+            "choices": "cantrips"
+          }
+        }
+      ],
+      "2": [
+        "eldritch invocations"
+      ],
+      "3": [
+        {
+          "choice": {
+            "pact boon": [
+              "pact of the chain",
+              "pact of the blade",
+              "pact of the tome"
+            ]
+          }
+        },
+        {
+          "pact boon": {
+            "pact of the chain": [
+              "find familiar"
+            ],
+            "pact of the blade": [],
+            "pact of the tome": [
+              {
+                "equipment": [
+                  "book of shadows"
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "4": [
+        "ability score improvement"
+      ],
+      "5": [],
+      "6": [
+        {
+          "otherworldly patron": {
+            "archfey": [
+              "misty escape"
+            ],
+            "fiend": [
+              "dark one's own luck"
+            ],
+            "great old one": [
+              "entropic ward"
+            ]
+          }
+        }
+      ],
+      "7": [],
+      "8": [
+        "ability score improvement"
+      ],
+      "9": [],
+      "10": [
+        {
+          "otherworldly patron": {
+            "archfey": [
+              "beguiling defenses"
+            ],
+            "fiend": [
+              "fiendish resilience"
+            ],
+            "great old one": [
+              "thought shield"
+            ]
+          }
+        }
+      ],
+      "11": [
+        {
+          "mystic arcanum": 6
+        }
+      ],
+      "12": [
+        "ability score improvement"
+      ],
+      "13": [
+        {
+          "mystic arcanum": 7
+        }
+      ],
+      "14": [
+        {
+          "otherworldly patron": {
+            "archfey": [
+              "dark delirium"
+            ],
+            "fiend": [
+              "hurl through hell"
+            ],
+            "great old one": [
+              "create thrall"
+            ]
+          }
+        }
+      ],
+      "15": [
+        {
+          "mystic arcanum": 8
+        }
+      ],
+      "16": [
+        "ability score improvement"
+      ],
+      "17": [
+        {
+          "mystic arcanum": 9
+        }
+      ],
+      "18": [],
+      "19": [
+        "ability score improvement"
+      ],
+      "20": [
+        "eldritch master"
+      ]
+    },
+    "archfey spells": {
+      "1": [
+        "faerie fire",
+        "sleep"
+      ],
+      "2": [
+        "calm emotions",
+        "phantasmal force"
+      ],
+      "3": [
+        "blink",
+        "plant growth"
+      ],
+      "4": [
+        "dominate beast",
+        "greater invisibility"
+      ],
+      "5": [
+        "dominate person",
+        "seeming"
+      ]
+    },
+    "fiend spells": {
+      "1": [
+        "burning hands",
+        "command"
+      ],
+      "2": [
+        "blindness/deafness",
+        "scorching ray"
+      ],
+      "3": [
+        "fireball",
+        "stinking cloud"
+      ],
+      "4": [
+        "fire shield",
+        "wall of fire"
+      ],
+      "5": [
+        "flame strike",
+        "hallow"
+      ]
+    },
+    "great old one spells": {
+      "1": [
+        "dissonant whispers",
+        "Tasha's hideous laughter"
+      ],
+      "2": [
+        "detect thoughts",
+        "phantasmal force"
+      ],
+      "3": [
+        "clairvoyance",
+        "sending"
+      ],
+      "4": [
+        "dominate beast",
+        "Evard's black tentacles"
+      ],
+      "5": [
+        "dominate person",
+        "telekinesis"
+      ]
+    }
+  },
+  "wizard": {
+    "starting gold": {
+      "base": "10gp",
+      "multiplier": "4d4"
+    },
+    "hit die": {
+      "per-level": "1d6"
+    },
+    "hit points": {
+      "initial": [
+        6,
+        "constitution modifier"
+      ],
+      "per-level": [
+        "1d6",
+        "constitution modifier"
+      ]
+    },
+    "primary ability": "intelligence",
+    "saving throw proficiencies": [
+      "intelligence",
+      "wisdom"
+    ],
+    "weapon proficiencies": [
+      "dagger",
+      "dart",
+      "sling",
+      "quarterstaff",
+      "light crossbow"
+    ],
+    "skill proficiencies": [
+      {
+        "choice": {
+          "count": 2,
+          "choices": [
+            "arcana",
+            "history",
+            "insight",
+            "investigation",
+            "medicine",
+            "religion"
+          ]
+        }
+      }
+    ],
+    "equipment": [
+      {
+        "choice": [
+          "quarterstaff",
+          "dagger"
+        ]
+      },
+      {
+        "choice": [
+          "component pouch",
+          "arcane focus"
+        ]
+      },
+      {
+        "choice": [
+          "scholar's pack",
+          "explorer's pack"
+        ]
+      },
+      "spellbook"
+    ],
+    "proficiency bonus": {
+      "1": 2,
+      "5": 3,
+      "9": 4,
+      "13": 5,
+      "17": 6
+    },
+    "cantrips known": {
+      "1": 3,
+      "4": 4,
+      "10": 5
+    },
+    "spell slots": [
+      [
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        1,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        1,
+        0
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        3,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        3,
+        2,
+        1,
+        1,
+        1
+      ],
+      [
+        4,
+        3,
+        3,
+        3,
+        3,
+        2,
+        2,
+        1,
+        1
+      ]
+    ],
+    "spell save": [
+      8,
+      "proficiency bonus",
+      "intelligence modifier"
+    ],
+    "spell attack modifier": [
+      "proficiency bonus",
+      "intelligence modifier"
+    ],
+    "features": {
+      "1": [
+        "spellcasting",
+        "arcane recovery"
+      ],
+      "2": [
+        {
+          "choice": {
+            "arcane tradition": [
+              "abjuration",
+              "conjuration",
+              "divination",
+              "enchantment",
+              "evocation",
+              "illusion",
+              "necromancy",
+              "transmutation"
+            ]
+          }
+        },
+        {
+          "arcane tradition": {
+            "abjuration": [
+              "abjurant savant",
+              "arcane ward"
+            ],
+            "conjuration": [
+              "conjuration savant",
+              "minor conjuration"
+            ],
+            "divination": [
+              "divination savant",
+              "portent"
+            ],
+            "enchantment": [
+              "enchantment savant",
+              "hypnotic gaze"
+            ],
+            "evocation": [
+              "evocation savant",
+              "sculpt spells"
+            ],
+            "illusion": [
+              "illusion savant",
+              "improved minor illusion"
+            ],
+            "necromancy": [
+              "necromancy savant",
+              "grim harvest"
+            ],
+            "transmutation": [
+              "transmutation savant",
+              "minor alchemy"
+            ]
+          }
+        }
+      ],
+      "4": [
+        "ability score improvement"
+      ],
+      "6": [
+        {
+          "arcane tradition": {
+            "abjuration": [
+              "projected ward"
+            ],
+            "conjuration": [
+              "benign transposition"
+            ],
+            "divination": [
+              "expert divination"
+            ],
+            "enchantment": [
+              "instinctive charm"
+            ],
+            "evocation": [
+              "potent cantrip"
+            ],
+            "illusion": [
+              "malleable illusions"
+            ],
+            "necromancy": [
+              "undead thralls"
+            ],
+            "transmutation": [
+              "transmuter's stone"
+            ]
+          }
+        }
+      ],
+      "8": [
+        "ability score improvement"
+      ],
+      "10": [
+        {
+          "arcane tradition": {
+            "abjuration": [
+              "improved abjuration"
+            ],
+            "conjuration": [
+              "focused conjuration"
+            ],
+            "divination": [
+              "third eye"
+            ],
+            "enchantment": [
+              "split enchantment"
+            ],
+            "evocation": [
+              "empowered evocation"
+            ],
+            "illusion": [
+              "illusort self"
+            ],
+            "necromancy": [
+              "inured to undeath"
+            ],
+            "transmutation": [
+              "shapechanger"
+            ]
+          }
+        }
+      ],
+      "12": [
+        "ability score improvement"
+      ],
+      "14": [
+        {
+          "arcane tradition": {
+            "abjuration": [
+              "spell resistance"
+            ],
+            "conjuration": [
+              "durable summons"
+            ],
+            "divination": [
+              "greater portent"
+            ],
+            "enchantment": [
+              "alter memories"
+            ],
+            "evocation": [
+              "overchannel"
+            ],
+            "illusion": [
+              "illusory reality"
+            ],
+            "necromancy": [
+              "command undead"
+            ],
+            "transmutation": [
+              "master transmuter"
+            ]
+          }
+        }
+      ],
+      "16": [
+        "ability score improvement"
+      ],
+      "18": [
+        "spell mastery"
+      ],
+      "19": [
+        "ability score improvement"
+      ],
+      "20": [
+        "signature spell"
+      ]
+    }
+  }
+}

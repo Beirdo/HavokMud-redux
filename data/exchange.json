@@ -1,0 +1,27 @@
+{
+  "cp": {
+    "type": "copper",
+    "basevalue": 1,
+    "coins-per-pound": 50
+  },
+  "sp": {
+    "type": "silver",
+    "basevalue": 10,
+    "coins-per-pound": 50
+  },
+  "ep": {
+    "type": "electrum",
+    "basevalue": 50,
+    "coins-per-pound": 50
+  },
+  "gp": {
+    "type": "gold",
+    "basevalue": 100,
+    "coins-per-pound": 50
+  },
+  "pp": {
+    "type": "platinum",
+    "basevalue": 1000,
+    "coins-per-pound": 50
+  }
+}

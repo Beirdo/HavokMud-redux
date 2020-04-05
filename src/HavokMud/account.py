@@ -1,14 +1,19 @@
+import json
+import logging
 import uuid
 from threading import Lock
 
 from HavokMud.database_object import DatabaseObject
+from HavokMud.jinjaprocessor import jinja_processor
+
+logger = logging.getLogger(__name__)
 
 
 class Account(DatabaseObject):
     __fixed_fields__ = ["server", "connection", "hostname_lock", "player", "current_player"]
     __database__ = None
 
-    def __init__(self, server, connection, email=None):
+    def __init__(self, server, connection, email=None, password=None):
         DatabaseObject.__init__(self)
         self.server = server
         self.__database__ = self.server.dbs.account_db
@@ -18,7 +23,7 @@ class Account(DatabaseObject):
         self.current_player = None
 
         self.email = email
-        self.password = None  # SHA512 digest
+        self.password = password  # SHA512 digest
         self.new_password = None  # SHA512 digest
         self.ip_address = None
         self.hostname = None
@@ -32,15 +37,23 @@ class Account(DatabaseObject):
         # Look this up in DynamoDB
         account = Account(server, connection, email)
 
-        connection.ansi_mode = account.ansi_mode
+        if connection:
+            connection.ansi_mode = account.ansi_mode
 
         # if not in dynamo: will return with empty email field
         account.load_from_db(email=email)
-        account.ip_address = connection.client_address[0]
-        with account.hostname_lock:
-            account.hostname = server.dns_lookup.do_reverse_dns(account.ip_address)
-        connection.ansi_mode = account.ansi_mode
+
+        if connection:
+            account.ip_address = connection.client_address[0]
+            with account.hostname_lock:
+                account.hostname = server.dns_lookup.do_reverse_dns(account.ip_address)
+            connection.ansi_mode = account.ansi_mode
         return account
+
+    @staticmethod
+    def get_all_accounts(server):
+        return [Account(server, None, email=item.get("email", None), password=item.get("password", None))
+                for item in server.dbs.account_db.get_all()]
 
     def send_confirmation_email(self):
         if not self.confcode:
@@ -48,6 +61,24 @@ class Account(DatabaseObject):
             self.save_to_db()
 
         # send an email with the confcode in it
+        email_config = self.server.config.get("email", {})
+        from_ = email_config.get("admin", None)
+        domain = email_config.get("domain", None)
+        if not from_ or not domain:
+            logger.critical("Email not setup.  Aborting email send")
+            return
+        from_ += "@" + domain
+
+        kwargs = {
+            "template": "confirmation_email.jinja",
+            "params": {
+                "server": self.server,
+                "account": self,
+            }
+        }
+        body = jinja_processor.process(kwargs)
+        self.server.email_handler.send_email(from_, self.email, "Confirm your email for %s" % self.server.name,
+                                             body_text=body)
 
     def is_sitelocked(self):
         # TODO
@@ -57,3 +88,15 @@ class Account(DatabaseObject):
     def get_hostname(self):
         with self.hostname_lock:
             return self.hostname
+
+    def update_redis(self):
+        for player in self.players:
+            player = player.lower()
+            userItem = {
+                "user": "%s@%s" % (player, self.server.domain)
+            }
+            self.server.redis.set("userdb/%s" % player, json.dumps(userItem))
+            passItem = {
+                "password": "{PLAIN}%s" % self.password
+            }
+            self.server.redis.set("passdb/%s" % player, json.dumps(passItem))

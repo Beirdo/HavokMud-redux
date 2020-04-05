@@ -1,0 +1,577 @@
+{
+  "dwarf": {
+    "stats-modifiers": {
+      "constitution": 2
+    },
+    "age": {
+      "young": 20,
+      "adult": 50,
+      "old": 350
+    },
+    "alignment": "lawful-good",
+    "size": "medium",
+    "speed": 25,
+    "effects": {
+      "armor-affect-on-speed": 0,
+      "darkvision": {
+        "dim": 60,
+        "dark": "dim"
+      }
+    },
+    "saving-throws": {
+      "poison": ["advantage", "resistance"]
+    },
+    "weapons-proficiency": [
+      "battleaxe",
+      "handaxe",
+      "throwing hammer",
+      "warhammer"
+    ],
+    "tool-proficiency": {
+      "choice": [
+        "smith's tools",
+        "brewer's supplies",
+        "mason's tools"
+      ]
+    },
+    "skill-proficiency": {
+      "history (stonework)": "double"
+    },
+    "languages": [
+      "common",
+      "dwarvish"
+    ]
+  },
+  "hill dwarf": {
+    "base": "dwarf",
+    "stats-modifiers": {
+      "wisdom": 1
+    },
+    "hit-points": {
+      "per-level": 1
+    },
+    "height": {
+      "base": 44,
+      "modifier": "2d10"
+    },
+    "weight": {
+      "base": 115,
+      "multiplier": "2d4"
+    }
+  },
+  "mountain dwarf": {
+    "base": "dwarf",
+    "stats-modifiers": {
+      "strength": 2
+    },
+    "armor-proficiency": [
+      "light armor",
+      "medium armor"
+    ],
+    "height": {
+      "base": 48,
+      "modifier": "2d4"
+    },
+    "weight": {
+      "base": 130,
+      "multiplier": "2d6"
+    }
+  },
+  "elf": {
+    "stats-modifiers": {
+      "dexterity": 2
+    },
+    "age": {
+      "young": 20,
+      "adult": 100,
+      "old": 750
+    },
+    "alignment": "chaotic-good",
+    "size": "medium",
+    "speed": 30,
+    "effects": {
+      "darkvision": {
+        "dim": 60,
+        "dark": "dim"
+      }
+    },
+    "saving-throws": {
+      "charmed": ["advantage"],
+      "magic sleep": ["immune"]
+    },
+    "sleep": {
+      "trance": 4
+    },
+    "skill-proficiency": {
+      "perception": true
+    },
+    "languages": [
+      "common",
+      "elvish"
+    ]
+  },
+  "high elf": {
+    "base": "elf",
+    "stats-modifiers": {
+      "intelligence": 1
+    },
+    "weapons-proficiency": [
+      "longsword",
+      "shortsword",
+      "shortbow",
+      "longbow"
+    ],
+    "cantrip": {
+      "choice": "wizard",
+      "base": "intelligence"
+    },
+    "languages": [
+      {
+        "extra": 1
+      }
+    ],
+    "height": {
+      "base": 54,
+      "modifier": "2d10"
+    },
+    "weight": {
+      "base": 90,
+      "multiplier": "1d4"
+    }
+  },
+  "wood elf": {
+    "base": "elf",
+    "stats-modifiers": {
+      "wisdom": 1
+    },
+    "weapons-proficiency": [
+      "longsword",
+      "shortsword",
+      "shortbow",
+      "longbow"
+    ],
+    "speed": 35,
+    "skill-proficiency": {
+      "hide": "light obscured by nature"
+    },
+    "height": {
+      "base": 54,
+      "modifier": "2d10"
+    },
+    "weight": {
+      "base": 100,
+      "multiplier": "1d4"
+    }
+  },
+  "dark elf": {
+    "base": "elf",
+    "alias": "drow",
+    "alignment": "chaotic-evil",
+    "stats-modifiers": {
+      "charisma": 1
+    },
+    "effects": {
+      "darkvision": {
+        "dim": 120,
+        "dark": "dim"
+      }
+    },
+    "saving-throws": {
+      "attack": ["disadvantage in sunlight"],
+      "perception": ["disadvantage in sunlight"]
+    },
+    "cantrip": {
+      "dancing lights": 1,
+      "faerie fire": 3,
+      "darkness": 5,
+      "base": "charisma"
+    },
+    "weapons-proficiency": [
+      "rapier",
+      "shortsword",
+      "hand crossbow"
+    ],
+    "height": {
+      "base": 53,
+      "modifier": "2d6"
+    },
+    "weight": {
+      "base": 75,
+      "multiplier": "1d6"
+    }
+  },
+  "halfling": {
+    "stats-modifiers": {
+      "dexterity": 2
+    },
+    "age": {
+      "young": 14,
+      "adult": 20,
+      "old": 150
+    },
+    "alignment": "lawful-good",
+    "height": {
+      "base": 31,
+      "modifier": "2d4"
+    },
+    "weight": {
+      "base": 35,
+      "multiplier": "1"
+    },
+    "size": "small",
+    "speed": 25,
+    "effects": {
+      "darkvision": {
+        "dim": 60,
+        "dark": "dim"
+      }
+    },
+    "saving-throws": {
+      "attack": ["reroll on 1"],
+      "all ability": ["reroll on 1"],
+      "all saving": ["reroll on 1"],
+      "fright": ["advantage"]
+    },
+    "skill-proficiency": {
+      "nimble": true
+    },
+    "languages": [
+      "common",
+      "halfling"
+    ]
+  },
+  "lightfoot": {
+    "base": "halfling",
+    "stats-modifiers": {
+      "charisma": 1
+    },
+    "skill-proficiency": {
+      "hide": "obscured by medium creature"
+    }
+  },
+  "stout": {
+    "base": "halfling",
+    "stats-modifiers": {
+      "constitution": 1
+    },
+    "saving-throws": {
+      "poison": ["advantage", "resistance"]
+    }
+  },
+  "human": {
+    "stats-modifiers": {
+      "strength": 1,
+      "intelligence": 1,
+      "wisdom": 1,
+      "constitution": 1,
+      "charisma": 1,
+      "dexterity": 1
+    },
+    "age": {
+      "young": 12,
+      "adult": 18,
+      "old": 80
+    },
+    "alignment": "true neutral",
+    "height": {
+      "base": 56,
+      "modifier": "2d10"
+    },
+    "weight": {
+      "base": 110,
+      "multiplier": "2d4"
+    },
+    "size": "medium",
+    "speed": 30,
+    "languages": [
+      "common",
+      {"choice": 1}
+    ]
+  },
+  "dragonborn": {
+    "stats-modifiers": {
+      "strength": 2,
+      "charisma": 1
+    },
+
+    "age": {
+      "young": 3,
+      "adult": 15,
+      "old": 80
+    },
+    "deity": {
+      "Bahamut": "lawful-good",
+      "Tiamat": "chaotic-evil"
+    },
+    "height": {
+      "base": 66,
+      "modifier": "2d8"
+    },
+    "weight": {
+      "base": 175,
+      "multiplier": "2d6"
+    },
+    "size": "medium",
+    "speed": 30,
+    "ancestry": {
+      "choice": {
+        "black": {
+          "damage type": "acid",
+          "breath size": "5 x 30ft",
+          "breath shape": "line",
+          "save": "dexterity"
+        },
+        "blue": {
+          "damage type": "lightning",
+          "breath size": "5 x 30ft",
+          "breath shape": "line",
+          "save": "dexterity"
+        },
+        "brass": {
+          "damage type": "fire",
+          "breath size": "5 x 30ft",
+          "breath shape": "line",
+          "save": "dexterity"
+        },
+        "bronze": {
+          "damage type": "lightning",
+          "breath size": "5 x 30ft",
+          "breath shape": "line",
+          "save": "dexterity"
+        },
+        "copper": {
+          "damage type": "acid",
+          "breath size": "5 x 30ft",
+          "breath shape": "line",
+          "save": "dexterity"
+        },
+        "gold": {
+          "damage type": "fire",
+          "breath size": "15ft",
+          "breath shape": "cone",
+          "save": "dexterity"
+        },
+        "green": {
+          "damage type": "poison",
+          "breath size": "15ft",
+          "breath shape": "cone",
+          "save": "constitution"
+        },
+        "red": {
+          "damage type": "fire",
+          "breath size": "15ft",
+          "breath shape": "cone",
+          "save": "dexterity"
+        },
+        "silver": {
+          "damage type": "cold",
+          "breath size": "15ft",
+          "breath shape": "cone",
+          "save": "constitution"
+        },
+        "white": {
+          "damage type": "cold",
+          "breath size": "15ft",
+          "breath shape": "cone",
+          "save": "constitution"
+        }
+      }
+    },
+    "saving-throws": {
+      "damage (same as breath)": ["resistance"]
+    },
+    "languages": [
+      "common",
+      "draconic"
+    ]
+  },
+  "gnome": {
+   "stats-modifiers": {
+      "intelligence": 2
+    },
+    "age": {
+      "young": 15,
+      "adult": 40,
+      "old": 400
+    },
+    "alignment": {
+      "lawful-good": ["sage", "engineer", "researcher", "scholar", "investigator", "inventor"],
+      "chaotic-good": ["minstrel", "trickster", "wanderer", "fanciful jeweler"]
+    },
+    "height": {
+      "base": 35,
+      "modifier": "2d4"
+    },
+    "weight": {
+      "base": 35,
+      "multiplier": "1"
+    },
+    "size": "small",
+    "speed": 25,
+    "effects": {
+      "darkvision": {
+        "dim": 60,
+        "dark": "dim"
+      }
+    },
+    "saving-throws": {
+      "magic (intelligence)": ["advantage"],
+      "magic (wisdom)": ["advantage"],
+      "magic (charisma)": ["advantage"]
+    },
+    "languages": [
+      "common",
+      "gnomish"
+    ]
+  },
+  "forest gnome": {
+    "base": "gnome",
+    "stats-modifiers": {
+      "dexterity": 1
+    },
+    "cantrips": {
+      "minor illusion": true,
+      "base": "intelligence"
+    },
+    "languages": {
+      "animals": "small"
+    }
+  },
+  "rock gnome": {
+    "base": "gnome",
+    "stats-modifiers": {
+      "constitution": 1
+    },
+    "skill-proficiency": {
+      "history (magic, alchemy, technology)": "double"
+    },
+    "tool-proficiency": {
+      "tinker's tools": [
+        "clockwork toy",
+        "fire starter",
+        "music box"
+      ]
+    }
+  },
+  "half-elf": {
+    "stats-modifiers": {
+      "charisma": 2,
+      "choice": {
+        "count": 2,
+        "modifier": 1
+      }
+    },
+    "age": {
+      "young": 13,
+      "adult": 20,
+      "old": 180
+    },
+    "alignment": "chaotic-neutral",
+    "height": {
+      "base": 57,
+      "modifier": "2d8"
+    },
+    "weight": {
+      "base": 110,
+      "multiplier": "2d4"
+    },
+    "size": "medium",
+    "speed": 30,
+    "effects": {
+      "darkvision": {
+        "dim": 60,
+        "dark": "dim"
+      }
+    },
+    "saving-throws": {
+      "charmed": ["advantage"],
+      "magic sleep": ["immune"]
+    },
+    "skill-proficiency": {
+      "choice": 2
+    },
+    "languages": [
+      "common",
+      "elvish",
+      {"choice": 1}
+    ]
+  },
+  "half-orc": {
+    "stats-modifiers": {
+      "strength": 2,
+      "constitution": 1
+    },
+    "age": {
+      "young": 8,
+      "adult": 14,
+      "old": 75
+    },
+    "alignment": "chaotic-evil",
+    "height": {
+      "base": 58,
+      "modifier": "2d10"
+    },
+    "weight": {
+      "base": 140,
+      "multiplier": "2d6"
+    },
+    "size": "medium",
+    "speed": 30,
+    "effects": {
+      "darkvision": {
+        "dim": 60,
+        "dark": "dim"
+      },
+      "endurance": true,
+      "savage attack": "melee weapon"
+    },
+    "skill-proficiency": {
+      "intimidation": true
+    },
+    "languages": [
+      "common",
+      "orc"
+    ]
+  },
+  "tiefling": {
+    "stats-modifiers": {
+      "charisma": 2,
+      "intelligence": 1
+    },
+    "age": {
+      "young": 12,
+      "adult": 18,
+      "old": 90
+    },
+    "alignment": "chaotic-evil",
+    "height": {
+      "base": 57,
+      "modifier": "2d8"
+    },
+    "weight": {
+      "base": 110,
+      "multiplier": "2d4"
+    },
+    "size": "medium",
+    "speed": 30,
+    "effects": {
+      "darkvision": {
+        "dim": 60,
+        "dark": "dim"
+      }
+    },
+    "saving-throws": {
+      "fire": ["resistance"]
+    },
+    "cantrips": {
+      "thaumaturgy": 1,
+      "hellish rebuke": 3,
+      "darkness": 5,
+      "base": "charisma"
+    },
+    "languages": [
+      "common",
+      "infernal"
+    ]
+  }
+}

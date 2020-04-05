@@ -85,12 +85,18 @@ class Database(object):
     db_provisioned_throughput = None
     handler = None
 
-    def __init__(self, region="us-east-1", endpoint=None, use_ssl=True):
-        self.endpoint = endpoint
-        self.region = region
-        self.use_ssl = use_ssl
+    def __init__(self, config):
+        self.config = config
+
+        self.region = self.config.get("mud", {}).get("region", "us-east-1")
+
+        dynamodb_config = self.config.get("dynamodb", {})
+        self.endpoint = dynamodb_config.get("endpoint", None)
+        self.use_ssl = dynamodb_config.get("useSsl", True)
+
         if not self.table:
             raise ValueError("Table not defined in class %s" % self.__class__.__name__)
+
         self.session = boto3.session.Session(region_name=self.region)
         self.dynamodb = self.session.client('dynamodb', endpoint_url=self.endpoint, use_ssl=self.use_ssl)
         self.create_table()

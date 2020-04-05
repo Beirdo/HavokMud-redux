@@ -1,4 +1,5 @@
 import logging
+import re
 
 from statemachine import StateMachine, State
 
@@ -259,6 +260,7 @@ class LoginStateMachine(StateMachine):
         self.model.account.password = self.model.account.new_password
         self.model.account.new_password = None
         self.model.account.save_to_db()
+        self.model.account.update_redis()
 
         self.append_line("Password changed...")
         return self.show_account_menu
@@ -373,8 +375,12 @@ class LoginStateMachine(StateMachine):
             self.model.account.player = Player(self.model.server, self.model.connection, self.model.account)
             self.model.account.player.roll_abilities()
 
-        self.model.account.player.name = name
+        self.model.account.player.display_name = name
+        self.model.account.player.name = name.lower()
         self.model.account.player.save_to_db()
+        self.model.account.players.append(name.lower())
+        self.model.account.save_to_db()
+        self.model.account.update_redis()
         return self.show_creation_menu
 
     def on_choose_sex(self):
@@ -397,7 +403,24 @@ class LoginStateMachine(StateMachine):
         return self.show_creation_menu
 
     def on_choose_stats(self):
-        # TODO: do this
+        choices = []
+        for token in self.tokens:
+            pattern = re.compile(r'^%s.*' % token, re.I)
+            roots = list(filter(None, map(lambda x: pattern.findall(x), Player.stats_list)))
+            roots = [item for item_list in roots for item in item_list]
+            choice = None
+            if len(roots) > 1:
+                self.append_line("Choice %s too vague:  could be any of %s" % (token, roots))
+            elif len(roots) == 1:
+                choice = roots[0]
+            choices.append(choice)
+
+        if len([choice for choice in choices if choice is None]) != 0:
+            self.append_line("These choices are not valid.  Please try again.")
+        else:
+            self.model.account.player.stats["choices"] = choices
+            self.model.account.player.finalize_abilities()
+
         return self.show_creation_menu
 
     def on_choose_alignment(self):

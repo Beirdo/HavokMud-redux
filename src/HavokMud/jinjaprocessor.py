@@ -3,6 +3,12 @@ import stackless
 from jinja2 import Environment, PackageLoader
 
 
+class JinjaRequest(object):
+    def __init__(self, data):
+        self.data = data
+        self.channel = stackless.channel()
+
+
 class JinjaProcessor(object):
     def __init__(self):
         self.in_channel = stackless.channel()
@@ -17,16 +23,17 @@ class JinjaProcessor(object):
 
     def process_data(self):
         while True:
-            data = self.in_channel.receive()
-            if not isinstance(data, dict):
+            request = self.in_channel.receive()
+            if not isinstance(request, JinjaRequest):
                 continue
 
-            out_channel = data.get("channel", None)
-            template_name = data.get("template", None)
-            params = data.get("params", {})
-
+            out_channel = request.channel
             if not out_channel:
                 continue
+
+            data = request.data
+            template_name = data.get("template", None)
+            params = data.get("params", {})
 
             if template_name:
                 template = self.environment.get_template(template_name)
@@ -34,6 +41,11 @@ class JinjaProcessor(object):
             else:
                 out_data = ""
             out_channel.send(out_data)
+
+    def process(self, data):
+        request = JinjaRequest(data)
+        self.in_channel.send(request)
+        return request.channel.receive()
 
 
 jinja_processor = JinjaProcessor()

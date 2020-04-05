@@ -21,8 +21,7 @@ class Connection(object):
 
         self.output_channel = stackless.channel()
         self.input_channel = stackless.channel()
-        self.jinja_in_channel = jinja_processor.in_channel
-        self.jinja_out_channel = stackless.channel()
+
         self.handler = None
         self.read_buffer = ""
         self.ansi_mode = True
@@ -165,10 +164,7 @@ class Connection(object):
             if isinstance(data, str):
                 self.write(data)
             elif isinstance(data, dict):
-                data["channel"] = self.jinja_out_channel
-                self.jinja_in_channel.send(data)
-                data = self.jinja_out_channel.receive()
-                self.write(data)
+                self.write(jinja_processor.process(data))
 
     def read_tasklet(self):
         while not self.disconnected:

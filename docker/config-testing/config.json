@@ -5,15 +5,23 @@
     "port": 3000,
     "name": "HavokMud",
     "wizlocked": false,
-    "wizlock_reason": null
+    "wizlock_reason": null,
+    "region": "us-east-1"
   },
   "dynamodb": {
     "endpoint": "http://localstack-main:4569",
     "useSsl": false
   },
+  "redis": {
+    "host": "172.18.0.1",
+    "port": 6379
+  },
   "email": {
-    "from": "havokmud-admin@gmail.com",
-    "endpoint": "http://localstack-main:4579"
+    "mocked": true,
+    "domain": "havokmud.testing.net",
+    "admin": "havokmud-admin",
+    "endpoint": "http://localstack-main:4579",
+    "useSsl": false
   },
   "loggingLevels": {
     "botocore": "INFO",

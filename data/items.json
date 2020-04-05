@@ -1,0 +1,2128 @@
+{
+  "padded armor": {
+    "type": [
+      "armor",
+      "light armor",
+      "light armor (non-metal)"
+    ],
+    "cost": "5gp",
+    "armor class": [
+      11,
+      "dexterity modifier"
+    ],
+    "stealth modifier": "disadvantage",
+    "weight": 8
+  },
+  "leather armor": {
+    "type": [
+      "armor",
+      "light armor",
+      "light armor (non-metal)"
+    ],
+    "cost": "10gp",
+    "armor class": [
+      11,
+      "dexterity modifier"
+    ],
+    "weight": 10
+  },
+  "studded leather": {
+    "type": [
+      "armor",
+      "light armor",
+      "light armor (non-metal)"
+    ],
+    "cost": "45gp",
+    "armor class": [
+      12,
+      "dexterity modifier"
+    ],
+    "weight": 13
+  },
+  "hide armor": {
+    "type": [
+      "armor",
+      "medium armor",
+      "medium armor (non-metal)"
+    ],
+    "cost": "10gp",
+    "armor class": [
+      12,
+      {
+        "dexterity modifier": 2
+      }
+    ],
+    "weight": 12
+  },
+  "chain mail shirt": {
+    "type": [
+      "armor",
+      "medium armor"
+    ],
+    "cost": "50gp",
+    "armor class": [
+      13,
+      {
+        "dexteriry modifier": 2
+      }
+    ],
+    "weight": 20
+  },
+  "scale mail": {
+    "type": [
+      "armor",
+      "medium armor"
+    ],
+    "cost": "50gp",
+    "armor class": [
+      14,
+      {
+        "dexterity modifier": 2
+      }
+    ],
+    "stealth modifier": "disadvantage",
+    "weight": 45
+  },
+  "breastplate": {
+    "type": [
+      "armor",
+      "medium armor"
+    ],
+    "cost": "400gp",
+    "armor class": [
+      14,
+      {
+        "dexterity modifier": 2
+      }
+    ],
+    "weight": 20
+  },
+  "half plate": {
+    "type": [
+      "armor",
+      "medium armor"
+    ],
+    "cost": "750gp",
+    "armor class": [
+      15,
+      {
+        "dexterity modifier": 2
+      }
+    ],
+    "stealth modifier": "disadvantage",
+    "weight": 40
+  },
+  "ring mail": {
+    "type": [
+      "armor",
+      "heavy armor"
+    ],
+    "cost": "30gp",
+    "armor class": [
+      14
+    ],
+    "stealth modifier": "disadvantage",
+    "weight": 40
+  },
+  "chain mail": {
+    "type": [
+      "armor",
+      "heavy armor"
+    ],
+    "cost": "75gp",
+    "armor class": [
+      16
+    ],
+    "minimum strength": 13,
+    "stealth modifier": "disadvantage",
+    "weight": 55
+  },
+  "splint": {
+    "type": [
+      "armor",
+      "heavy armor"
+    ],
+    "cost": "200gp",
+    "armor class": [
+      17
+    ],
+    "minimum strength": 15,
+    "stealth modifier": "disadvantage",
+    "weight": 60
+  },
+  "plate": {
+    "type": [
+      "armor",
+      "heavy armor"
+    ],
+    "cost": "1500gp",
+    "armor class": [
+      18
+    ],
+    "minimum strength": 15,
+    "stealth modifier": "disadvantage",
+    "weight": 65
+  },
+  "shield": {
+    "type": [
+      "armor",
+      "shield"
+    ],
+    "cost": "10gp",
+    "armor class": [
+      2
+    ],
+    "weight": 6
+  },
+  "club": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "simple melee weapon"
+    ],
+    "cost": "1sp",
+    "damage": {
+      "type": "bludgeoning",
+      "roll": "1d4"
+    },
+    "weight": 2,
+    "properties": [
+      "light"
+    ]
+  },
+  "dagger": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "simple melee weapon"
+    ],
+    "cost": "2gp",
+    "damage": {
+      "type": "piercing",
+      "roll": "1d4"
+    },
+    "weight": 1,
+    "properties": [
+      "finesse",
+      "light",
+      "thrown"
+    ],
+    "range": "20/60"
+  },
+  "greatclub": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "simple melee weapon"
+    ],
+    "cost": "2sp",
+    "damage": {
+      "type": "bludgeoning",
+      "roll": "1d8"
+    },
+    "weight": 10,
+    "properties": "two-handed"
+  },
+  "handaxe": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "simple melee weapon"
+    ],
+    "cost": "5gp",
+    "damage": {
+      "type": "slashing",
+      "roll": "1d6"
+    },
+    "weight": 2,
+    "properties": [
+      "light",
+      "thrown"
+    ],
+    "range": "20/60"
+  },
+  "javelin": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "simple melee weapon"
+    ],
+    "cost": "5sp",
+    "damage": {
+      "type": "piercing",
+      "roll": "1d6"
+    },
+    "weight": 2,
+    "properties": [
+      "thrown"
+    ],
+    "range": "30/120"
+  },
+  "light hammer": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "simple melee weapon"
+    ],
+    "cost": "2gp",
+    "damage": {
+      "type": "bludgeoning",
+      "roll": "1d4"
+    },
+    "weight": 2,
+    "properties": [
+      "light",
+      "thrown"
+    ],
+    "range": "20/60"
+  },
+  "mace": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "simple melee weapon"
+    ],
+    "cost": "5gp",
+    "damage": {
+      "type": "bludgeoning",
+      "roll": "1d6"
+    },
+    "weight": 4
+  },
+  "quarterstaff": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "simple melee weapon"
+    ],
+    "cost": "2sp",
+    "damage": {
+      "type": "bludgeoning",
+      "roll": "1d6"
+    },
+    "weight": 4,
+    "properties": [
+      {
+        "versatile": "1d8"
+      }
+    ]
+  },
+  "sickle": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "simple melee weapon"
+    ],
+    "cost": "1gp",
+    "damage": {
+      "type": "slashing",
+      "roll": "1d4"
+    },
+    "weight": 2,
+    "properties": [
+      "light"
+    ]
+  },
+  "spear": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "simple melee weapon"
+    ],
+    "cost": "1gp",
+    "damage": {
+      "type": "piercing",
+      "roll": "1d6"
+    },
+    "weight": 3,
+    "properties": [
+      "thrown",
+      {
+        "versatile": "1d8"
+      }
+    ],
+    "range": "20/60"
+  },
+  "light crossbow": {
+    "type": [
+      "weapon",
+      "ranged weapon",
+      "simple ranged weapon"
+    ],
+    "cost": "25gp",
+    "damage": {
+      "type": "piercing",
+      "roll": "1d8"
+    },
+    "weight": 5,
+    "properties": [
+      "loading",
+      "two-handed"
+    ],
+    "range": "80/320",
+    "ammunition": "crossbow bolt"
+  },
+  "dart": {
+    "type": [
+      "weapon",
+      "ranged weapon",
+      "simple ranged weapon"
+    ],
+    "cost": "5cp",
+    "damage": {
+      "type": "piercing",
+      "roll": "1d4"
+    },
+    "weight": 0.25,
+    "properties": [
+      "finesse",
+      "thrown"
+    ],
+    "range": "20/60"
+  },
+  "shortbow": {
+    "type": [
+      "weapon",
+      "ranged weapon",
+      "simple ranged weapon"
+    ],
+    "cost": "25gp",
+    "damage": {
+      "type": "piercing",
+      "roll": "1d6"
+    },
+    "weight": 2,
+    "properties": [
+      "two-handed"
+    ],
+    "range": "80/320",
+    "ammunition": "arrow"
+  },
+  "sling": {
+    "type": [
+      "weapon",
+      "ranged weapon",
+      "simple ranged weapon"
+    ],
+    "cost": "1sp",
+    "damage": {
+      "type": "bludgeoning",
+      "roll": "1d4"
+    },
+    "weight": 0,
+    "range": "30/120",
+    "ammunition": "sling bullets"
+  },
+  "battleaxe": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "martial melee weapon"
+    ],
+    "cost": "10gp",
+    "damage": {
+      "type": "slashing",
+      "roll": "1d8"
+    },
+    "weight": 4,
+    "properties": [
+      {
+        "versatile": "1d10"
+      }
+    ]
+  },
+  "flail": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "martial melee weapon"
+    ],
+    "cost": "10gp",
+    "damage": {
+      "type": "bludgeoning",
+      "roll": "1d8"
+    },
+    "weight": 2
+  },
+  "glaive": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "martial melee weapon"
+    ],
+    "cost": "20gp",
+    "damage": {
+      "type": "slashing",
+      "roll": "1d10"
+    },
+    "weight": 6,
+    "properties": [
+      "heavy",
+      "reach",
+      "two-handed"
+    ]
+  },
+  "greataxe": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "martial melee weapon"
+    ],
+    "cost": "30gp",
+    "damage": {
+      "type": "slashing",
+      "roll": "1d12"
+    },
+    "weight": 7,
+    "properties": [
+      "heavy",
+      "two-handed"
+    ]
+  },
+  "greatsword": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "martial melee weapon"
+    ],
+    "cost": "50gp",
+    "damage": {
+      "type": "slashing",
+      "roll": "2d6"
+    },
+    "weight": 6,
+    "properties": [
+      "heavy",
+      "two-handed"
+    ]
+  },
+  "halberd": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "martial melee weapon"
+    ],
+    "cost": "20gp",
+    "damage": {
+      "type": "slashing",
+      "roll": "1d10"
+    },
+    "weight": 67,
+    "properties": [
+      "heavy",
+      "reach",
+      "two-handed"
+    ]
+  },
+  "lance": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "martial melee weapon"
+    ],
+    "cost": "10gp",
+    "damage": {
+      "type": "piercing",
+      "roll": "1d12"
+    },
+    "weight": 6,
+    "properties": [
+      "reach",
+      "special"
+    ]
+  },
+  "longsword": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "martial melee weapon"
+    ],
+    "cost": "15gp",
+    "damage": {
+      "type": "slashing",
+      "roll": "1d8"
+    },
+    "weight": 3,
+    "properties": [
+      {
+        "versatile": "1d10"
+      }
+    ]
+  },
+  "maul": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "martial melee weapon"
+    ],
+    "cost": "10gp",
+    "damage": {
+      "type": "bludgeoning",
+      "roll": "2d6"
+    },
+    "weight": 10,
+    "properties": [
+      "heavy",
+      "two-handed"
+    ]
+  },
+  "morningstar": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "martial melee weapon"
+    ],
+    "cost": "15gp",
+    "damage": {
+      "type": "piercing",
+      "roll": "1d8"
+    },
+    "weight": 4
+  },
+  "pike": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "martial melee weapon"
+    ],
+    "cost": "5gp",
+    "damage": {
+      "type": "piercing",
+      "roll": "1d10"
+    },
+    "weight": 18,
+    "properties": [
+      "heavy",
+      "reach",
+      "two-handed"
+    ]
+  },
+  "rapier": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "martial melee weapon"
+    ],
+    "cost": "25gp",
+    "damage": {
+      "type": "piercing",
+      "roll": "1d8"
+    },
+    "weight": 2,
+    "properties": [
+      "finesse"
+    ]
+  },
+  "scimitar": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "martial melee weapon"
+    ],
+    "cost": "25gp",
+    "damage": {
+      "type": "slashing",
+      "roll": "1d6"
+    },
+    "weight": 3,
+    "properties": [
+      "finesse",
+      "light"
+    ]
+  },
+  "shortsword": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "martial melee weapon"
+    ],
+    "cost": "10gp",
+    "damage": {
+      "type": "piercing",
+      "roll": "1d6"
+    },
+    "weight": 2,
+    "properties": [
+      "finesse",
+      "light"
+    ]
+  },
+  "trident": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "martial melee weapon"
+    ],
+    "cost": "5gp",
+    "damage": {
+      "type": "piercing",
+      "roll": "1d6"
+    },
+    "weight": 4,
+    "properties": [
+      "thrown",
+      {
+        "versatile": "1d8"
+      }
+    ],
+    "range": "20/60"
+  },
+  "war pick": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "martial melee weapon"
+    ],
+    "cost": "5gp",
+    "damage": {
+      "type": "piercing",
+      "roll": "1d8"
+    },
+    "weight": 2
+  },
+  "warhammer": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "martial melee weapon"
+    ],
+    "cost": "15gp",
+    "damage": {
+      "type": "bludgeoning",
+      "roll": "1d8"
+    },
+    "weight": 2,
+    "properties": [
+      {
+        "versatile": "1d10"
+      }
+    ]
+  },
+  "whip": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "martial melee weapon"
+    ],
+    "cost": "2gp",
+    "damage": {
+      "type": "slashing",
+      "roll": "1d4"
+    },
+    "weight": 3,
+    "properties": [
+      "finesse",
+      "reach"
+    ]
+  },
+  "blowgun": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "martial ranged weapon"
+    ],
+    "cost": "10gp",
+    "damage": {
+      "type": "piercing",
+      "roll": "1"
+    },
+    "weight": 1,
+    "properties": [
+      "loading"
+    ],
+    "ammunition": "blowgun needles",
+    "range": "25/100"
+  },
+  "hand crossbow": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "martial ranged weapon"
+    ],
+    "cost": "75gp",
+    "damage": {
+      "type": "piercing",
+      "roll": "1d6"
+    },
+    "weight": 3,
+    "properties": [
+      "light",
+      "loading"
+    ],
+    "ammunition": "crossbow bolt",
+    "range": "30/120"
+  },
+  "heavy crossbow": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "martial ranged weapon"
+    ],
+    "cost": "50gp",
+    "damage": {
+      "type": "piercing",
+      "roll": "1d10"
+    },
+    "weight": 18,
+    "properties": [
+      "loading",
+      "heavy",
+      "two-handed"
+    ],
+    "ammunition": "crossbow bolt",
+    "range": "100/400"
+  },
+  "longbow": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "martial ranged weapon"
+    ],
+    "cost": "50gp",
+    "damage": {
+      "type": "piercing",
+      "roll": "1d8"
+    },
+    "weight": 2,
+    "properties": [
+      "heavy",
+      "two-handed"
+    ],
+    "ammunition": "arrow",
+    "range": "150/600"
+  },
+  "net": {
+    "type": [
+      "weapon",
+      "melee weapon",
+      "martial ranged weapon"
+    ],
+    "cost": "1gp",
+    "damage": {
+      "type": "none",
+      "roll": "0"
+    },
+    "weight": 3,
+    "properties": [
+      "special",
+      "thrown"
+    ],
+    "range": "5/15"
+  },
+  "abacus": {
+    "cost": "2gp",
+    "weight": 2
+  },
+  "acid (vial)": {
+    "cost": "25gp",
+    "weight": 1
+  },
+  "alchemist's fire (flask)": {
+    "cost": "50gp",
+    "weight": 1
+  },
+  "arrow": {
+    "type": "ammunition",
+    "cost": "1gp",
+    "quantity": 20,
+    "weight": 1
+  },
+  "blowgun needles": {
+    "type": "ammunition",
+    "cost": "1gp",
+    "quantity": 50,
+    "weight": 1
+  },
+  "crossbow bolt": {
+    "type": "ammunition",
+    "cost": "1gp",
+    "quantity": 20,
+    "weight": 1.5
+  },
+  "sling bullets": {
+    "type": "ammunition",
+    "cost": "4cp",
+    "quantity": 20,
+    "weight": 1.5
+  },
+  "antitoxin (vial)": {
+    "cost": "50gp"
+  },
+  "crystal": {
+    "type": "arcane focus",
+    "cost": "10gp",
+    "weight": 1
+  },
+  "orb": {
+    "type": "arcane focus",
+    "cost": "20gp",
+    "weight": 3
+  },
+  "rod": {
+    "type": "arcane focus",
+    "cost": "10gp",
+    "weight": 2
+  },
+  "staff": {
+    "type": "arcane focus",
+    "cost": "5gp",
+    "weight": 4
+  },
+  "wand": {
+    "type": "arcane focus",
+    "cost": "10gp",
+    "weight": 1
+  },
+  "backpack": {
+    "type": "container (bag)",
+    "cost": "2gp",
+    "weight": 5,
+    "capacity": {
+      "volume (solid)": 1,
+      "weight": 30
+    },
+    "extra": [
+      "bedroll",
+      "rope"
+    ]
+  },
+  "ball bearings (bag of 1000)": {
+    "cost": "1gp",
+    "weight": 2
+  },
+  "barrel": {
+    "type": [
+      "container",
+      "container (liquid)"
+    ],
+    "cost": "2gp",
+    "weight": 70,
+    "capacity": {
+      "volume (solid)": 4,
+      "volume (liquid)": 320
+    }
+  },
+  "basket": {
+    "type": "container",
+    "cost": "4sp",
+    "weight": 2,
+    "capacity": {
+      "volume (solid)": 2,
+      "weight": 40
+    }
+  },
+  "bedroll": {
+    "cost": "1gp",
+    "weight": 7
+  },
+  "bell": {
+    "cost": "1gp"
+  },
+  "blanket": {
+    "cost": "5sp",
+    "weight": 3
+  },
+  "block and tackle": {
+    "cost": "1gp",
+    "weight": 5
+  },
+  "book": {
+    "cost": "25gp",
+    "weight": 5
+  },
+  "bottle (glass)": {
+    "cost": "2gp",
+    "weight": 2,
+    "type": "container (liquid)",
+    "capacity": {
+      "volume (liquid)": 1.5
+    }
+  },
+  "bucket": {
+    "type": [
+      "container",
+      "container (liquid)"
+    ],
+    "cost": "5cp",
+    "weight": 3,
+    "capacity": {
+      "volume (solid)": 0.5,
+      "volume (liquid)": 24
+    }
+  },
+  "caltrops (bag of 20)": {
+    "cost": "1gp",
+    "weight": 1
+  },
+  "candle": {
+    "type": "light source",
+    "cost": "1cp",
+    "duration": 1,
+    "radius": {
+      "bright": 5,
+      "dim": 5
+    }
+  },
+  "case (crossbow bolt)": {
+    "type": "container (ammunition)",
+    "ammunition": "crossbow bolt",
+    "capacity": 20,
+    "cost": "1gp",
+    "weight": 1
+  },
+  "case (map or scroll)": {
+    "type": "container (paper)",
+    "cost": "1gp",
+    "weight": 1,
+    "capacity": {
+      "paper": 10,
+      "parchment": 5
+    }
+  },
+  "chain": {
+    "length": 10,
+    "cost": "5gp",
+    "weight": 10
+  },
+  "chalk (1 piece)": {
+    "cost": "1cp"
+  },
+  "chest": {
+    "type": "container",
+    "cost": "5gp",
+    "weight": 25,
+    "capacity": {
+      "volume (solid)": 12,
+      "weight": 300
+    }
+  },
+  "climber's kit": {
+    "type": "equipment pack",
+    "cost": "25gp",
+    "weight": 12,
+    "contents": [
+      "pitons",
+      "boot tips",
+      "gloves",
+      "harness"
+    ]
+  },
+  "set of common clothes": {
+    "type": "clothing",
+    "cost": "5sp",
+    "weight": 3
+  },
+  "costume": {
+    "type": "clothing",
+    "cost": "5gp",
+    "weight": 4
+  },
+  "set of fine clothes": {
+    "type": "clothing",
+    "cost": "15gp",
+    "weight": 6
+  },
+  "set of traveler's clothes": {
+    "type": "clothing",
+    "cost": "2gp",
+    "weight": 4
+  },
+  "component pouch": {
+    "type": "container (components)",
+    "cost": "25gp",
+    "weight": 2
+  },
+  "crowbar": {
+    "cost": "2gp",
+    "weight": 5
+  },
+  "sprig of mistletoe": {
+    "type": "druidic focus",
+    "cost": "1gp"
+  },
+  "sprig of holly": {
+    "type": "druidic focus",
+    "cost": "1gp"
+  },
+  "totem": {
+    "type": "druidic focus",
+    "cost": "1gp"
+  },
+  "wooden staff": {
+    "type": "druidic focus",
+    "cost": "5gp",
+    "weight": 4
+  },
+  "yew wand": {
+    "type": "druidic focus",
+    "cost": "10gp",
+    "weight": 1
+  },
+  "fishing tackle": {
+    "type": "equipment pack",
+    "cost": "1gp",
+    "weight": 4,
+    "contents": [
+      "wood rod",
+      "silken line",
+      "corkwood bobbers",
+      "steel hooks",
+      "lead sinkers",
+      "velvet lures",
+      "narrow netting"
+    ]
+  },
+  "flask": {
+    "type": "container (liquid)",
+    "cost": "2cp",
+    "weight": 1,
+    "capacity": {
+      "volume (liquid)": 1
+    }
+  },
+  "tankard": {
+    "type": "container (liquid)",
+    "cost": "2cp",
+    "weight": 1,
+    "capacity": {
+      "volume (liquid)": 1
+    }
+  },
+  "grappling hook": {
+    "cost": "2gp",
+    "weight": 4
+  },
+  "hammer": {
+    "cost": "1gp",
+    "weight": 3
+  },
+  "sledge hammer": {
+    "cost": "2gp",
+    "weight": 10
+  },
+  "healer's kit": {
+    "type": "equipment pack",
+    "cost": "5gp",
+    "weight": 3,
+    "contents": [
+      "bandages",
+      "salves",
+      "splints"
+    ],
+    "uses": 10
+  },
+  "amulet": {
+    "type": "holy symbol",
+    "cost": "5gp",
+    "weight": 1
+  },
+  "emblem": {
+    "type": "holy symbol",
+    "cost": "5gp"
+  },
+  "reliquary": {
+    "type": "holy symbol",
+    "cost": "5gp",
+    "weight": 2
+  },
+  "holy water (flask)": {
+    "cost": "25gp",
+    "weight": 1
+  },
+  "hourglass": {
+    "cost": "25gp",
+    "weight": 1
+  },
+  "hunting trap": {
+    "cost": "5gp",
+    "weight": 25
+  },
+  "ink (bottle)": {
+    "cost": "10gp",
+    "capacity": {
+      "volume (liquid)": 0.0625
+    }
+  },
+  "ink pen": {
+    "cost": "2cp"
+  },
+  "jug": {
+    "type": "container (liquid)",
+    "cost": "2cp",
+    "weight": 4,
+    "capacity": {
+      "volume (liquid)": 8
+    }
+  },
+  "pitcher": {
+    "type": "container (liquid)",
+    "cost": "2cp",
+    "weight": 4,
+    "capacity": {
+      "volume (liquid)": 8
+    }
+  },
+  "ladder": {
+    "length": 10,
+    "cost": "1sp",
+    "weight": 25
+  },
+  "lamp": {
+    "type": "light source",
+    "fuel": "oil",
+    "cost": "5sp",
+    "weight": 1,
+    "duration": 6,
+    "radius": {
+      "bright": 15,
+      "dim": 30
+    }
+  },
+  "lantern (bullseye)": {
+    "type": "light source",
+    "fuel": "oil",
+    "cost": "10gp",
+    "weight": 2,
+    "duration": 6,
+    "cone": {
+      "bright": 60,
+      "dim": 60
+    }
+  },
+  "lantern (hooded)": {
+    "type": "light source",
+    "fuel": "oil",
+    "cost": "10gp",
+    "weight": 2,
+    "duration": 6,
+    "radius": {
+      "bright": 30,
+      "dim": 30,
+      "hooded": 5
+    }
+  },
+  "lock": {
+    "cost": "10gp",
+    "weight": 1
+  },
+  "magnifying glass": {
+    "cost": "100gp"
+  },
+  "manacles": {
+    "cost": "2gp",
+    "weight": 6
+  },
+  "mess kit": {
+    "cost": "2sp",
+    "weight": 1,
+    "contents": [
+      "cup",
+      "simple cutlery",
+      "cooking tray",
+      "plate"
+    ]
+  },
+  "mirror (steel)": {
+    "cost": "5gp",
+    "weight": 0.5
+  },
+  "oil (flask)": {
+    "type": "fuel",
+    "cost": "1sp",
+    "weight": 1,
+    "capacity": {
+      "volume (liquid)": 1
+    }
+  },
+  "paper (one sheet)": {
+    "cost": "2sp"
+  },
+  "parchment (one sheet)": {
+    "cost": "1sp"
+  },
+  "perfume (vial)": {
+    "cost": "5gp"
+  },
+  "miner's pick": {
+    "cost": "2gp",
+    "weight": 10
+  },
+  "piton": {
+    "cost": "5cp",
+    "weight": 0.25
+  },
+  "basic poison (vial)": {
+    "cost": "100gp"
+  },
+  "pole": {
+    "length": 10,
+    "cost": "5cp",
+    "weight": 7
+  },
+  "iron pot": {
+    "type": "container (cooking)",
+    "cost": "2gp",
+    "weight": 10,
+    "capacity": {
+      "volume (liquid)": 8
+    }
+  },
+  "potion of healing": {
+    "cost": "50gp",
+    "weight": 0.5
+  },
+  "belt pouch": {
+    "type": "container (coins)",
+    "cost": "5sp",
+    "weight": 1
+  },
+  "pouch": {
+    "type": [
+      "container",
+      "container (ammunition)"
+    ],
+    "ammunition": [
+      "sling bullet",
+      "blowgun needle"
+    ],
+    "cost": "5sp",
+    "weight": 1,
+    "capacity": {
+      "sling bullet": 20,
+      "blowgun needle": 50,
+      "volume (solid)": 0.2,
+      "weight": 6
+    }
+  },
+  "quiver": {
+    "type": "container (ammunition)",
+    "ammunition": "arrow",
+    "capacity": 20,
+    "cost": "1gp",
+    "weight": 1
+  },
+  "portable ram": {
+    "cost": "4gp",
+    "weight": 35
+  },
+  "rations (1 day)": {
+    "type": "food",
+    "cost": "5sp",
+    "weight": 2
+  },
+  "robes": {
+    "type": "clothing",
+    "cost": "1gp",
+    "weight": 4
+  },
+  "hempen rope": {
+    "length": 50,
+    "cost": "1gp",
+    "weight": 10
+  },
+  "silk rope": {
+    "length": 50,
+    "cost": "10gp",
+    "weight": 5
+  },
+  "sack": {
+    "type": "container (bag)",
+    "cost": "1cp",
+    "weight": 0.5,
+    "capacity": {
+      "volume (solid)": 1,
+      "weight": 30
+    }
+  },
+  "merchant's scale": {
+    "cost": "5gp",
+    "weight": 3
+  },
+  "sealing wax": {
+    "cost": "5sp"
+  },
+  "shovel": {
+    "cost": "2gp",
+    "weight": 5
+  },
+  "signal whistle": {
+    "cost": "5cp"
+  },
+  "signet ring": {
+    "cost": "5gp"
+  },
+  "soap": {
+    "cost": "2cp"
+  },
+  "spellbook": {
+    "cost": "50gp",
+    "weight": 3
+  },
+  "iron spikes": {
+    "quantity": 10,
+    "cost": "1gp",
+    "weight": 5
+  },
+  "spyglass": {
+    "cost": "1000gp",
+    "weight": 1
+  },
+  "tent (two-person)": {
+    "cost": "2gp",
+    "weight": 20
+  },
+  "tinderbox": {
+    "cost": "5sp",
+    "weight": 1,
+    "contents": [
+      "flint",
+      "fire steel",
+      "tinder"
+    ]
+  },
+  "torch": {
+    "type": "light source",
+    "cost": "1cp",
+    "weight": 1,
+    "duration": 1,
+    "radius": {
+      "bright": 20,
+      "dim": 20
+    },
+    "damage": {
+      "type": "fire",
+      "roll": 1
+    }
+  },
+  "vial": {
+    "type": "container (liquid)",
+    "cost": "1gp",
+    "capacity": {
+      "volume (liquid)": 0.25
+    }
+  },
+  "waterskin": {
+    "type": "container (liquid)",
+    "cost": "2sp",
+    "weight": 1,
+    "capacity": {
+      "volume (liquid)": 4
+    }
+  },
+  "whetstone": {
+    "cost": "1cp",
+    "weight": 1
+  },
+  "burglar's pack": {
+    "type": "equipment pack",
+    "cost": "16gp",
+    "contents": [
+      "backpack",
+      "ball bearings (bag of 1000)",
+      {
+        "string": 10
+      },
+      "bell",
+      {
+        "candles": 5
+      },
+      "crowbar",
+      "hammer",
+      {
+        "piton": 10
+      },
+      "lantern (hooded)",
+      {
+        "oil (flask)": 2
+      },
+      {
+        "rations (1 day)": 5
+      },
+      "tinderbox",
+      "waterskin",
+      "hempen rope"
+    ]
+  },
+  "diplomat's pack": {
+    "type": "equipment pack",
+    "cost": "39gp",
+    "contents": [
+      "chest",
+      {
+        "case (maps or scrolls)": 2
+      },
+      "set of fine clothes",
+      "ink (bottle)",
+      "ink pen",
+      "lamp",
+      {
+        "oil (flask)": 2
+      },
+      {
+        "paper (1 sheet)": 5
+      },
+      "perfume (vial)",
+      "sealing wax",
+      "soap"
+    ]
+  },
+  "dungeoneer's pack": {
+    "type": "equipment pack",
+    "cost": "12gp",
+    "contents": [
+      "backpack",
+      "crowbar",
+      "hammer",
+      {
+        "piton": 10
+      },
+      {
+        "torch": 10
+      },
+      "tinderbox",
+      {
+        "rations (1 day)": 10
+      },
+      "waterskin",
+      "hempen rope"
+    ]
+  },
+  "entertainer's pack": {
+    "type": "equipment pack",
+    "cost": "40gp",
+    "contents": [
+      "backpack",
+      "bedroll",
+      {
+        "costume": 2
+      },
+      {
+        "candle": 5
+      },
+      {
+        "rations (1 day)": 10
+      },
+      "waterskin",
+      "disguise kit"
+    ]
+  },
+  "explorer's pack": {
+    "type": "equipment pack",
+    "cost": "10gp",
+    "contents": [
+      "backpack",
+      "bedroll",
+      "mess kit",
+      "tinderbox",
+      {
+        "torch": 10
+      },
+      {
+        "rations (1 day)": 10
+      },
+      "waterskin",
+      "hempen rope"
+    ]
+  },
+  "priest's pack": {
+    "type": "equipment pack",
+    "cost": "19gp",
+    "contents": [
+      "backpack",
+      "blanket",
+      {
+        "candle": 10
+      },
+      "tinderbox",
+      "alms box",
+      {
+        "incense blocks": 2
+      },
+      "censer",
+      "vestments",
+      {
+        "rations (1 day)": 2
+      },
+      "waterskin"
+    ]
+  },
+  "scholar's pack": {
+    "type": "equipment pack",
+    "cost": "40gp",
+    "contents": [
+      "backpack",
+      "book of lore",
+      "ink (bottle)",
+      "ink pen",
+      {
+        "parchment (1 sheet)": 10
+      },
+      "little bag of sand",
+      "small knife"
+    ]
+  },
+  "alchemist's supplies": {
+    "type": "artisan's tools",
+    "cost": "50gp",
+    "weight": 8
+  },
+  "brewer's supplies": {
+    "type": "artisan's tools",
+    "cost": "20gp",
+    "weight": 9
+  },
+  "calligrapher's supplies": {
+    "type": "artisan's tools",
+    "cost": "10gp",
+    "weight": 5
+  },
+  "carpenter's tools": {
+    "type": "artisan's tools",
+    "cost": "8gp",
+    "weight": 6
+  },
+  "cartographer's tools": {
+    "type": "artisan's tools",
+    "cost": "15gp",
+    "weight": 6
+  },
+  "cobbler's tools": {
+    "type": "artisan's tools",
+    "cost": "5gp",
+    "weight": 5
+  },
+  "cook's utensils": {
+    "type": "artisan's tools",
+    "cost": "1gp",
+    "weight": 8
+  },
+  "glassblower's tools": {
+    "type": "artisan's tools",
+    "cost": "30gp",
+    "weight": 5
+  },
+  "jeweler's tools": {
+    "type": "artisan's tools",
+    "cost": "25gp",
+    "weight": 2
+  },
+  "leatherworker's tools": {
+    "type": "artisan's tools",
+    "cost": "5gp",
+    "weight": 5
+  },
+  "mason's tools": {
+    "type": "artisan's tools",
+    "cost": "10gp",
+    "weight": 8
+  },
+  "painter's supplies": {
+    "type": "artisan's tools",
+    "cost": "10gp",
+    "weight": 5
+  },
+  "potter's tools": {
+    "type": "artisan's tools",
+    "cost": "10gp",
+    "weight": 3
+  },
+  "smith's tools": {
+    "type": "artisan's tools",
+    "cost": "20gp",
+    "weight": 8
+  },
+  "tinker's tools": {
+    "type": "artisan's tools",
+    "cost": "50gp",
+    "weight": 10
+  },
+  "weaver's tools": {
+    "type": "artisan's tools",
+    "cost": "1gp",
+    "weight": 5
+  },
+  "woodcarver's tools": {
+    "type": "artisan's tools",
+    "cost": "1gp",
+    "weight": 5
+  },
+  "disguise kit": {
+    "cost": "25gp",
+    "weight": 3
+  },
+  "forgery kit": {
+    "cost": "15gp",
+    "weight": 5
+  },
+  "dice set": {
+    "type": "gaming set",
+    "cost": "1sp"
+  },
+  "dragonchess set": {
+    "type": "gaming set",
+    "cost": "1gp",
+    "weight": 0.5
+  },
+  "playing card set": {
+    "type": "gaming set",
+    "cost": "5sp"
+  },
+  "three-dragon ante set": {
+    "type": "gaming set",
+    "cost": "1gp"
+  },
+  "herbalism kit": {
+    "cost": "5gp",
+    "weight": 3
+  },
+  "bagpipes": {
+    "type": "musical instrument",
+    "cost": "30gp",
+    "weight": 6
+  },
+  "drum": {
+    "type": "musical instrument",
+    "cost": "6gp",
+    "weight": 3
+  },
+  "dulcimer": {
+    "type": "musical instrument",
+    "cost": "25gp",
+    "weight": 10
+  },
+  "flute": {
+    "type": "musical instrument",
+    "cost": "2gp",
+    "weight": 1
+  },
+  "lute": {
+    "type": "musical instrument",
+    "cost": "35gp",
+    "weight": 2
+  },
+  "lyre": {
+    "type": "musical instrument",
+    "cost": "30gp",
+    "weight": 2
+  },
+  "horn": {
+    "type": "musical instrument",
+    "cost": "3gp",
+    "weight": 2
+  },
+  "pan flute": {
+    "type": "musical instrument",
+    "cost": "12gp",
+    "weight": 2
+  },
+  "shawm": {
+    "type": "musical instrument",
+    "cost": "2gp",
+    "weight": 1
+  },
+  "viol": {
+    "type": "musical instrument",
+    "cost": "30gp",
+    "weight": 1
+  },
+  "navigator's tools": {
+    "cost": "25gp",
+    "weight": 2
+  },
+  "poisoner's kit": {
+    "cost": "50gp",
+    "weight": 2
+  },
+  "thieves' tools": {
+    "cost": "25gp",
+    "weight": 1
+  },
+  "camel": {
+    "type": "mount",
+    "cost": "50gp",
+    "speed": 50,
+    "capacity": {
+      "carrying": 480
+    }
+  },
+  "donkey": {
+    "type": "mount",
+    "cost": "8gp",
+    "speed": 40,
+    "capacity": {
+      "carrying": 420
+    }
+  },
+  "mule": {
+    "type": "mount",
+    "cost": "8gp",
+    "speed": 40,
+    "capacity": {
+      "carrying": 420
+    }
+  },
+  "elephant": {
+    "type": "mount",
+    "cost": "200gp",
+    "speed": 40,
+    "capacity": {
+      "carrying": 1320
+    }
+  },
+  "draft horse": {
+    "type": "mount",
+    "cost": "50gp",
+    "speed": 40,
+    "capacity": {
+      "carrying": 540
+    }
+  },
+  "horse": {
+    "type": "mount",
+    "cost": "75gp",
+    "speed": 60,
+    "capacity": {
+      "carrying": 480
+    }
+  },
+  "mastiff": {
+    "type": "mount",
+    "cost": "25gp",
+    "speed": 40,
+    "capacity": {
+      "carrying": 195
+    }
+  },
+  "pony": {
+    "type": "mount",
+    "cost": "30gp",
+    "speed": 40,
+    "capacity": {
+      "carrying": 225
+    }
+  },
+  "warhorse": {
+    "type": "mount",
+    "cost": "400gp",
+    "speed": 60,
+    "capacity": {
+      "carrying": 540
+    }
+  },
+  "barding": {
+    "type": "animal armor",
+    "cost multiplier": 4,
+    "weight multiplier": 2
+  },
+  "bit and bridle": {
+    "type": "tack",
+    "cost": "2gp",
+    "weight": 1
+  },
+  "carriage": {
+    "type": "vehicle (land)",
+    "cost": "100gp",
+    "weight": 600
+  },
+  "cart": {
+    "type": "vehicle (land)",
+    "cost": "15gp",
+    "weight": 200
+  },
+  "chariot": {
+    "type": "vehicle (land)",
+    "cost": "250gp",
+    "weight": 100
+  },
+  "feed (1 day)": {
+    "type": "animal food",
+    "cost": "5cp",
+    "weight": 10
+  },
+  "exotic saddle": {
+    "type": "saddle",
+    "cost": "60gp",
+    "weight": 40
+  },
+  "military saddle": {
+    "type": "saddle",
+    "cost": "20gp",
+    "weight": 30
+  },
+  "pack saddle": {
+    "type": "saddle",
+    "cost": "5gp",
+    "weight": 15
+  },
+  "riding saddle": {
+    "type": "saddle",
+    "cost": "10gp",
+    "weight": 25
+  },
+  "saddlebags": {
+    "type": "container",
+    "cost": "4gp",
+    "weight": 8
+  },
+  "sled": {
+    "type": "vehicle (land)",
+    "cost": "20gp",
+    "weight": 300
+  },
+  "stabling (1 day)": {
+    "type": "expense",
+    "cost": "5sp"
+  },
+  "wagon": {
+    "type": "vehicle (land)",
+    "cost": "35gp",
+    "weight": 400
+  },
+  "galley": {
+    "type": "vehicle (water)",
+    "cost": "30000gp",
+    "speed": 4
+  },
+  "keelboat": {
+    "type": [
+      "vehicle (water)",
+      "rowboat"
+    ],
+    "cost": "3000gp",
+    "speed": 1
+  },
+  "longship": {
+    "type": "vehicle (water)",
+    "cost": "10000gp",
+    "speed": 3
+  },
+  "rowboat": {
+    "type": [
+      "vehicle (water)",
+      "rowboat"
+    ],
+    "cost": "50gp",
+    "speed": 1.5,
+    "weight": 100
+  },
+  "sailing ship": {
+    "type": "vehicle (water)",
+    "cost": "10000gp",
+    "speed": 2
+  },
+  "warship": {
+    "type": "vehicle (water)",
+    "cost": "25000gp",
+    "speed": 2.5
+  },
+  "wheat": {
+    "type": "trading good",
+    "quantity": {
+      "pounds": 1
+    },
+    "cost": "1cp"
+  },
+  "flour": {
+    "type": "trading good",
+    "quantity": {
+      "pounds": 1
+    },
+    "cost": "2cp"
+  },
+  "chicken": {
+    "type": "trading good",
+    "cost": "2cp"
+  },
+  "salt": {
+    "type": "trading good",
+    "quantity": {
+      "pounds": 1
+    },
+    "cost": "5cp"
+  },
+  "iron": {
+    "type": "trading good",
+    "quantity": {
+      "pounds": 1
+    },
+    "cost": "1sp"
+  },
+  "canvas": {
+    "type": "trading good",
+    "quantity": {
+      "sq. yard": 1
+    },
+    "cost": "1sp"
+  },
+  "copper": {
+    "type": "trading good",
+    "quantity": {
+      "pounds": 1
+    },
+    "cost": "5sp"
+  },
+  "cotton cloth": {
+    "type": "trading good",
+    "quantity": {
+      "sq. yards": 1
+    },
+    "cost": "5sp"
+  },
+  "ginger": {
+    "type": "trading good",
+    "quantity": {
+      "pounds": 1
+    },
+    "cost": "1gp"
+  },
+  "goat": {
+    "type": "trading good",
+    "cost": "1gp"
+  },
+  "cinnamon": {
+    "type": "trading good",
+    "quantity": {
+      "pounds": 1
+    },
+    "cost": "2gp"
+  },
+  "pepper": {
+    "type": "trading good",
+    "quantity": {
+      "pounds": 1
+    },
+    "cost": "2gp"
+  },
+  "sheep": {
+    "type": "trading good",
+    "cost": "2gp"
+  },
+  "cloves": {
+    "type": "trading good",
+    "quantity": {
+      "pounds": 1
+    },
+    "cost": "3gp"
+  },
+  "pig": {
+    "type": "trading good",
+    "cost": "3gp"
+  },
+  "silver": {
+    "type": "trading good",
+    "quantity": {
+      "pounds": 1
+    },
+    "cost": "5gp"
+  },
+  "linen": {
+    "type": "trading good",
+    "quantity": {
+      "sq. yard": 1
+    },
+    "cost": "5gp"
+  },
+  "silk": {
+    "type": "trading good",
+    "quantity": {
+      "pounds": 1
+    },
+    "cost": "10gp"
+  },
+  "cow": {
+    "type": "trading good",
+    "cost": "10gp"
+  },
+  "saffron": {
+    "type": "trading good",
+    "quantity": {
+      "pounds": 1
+    },
+    "cost": "15gp"
+  },
+  "ox": {
+    "type": "trading good",
+    "cost": "15gp"
+  },
+  "gold": {
+    "type": "trading good",
+    "quantity": {
+      "pounds": 1
+    },
+    "cost": "50gp"
+  },
+  "platinum": {
+    "type": "trading good",
+    "quantity": {
+      "pounds": 1
+    },
+    "cost": "500gp"
+  },
+  "ale": {
+    "type": [
+      "drink",
+      "alcohol"
+    ],
+    "cost": {
+      "gallon": "2sp",
+      "pint": "4cp"
+    }
+  },
+  "banquet": {
+    "type": [
+      "food",
+      "party"
+    ],
+    "cost": "10gp"
+  },
+  "bread (loaf)": {
+    "type": "food",
+    "cost": "2cp"
+  },
+  "cheese (hunk)": {
+    "type": "food",
+    "cost": "1sp"
+  },
+  "inn stay": {
+    "type": "lodging",
+    "cost": {
+      "squalid": "7cp",
+      "poor": "1sp",
+      "modest": "5sp",
+      "comfortable": "8sp",
+      "wealthy": "2gp",
+      "aristocratic": "4gp"
+    }
+  },
+  "meals": {
+    "type": "meals",
+    "cost": {
+      "squalid": "3cp",
+      "poor": "6cp",
+      "modest": "3sp",
+      "comfortable": "5sp",
+      "wealthy": "8sp",
+      "aristocratic": "2gp"
+    }
+  },
+  "meat (chunk)": {
+    "type": "food",
+    "cost": "3sp"
+  },
+  "wine (common)": {
+    "type": [
+      "drink",
+      "alcohol"
+    ],
+    "cost": {
+      "gallon": "2sp"
+    }
+  },
+  "fine wine (bottle)": {
+    "type": [
+      "drink",
+      "alcohol"
+    ],
+    "cost": "10gp"
+  }
+}
