@@ -41,14 +41,27 @@ def _dynamodb_to_dict(func):
     def wrapper(*args, **kwargs):
         dynamo_data = func(*args, **kwargs)
         logger.debug("Raw: %s" % dynamo_data)
-        data = {key: _convert_from_dynamodb(value) for (key, value) in dynamo_data.items()}
+        data = _convert_row_from_dynamodb(dynamo_data)
         logger.debug("Converted: %s" % data)
         return data
 
     return wrapper
 
 
-def _convert_from_dynamodb(item):
+def _dynamodb_to_array(func):
+    def wrapper(*args, **kwargs):
+        dynamo_data = func(*args, **kwargs)
+        data = [_convert_row_from_dynamodb(row) for row in dynamo_data]
+        return data
+
+    return wrapper
+
+
+def _convert_row_from_dynamodb(row):
+    return {key: _convert_field_from_dynamodb(value) for (key, value) in row.items()}
+
+
+def _convert_field_from_dynamodb(item):
     item = list(item.items())
     item = item.pop()
     (key, value) = item
@@ -57,9 +70,9 @@ def _convert_from_dynamodb(item):
     if key == 'NULL':
         return None
     if key == 'M':
-        return {key2: _convert_from_dynamodb(value2) for (key2, value2) in value.items()}
+        return _convert_row_from_dynamodb(value)
     if key == 'L':
-        return [_convert_from_dynamodb(value2) for value2 in value]
+        return [_convert_field_from_dynamodb(value2) for value2 in value]
     if key == 'N':
         return _convert_numeric(value)
     if key == 'NS':
@@ -156,3 +169,16 @@ class Database(object):
             self.dynamodb.put_item(TableName=self.table, Item=data)
         except Exception:
             pass
+
+    @_dynamodb_to_array
+    def get_all(self):
+        items = []
+        paginator = self.dynamodb.get_paginator("scan")
+
+        try:
+            for page in paginator.paginate(TableName=self.table):
+                items.extend(page.get("Items", []))
+            return items
+        except Exception as e:
+            logger.error("%s.get_all failed: %s" % (self.__class__.__name__, e))
+            return []

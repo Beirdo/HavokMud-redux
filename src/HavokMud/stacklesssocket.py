@@ -27,6 +27,7 @@
 #   send is a little over the top.  It should be possible to add it to the
 #   rest of the queued data
 import asyncore
+import errno
 import logging
 import socket as stdsocket  # We need the "socket" name for the function we export.
 import stackless
@@ -290,6 +291,7 @@ class _fakesocket(asyncore.dispatcher):
 
     def recv_into(self, buffer, nbytes=0, flags=0):
         logger.debug("recv_into: buflen: %s, nbytes: %s" % (len(buffer), nbytes))
+
         if len(buffer):
             nbytes = min(len(buffer), nbytes)
 
@@ -311,6 +313,12 @@ class _fakesocket(asyncore.dispatcher):
             # where it closes the socket and then allows the caller to
             # use a file to access the body of the web page.
         elif not remaining_bytes:
+            timeout = self.gettimeout()
+            logger.debug("timeout: %s", timeout)
+            if timeout == 0:
+                if self.recv_channel.balance <= 0:
+                    raise BlockingIOError(errno.EWOULDBLOCK, "Would block")
+
             self.read_bytes = self.recv_channel.receive()
             self.read_index = 0
             remaining_bytes = len(self.read_bytes)

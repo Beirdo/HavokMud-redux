@@ -1,5 +1,8 @@
+import logging
 import sys
 from threading import Lock
+
+logger = logging.getLogger(__name__)
 
 
 class BaseHandler(object):

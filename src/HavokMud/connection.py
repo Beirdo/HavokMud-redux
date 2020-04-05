@@ -16,6 +16,8 @@ class Connection(object):
     def __init__(self, server, client_socket, client_address):
         self.server = server
         self.client_socket = client_socket
+        # We want blocking I/O.
+        self.client_socket.settimeout(None)
         self.client_address = client_address
         self.disconnected = False
 
@@ -155,10 +157,11 @@ class Connection(object):
         self.string_mode = value
 
     def write_tasklet(self):
-        while not self.disconnected and not self.user.disconnect:
+        while not self.disconnected and (not self.user or not self.user.disconnect):
             data = self.output_channel.receive()
             if data is None:
-                self.user.disconnect = True
+                if self.user:
+                    self.user.disconnect = True
                 continue
 
             if isinstance(data, str):

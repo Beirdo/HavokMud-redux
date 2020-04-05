@@ -4,12 +4,13 @@ import stackless
 import traceback
 import weakref
 from threading import Lock
-from redis import Redis
 
 from HavokMud.account import Account
 from HavokMud.connection import Connection
 from HavokMud.database import Databases
 from HavokMud.dnslookup import DNSLookup
+from HavokMud.encryption_helper import EncryptionEngine
+from HavokMud.redis_handler import RedisHandler
 from HavokMud.send_email import EmailHandler
 
 logger = logging.getLogger(__name__)
@@ -31,18 +32,19 @@ class Server(object):
         self.dbs = Databases(self.config)
         self.dns_lookup = DNSLookup()
         self.email_handler = EmailHandler(config)
+        self.redis = RedisHandler(config)
+        self.encryption = EncryptionEngine(config)
 
-        redis_config = self.config.get("redis", {})
-        self.redis = Redis(**redis_config)
+        stackless.schedule()
 
         self.domain = self.config.get("email", {}).get("domain", None)
 
         # Prime up the redis cache
-        self.redis.delete("userdb/*")
-        self.redis.delete("passdb/*")
+        self.redis.do_command("delete", "userdb/*")
+        self.redis.do_command("delete", "passdb/*")
         accounts = Account.get_all_accounts(self)
         for account in accounts:
-            account.save_to_redis()
+            account.update_redis()
 
         stackless.tasklet(self.run)()
 

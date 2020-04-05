@@ -95,8 +95,8 @@ class Account(DatabaseObject):
             userItem = {
                 "user": "%s@%s" % (player, self.server.domain)
             }
-            self.server.redis.set("userdb/%s" % player, json.dumps(userItem))
+            self.server.redis.do_command("set", "userdb/%s" % player, json.dumps(userItem))
             passItem = {
                 "password": "{PLAIN}%s" % self.password
             }
-            self.server.redis.set("passdb/%s" % player, json.dumps(passItem))
+            self.server.redis.do_command("set", "passdb/%s" % player, json.dumps(passItem))

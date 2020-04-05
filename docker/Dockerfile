@@ -28,11 +28,12 @@ RUN apt-get update \
 RUN conda config --add channels stackless
 RUN conda install -y stackless
 RUN conda update -y conda
-RUN conda install -y boto3 jinja2 redis
+RUN conda install -y boto3 jinja2
 RUN pip install ansicolors python-statemachine dnspython urlextract html2text \
-    imap-tools pycryptodome \
+    imap-tools pycryptodome redis \
     git+https://github.com/Beirdo/pynntp.git
 RUN if [ "$ENV" = "testing" ] ; then pip install localstack ; fi
+RUN ln -sf /bin/bash /bin/sh
 
 RUN useradd -m -G sudo -d /home/havokmud -s /bin/bash -c "HavokMud Account" havokmud
 WORKDIR /home/havokmud

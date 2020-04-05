@@ -24,21 +24,28 @@ class EncryptionEngine(object):
         self.session = boto3.session.Session(region_name=self.region)
         self.smclient = self.session.client('secretsmanager', endpoint_url=self.endpoint, use_ssl=self.use_ssl)
 
+        logger.info("Attempting to pull encryption key from SecretsManager")
         try:
             response = self.smclient.get_secret_value(SecretId=mudname+"-core")
         except Exception as e:
+            logger.exception("Ouch.  No bueno!")
             response = {}
 
         privatekey = None
         pemkey = response.get('SecretString', None)
         binkey = response.get('SecretBinary', None)
         if pemkey:
+            logger.info("Received key in string format")
             privatekey = RSA.import_key(pemkey)
         elif binkey:
+            logger.info("Received key in binary format")
             binkey = base64.b64decode(binkey)
             privatekey = RSA.import_key(binkey)
         else:
+            logger.info("response: %s" % response)
+            logger.info("Creating new 2048 bit RSA key pair")
             privatekey = RSA.generate(2048, Random.new().read)
+            logger.info("Sending new encryption key to SecretsManager")
             params = {
                 "Name": mudname + "-core",
                 "SecretString": privatekey.export_key("PEM").decode("utf-8"),
