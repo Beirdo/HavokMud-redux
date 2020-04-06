@@ -10,16 +10,21 @@ from botocore.exceptions import ClientError
 from urlextract import URLExtract
 from html2text import HTML2Text
 
+from HavokMud.logging_support import AccountLogMessage
+
 logger = logging.getLogger(__name__)
 
 
 class EmailRequest(object):
-    def __init__(self, from_, to, subject, body_html=None, body_text=None):
+    def __init__(self, from_, to, subject, body_html=None, body_text=None, accounts=None):
         self.from_ = from_
         self.to = to
         self.subject = subject
         self.body_html = body_html
         self.body_text = body_text
+        if not accounts:
+            accounts = []
+        self.accounts = accounts
         self.channel = stackless.channel()
 
 
@@ -76,10 +81,21 @@ class EmailHandler(object):
             request = self.in_channel.receive()
             stackless.tasklet(self._send_email_tasklet)(request)
 
+    @staticmethod
+    def _log_email(request, message, level="info"):
+        this_logger = getattr(logger, level, logger.debug)
+
+        # First the global copy
+        this_logger(message)
+
+        # Then send it to the accounts involved
+        for account in request.accounts:
+            this_logger(AccountLogMessage(account, message))
+
     def _send_email_tasklet(self, request):
         response = {}
         try:
-            logger.info("Sending email from %s to %s" % (request.from_, request.to))
+            self._log_email(request, "Sending email from %s to %s" % (request.from_, request.to))
             if not request.body_html:
                 if not request.body_text:
                     raise Exception("No body given")
@@ -123,13 +139,14 @@ class EmailHandler(object):
                 self.ses.verify_email_identity(EmailAddress=request.from_)
 
             response = self.ses.send_email(**email)
-            logger.info("Email sent: MessageID: %s" % response.get("MessageId", None))
+            self._log_email(request, "Email sent: MessageID: %s" % response.get("MessageId", None))
         except ClientError as e:
             # Display an error if something goes wrong.
-            logger.error("Error sending email: %s" % e.response.get("Error", {}).get("Message", "unknown error"))
+            self._log_email(request, "Error sending email: %s" % e.response.get("Error", {}).get("Message", "unknown error"), \
+                            level="error")
             response = e.response['Error']['Message']
         except Exception as e:
-            logger.exception("Error sending email: %s" % str(e))
+            self._log_email(request, "Error sending email: %s" % str(e), level="exception")
             response = {"Error": {"Message": str(e)}}
 
         request.channel.send(response)
@@ -139,15 +156,15 @@ class EmailHandler(object):
         with self.extractor_lock:
             self.extractor.update_when_older(7)
 
-            input = text
+            _input = text
             output = b"<html><body>"
-            while input:
-                urls = self.extractor.find_urls(input)
+            while _input:
+                urls = self.extractor.find_urls(_input)
                 if urls:
                     url = urls.pop(0)
-                    start_index = input.index(url)
+                    start_index = _input.index(url)
                     end_index = start_index + len(url)
-                    output += self._escape(input[:start_index])
+                    output += self._escape(_input[:start_index])
                     match = self.url_re.match(url)
                     if not match:
                         output += self._escape(url)
@@ -155,10 +172,10 @@ class EmailHandler(object):
                         if not match.group("type"):
                             url = "http://%s" % url
                         output += b'<a href="%s">%s</a>' % (url, url)
-                    input = input[end_index:]
+                    _input = _input[end_index:]
                 else:
-                    output += self._escape(input)
-                    input = None
+                    output += self._escape(_input)
+                    _input = None
 
         output += b"</body></html>"
         return output.decode("utf-8")

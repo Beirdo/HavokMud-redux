@@ -53,9 +53,9 @@ class Server(object):
         listen_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         listen_socket.bind((self.bindIp, self.port))
         logger.info("Listening on %s" % listen_socket.fileno())
-        listen_socket.listen(5)
+        listen_socket.listen(10)
 
-        logger.info("Accepting connections on %s %s", self.bindIp, self.port)
+        logger.info("Accepting connections on %s:%s", self.bindIp, self.port)
         try:
             while True:
                 try:

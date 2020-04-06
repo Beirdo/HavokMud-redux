@@ -17,9 +17,10 @@ class AccountLogMessage(object):
 
 
 class PlayerLogMessage(AccountLogMessage):
-    def __init__(self, player, message, _global=False):
+    def __init__(self, player, message, _global=False, account=False):
         AccountLogMessage.__init__(self, player.account, message, _global)
         self.player = player.name
+        self._account = account
 
 
 class LogFilter(logging.Filter):
@@ -51,7 +52,8 @@ class LogFilter(logging.Filter):
 
         if isinstance(message, PlayerLogMessage):
             # noinspection PyProtectedMember
-            if logType in ["player", "all"] or (logType == 'global' and message._global):
+            if logType in ["player", "all"] or (logType == 'global' and message._global) \
+                    or ("logType" == "account" and message._account):
                 record.ip = message.ip
                 record.email = message.email
                 record.player = message.player

@@ -62,14 +62,14 @@ class Account(DatabaseObject):
             self.confcode = str(uuid.uuid4())
             self.save_to_db()
 
-        logger.info(AccountLogMessage(self, "Sent confcode: %s" % self.confcode))
+        logger.info(AccountLogMessage(self, "Sending confcode: %s" % self.confcode))
 
         # send an email with the confcode in it
         email_config = self.server.config.get("email", {})
         from_ = email_config.get("admin", None)
         domain = email_config.get("domain", None)
         if not from_ or not domain:
-            logger.critical("Email not setup.  Aborting email send")
+            logger.critical(AccountLogMessage(self, "Email not setup.  Aborting email send", _global=True))
             return
         from_ += "@" + domain
 

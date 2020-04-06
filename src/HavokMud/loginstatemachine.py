@@ -5,7 +5,7 @@ from statemachine import StateMachine, State
 
 from HavokMud.account import Account
 from HavokMud.commandhandler import CommandHandler
-from HavokMud.logging_support import AccountLogMessage
+from HavokMud.logging_support import AccountLogMessage, PlayerLogMessage
 from HavokMud.player import Player
 from HavokMud.utils import validate_email, validate_yes_no, validate_password, validate_pc_name, validate_sex
 
@@ -163,7 +163,9 @@ class LoginStateMachine(StateMachine):
 
         if not validate_password(self.model.tokens, self.model.account.password):
             self.append_line("Wrong password.")
-            logger.warning("Bad password from %s" % self.model.account.email)
+            logger.warning(AccountLogMessage(self.model.account,
+                                             "Bad password from %s" % self.model.account.email,
+                                             _global=True))
             return self.disconnect
 
         logger.info(AccountLogMessage(self.model.account,
@@ -281,11 +283,13 @@ class LoginStateMachine(StateMachine):
             self.model.account.confcode = None
             self.model.account.save_to_db()
             self.append_line("\r\nYour email is now confirmed, you can now play.  Thank you!")
+            logger.info(AccountLogMessage(self.model.account, "Email confirmed", _global=True))
         else:
             self.model.account.confirmed = False
             self.model.account.save_to_db()
             self.append_line("\r\nConfirmation code does not match our records.  Please try again,")
             self.append_line("or resend the confirmation email to get a new code.\r\n")
+            logger.error(AccountLogMessage(self.model.account, "Incorrect confcode given", _global=True))
 
         return self.show_account_menu
 
@@ -348,7 +352,10 @@ class LoginStateMachine(StateMachine):
             self.append_line("Please pick your stats.")
             return self.show_creation_menu
 
-        logger.info("%s [%s] new player" % (self.model.account.player.name, self.model.account.get_hostname()))
+        logger.info(PlayerLogMessage(self.model.account.player,
+                                     "%s [%s] new player" %
+                                     (self.model.account.player.name, self.model.account.get_hostname()),
+                                     _global=True, account=True))
         self.model.account.player.complete = True
         self.model.account.player.save_to_db()
         return self.show_account_menu
