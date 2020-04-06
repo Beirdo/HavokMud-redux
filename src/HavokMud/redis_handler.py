@@ -1,5 +1,6 @@
 import logging
 import stackless
+
 from redis import Redis
 
 logger = logging.getLogger(__name__)

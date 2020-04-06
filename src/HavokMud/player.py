@@ -1,5 +1,3 @@
-import json
-
 from HavokMud.database_object import DatabaseObject
 from HavokMud.utils import roll_dice
 
@@ -87,4 +85,3 @@ class Player(DatabaseObject):
 
         delattr(self, "rolls")
         self.save_to_db()
-

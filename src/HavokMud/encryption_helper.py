@@ -1,5 +1,5 @@
-import logging
 import base64
+import logging
 
 import boto3
 from Crypto import Random
@@ -26,7 +26,7 @@ class EncryptionEngine(object):
 
         logger.info("Attempting to pull encryption key from SecretsManager")
         try:
-            response = self.smclient.get_secret_value(SecretId=mudname+"-core")
+            response = self.smclient.get_secret_value(SecretId=mudname + "-core")
         except Exception as e:
             logger.exception("Ouch.  No bueno!")
             response = {}

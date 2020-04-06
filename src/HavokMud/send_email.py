@@ -7,8 +7,8 @@ from threading import Lock
 import boto3
 import requests
 from botocore.exceptions import ClientError
-from urlextract import URLExtract
 from html2text import HTML2Text
+from urlextract import URLExtract
 
 from HavokMud.logging_support import AccountLogMessage
 
@@ -142,7 +142,9 @@ class EmailHandler(object):
             self._log_email(request, "Email sent: MessageID: %s" % response.get("MessageId", None))
         except ClientError as e:
             # Display an error if something goes wrong.
-            self._log_email(request, "Error sending email: %s" % e.response.get("Error", {}).get("Message", "unknown error"), \
+            self._log_email(request,
+                            "Error sending email: %s" %
+                            e.response.get("Error", {}).get("Message", "unknown error"),
                             level="error")
             response = e.response['Error']['Message']
         except Exception as e:
@@ -188,4 +190,3 @@ class EmailHandler(object):
         # Strip this down to Markdown text
         with self.html2text_lock:
             return self.html2text.handle(html_)
-
