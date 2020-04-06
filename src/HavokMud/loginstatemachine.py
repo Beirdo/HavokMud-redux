@@ -5,6 +5,7 @@ from statemachine import StateMachine, State
 
 from HavokMud.account import Account
 from HavokMud.commandhandler import CommandHandler
+from HavokMud.logging_support import AccountLogMessage
 from HavokMud.player import Player
 from HavokMud.utils import validate_email, validate_yes_no, validate_password, validate_pc_name, validate_sex
 
@@ -165,7 +166,11 @@ class LoginStateMachine(StateMachine):
             logger.warning("Bad password from %s" % self.model.account.email)
             return self.disconnect
 
-        logger.info("%s has connected from %s" % (self.model.account.email, self.model.account.get_hostname()))
+        logger.info(AccountLogMessage(self.model.account,
+                                      "%s has connected from %s (%s)" %
+                                      (self.model.account.email, self.model.account.ip_address,
+                                       self.model.account.get_hostname()), _global=True))
+
         return self.show_account_menu
 
     def on_choose_ansi(self):

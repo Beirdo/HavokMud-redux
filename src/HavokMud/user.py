@@ -4,6 +4,7 @@ import time
 import traceback
 
 from HavokMud.account import Account
+from HavokMud.logging_support import AccountLogHandler, PlayerLogHandler, AccountLogMessage
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +42,10 @@ class User(object):
             traceback.print_exc()
         finally:
             if self.connection:
+                if self.account.email:
+                    AccountLogHandler().closeEmail(self.account.email)
+                if self.account.player:
+                    PlayerLogHandler().closePlayer(self.account.player.name)
                 self.connection.disconnect()
                 self.connection = None
 
@@ -60,7 +65,7 @@ class User(object):
         handler.handle_input(tokens)
 
     def on_remote_disconnection(self):
-        logger.info("Disconnected %d (remote)", id(self))
+        logger.info(AccountLogMessage(self.account, "Disconnected %s (remote)" % self.account.ip_address, _global=True))
 
     def on_user_disconnection(self):
-        logger.info("Disconnected %d (local)", id(self))
+        logger.info(AccountLogMessage(self.account, "Disconnected %s (local)" % self.account.ip_address, _global=True))

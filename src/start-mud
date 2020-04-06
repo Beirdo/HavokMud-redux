@@ -36,6 +36,6 @@ chmod 1777 ${LOGDIR}
 docker rm havokmud
 screen -d -m -S havokmud
 screen -S havokmud -X screen -t mud
-screen -S havokmud -p m$ud -X exec docker run -p 3000:3000 --network havokmud --name havokmud -v ${LOGDIR}:/var/logs  -it havokmud:latest ./start-in-docker
+screen -S havokmud -p m$ud -X exec docker run -p 3000:3000 --network havokmud --name havokmud -v ${LOGDIR}:/var/log/havokmud  -it havokmud:latest ./start-in-docker
 screen -S havokmud -p mud -X exec docker attach havokmud
 screen -r -S havokmud

@@ -5,6 +5,7 @@ from threading import Lock
 
 from HavokMud.database_object import DatabaseObject
 from HavokMud.jinjaprocessor import jinja_processor
+from HavokMud.logging_support import AccountLogMessage
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +49,7 @@ class Account(DatabaseObject):
             with account.hostname_lock:
                 account.hostname = server.dns_lookup.do_reverse_dns(account.ip_address)
             connection.ansi_mode = account.ansi_mode
+            connection.user.account = account
         return account
 
     @staticmethod
@@ -59,6 +61,8 @@ class Account(DatabaseObject):
         if not self.confcode:
             self.confcode = str(uuid.uuid4())
             self.save_to_db()
+
+        logger.info(AccountLogMessage(self, "Sent confcode: %s" % self.confcode))
 
         # send an email with the confcode in it
         email_config = self.server.config.get("email", {})

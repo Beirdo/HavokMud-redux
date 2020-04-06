@@ -17,6 +17,7 @@ import stackless
 import sys
 
 import HavokMud.stacklesssocket
+from HavokMud.logging_support import logging_setup, logging_additional_setup
 from HavokMud.server import Server
 
 logger = logging.getLogger(__name__)
@@ -26,8 +27,7 @@ logger = logging.getLogger(__name__)
 HavokMud.stacklesssocket.install()
 
 if __name__ == "__main__":
-    format = '%(asctime)s %(levelname)s [PID %(process)d] (%(name)s:%(lineno)d) %(message)s'
-    logging.basicConfig(level=logging.DEBUG, format=format)
+    logging_setup(logging.INFO, console=True)
 
     configDir = os.path.expanduser("~/.havokmud")
     configFile = os.path.join(configDir, "config.json")
@@ -39,9 +39,7 @@ if __name__ == "__main__":
         logger.exception("Exception stack:")
         sys.exit(1)
 
-    loggingConfig = config.get("loggingLevels", {})
-    for (module, levelname) in loggingConfig.items():
-        logging.getLogger(module).setLevel(getattr(logging, levelname, "DEBUG"))
+    logging_additional_setup(config.get("loggingLevels", {}))
 
     if config.get("mud", {}).get("debug_gc", False):
         gc.set_debug(gc.DEBUG_STATS)
