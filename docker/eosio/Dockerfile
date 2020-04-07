@@ -55,7 +55,7 @@ USER root
 
 RUN apt-get remove -y eosio.cdt && apt-get update && apt-get install -y \
     /tmp/eosio.cdt_1.7.0-1-ubuntu-18.04_amd64.deb \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* /tmp/*.deb
 
 USER eosio
 
@@ -69,7 +69,11 @@ ENV EOSIO_CONTRACTS_DIRECTORY /home/eosio/src/eosio.contracts-1.9.x/build/contra
 RUN pip3 install numpy
 ADD docker/eosio/eosio /home/eosio/eosio
 WORKDIR /home/eosio/eosio
-RUN ln -sf /home/eosio/nodes nodes
+
+USER root
+RUN chown -R eosio /home/eosio
+
+USER eosio
 
 # keosd
 EXPOSE 6666
