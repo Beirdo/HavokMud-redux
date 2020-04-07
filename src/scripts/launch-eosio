@@ -1,0 +1,8 @@
+#! /usr/bin/env bash
+
+python3 bios-boot-tutorial.py \
+    --cleos="cleos --wallet-url http://127.0.0.1:6666 " \
+    --keosd=keosd --nodeos=nodeos \
+    --contracts-dir="${EOSIO_CONTRACTS_DIRECTORY}" \
+    --old-contracts-dir="${EOSIO_OLD_CONTRACTS_DIRECTORY}" -w -a
+

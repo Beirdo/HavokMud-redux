@@ -69,7 +69,14 @@ ENV EOSIO_CONTRACTS_DIRECTORY /home/eosio/src/eosio.contracts-1.9.x/build/contra
 WORKDIR /home/eosio/src
 RUN pip3 install numpy
 RUN git clone https://github.com/EOSIO/eos.git
+WORKDIR /home/eosio/src/eos
+ADD docker/eosio/*.diff /home/eosio/src/eos
+RUN patch -p1 < patch1.diff
 WORKDIR /home/eosio/src/eos/tutorials/bios-boot-tutorial
-RUN python3 bios-boot-tutorial.py --cleos="cleos --wallet-url http://127.0.0.1:6666 " \
-    --nodeos=nodeos --keosd=keosd --contracts-dir="${EOS_CONTRACTS_DIRECTORY}" \
-    --old-contracts-dir="${EOS_OLD_CONTRACTS_DIRECTORY}" -w -a
+ADD src/scripts/start-eosio-in-docker /home/eosio/src/eos/tutorials/bios-boot-tutorial
+ADD src/scripts/launch-eosio /home/eosio/src/eos/tutorials/bios-boot-tutorial
+RUN ln -sf /home/eosio/nodes nodes
+
+EXPOSE 6666
+EXPOSE 8000
+EXPOSE 9000
