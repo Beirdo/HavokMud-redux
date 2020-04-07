@@ -75,8 +75,8 @@ RUN chown -R eosio /home/eosio
 
 USER eosio
 
-# keosd
-EXPOSE 6666
-
-# nodeos
-EXPOSE 8000
+## keosd
+#EXPOSE 6666
+#
+## nodeos
+#EXPOSE 8000

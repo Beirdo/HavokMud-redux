@@ -16,8 +16,8 @@ if [ "${BUILD_MODE}" = "testing" ] ; then
         docker rm eosio
 	      screen -d -m -S eosio
         screen -S eosio -X screen -t eosio
-        screen -S eosio -p eosio -X exec docker run -p 6666:6666 -p 8000:8000 \
-	       -p 9000:9000 --network havokmud --name eosio \
+        screen -S eosio -p eosio -X exec docker run
+	       --network havokmud --name eosio \
 	       -v ${BLOCKDIR}:/home/eosio/eosio/nodes -it eosio:latest \
 	       ./start-eosio-in-docker
     fi
