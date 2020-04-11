@@ -30,7 +30,7 @@ RUN conda install -y stackless
 RUN conda update -y conda
 RUN conda install -y boto3 jinja2
 RUN pip install ansicolors python-statemachine dnspython urlextract html2text \
-    imap-tools pycryptodome redis \
+    imap-tools pycryptodome redis openapi-core \
     git+https://github.com/Beirdo/pynntp.git
 RUN if [ "$ENV" = "testing" ] ; then pip install localstack ; fi
 RUN ln -sf /bin/bash /bin/sh
