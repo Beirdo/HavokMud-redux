@@ -33,7 +33,8 @@ def load_exchange_data():
     reverse_sorted_coins = list(reversed(sorted_coins))
 
     global coin_names
-    coin_names = list(base_values.keys())
+    coin_names = [name.upper() for name in base_values.keys()]
+
 
 class Currency(object):
     coinRe = re.compile(r'^(?P<quantity>\d+)\s*(?P<type>[a-z]+)$', re.I)
@@ -105,6 +106,12 @@ class Currency(object):
         for (coin_type, count) in currency.holdings.items():
             if count:
                 self.add_coins(coin_type, count)
+
+    def add_tokens(self, tokens):
+        parts = tokens.split()
+        if len(parts) != 2:
+            return
+        self.add_coins(parts[1].lower(), int(parts[0]))
 
     def add_coins(self, coin_type, count):
         if count:

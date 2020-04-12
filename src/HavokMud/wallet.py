@@ -1,16 +1,23 @@
 import base64
 import hashlib
 import logging
+from enum import Enum
 
 from HavokMud.account import Account
 from HavokMud.bank import Bank
-from HavokMud.currency import Currency
+from HavokMud.currency import Currency, coin_names
 from HavokMud.npcplayer import NPCPlayer
 from HavokMud.player import Player
 from HavokMud.settings import Settings
 from HavokMud.system import System
 
 logger = logging.getLogger(__name__)
+
+
+class WalletType(Enum):
+    Carried = 1
+    Stored = 2
+    Supply = 3
 
 
 class Wallet(object):
@@ -30,15 +37,15 @@ class Wallet(object):
         System, "name",
     }
 
-    tokens = Currency.
-
-    def __init__(self, server, owner=None, wallet_type=None):
+    def __init__(self, server, owner=None, wallet_type: WalletType = None):
         self.server = server
         self.owner = owner
         self.wallet_type = wallet_type
+        self.tokens = list(coin_names)
         self.password = None
         self.keys = {}
         self.name = None
+        self.balance = None
 
     def deposit(self, currency):
         # New funds, these come from the economy as new coins
@@ -58,7 +65,21 @@ class Wallet(object):
 
     def get_balance(self):
         # Returns the current balance as a currency object
-        pass
+        currency = Currency()
+        for token in self.tokens:
+            try:
+                params = {
+                    "code": "eosio.token",
+                    "account": self.name,
+                    "symbol": token,
+                }
+                balance = self.server.chain_api.call("get_currency_balance", **params)
+                currency.add_tokens(balance)
+            except Exception as e:
+                pass
+
+        self.balance = currency
+        return currency
 
     @staticmethod
     def create(server, owner, wallet_type):
