@@ -22,6 +22,8 @@ class Account(DatabaseObject):
         self.hostname_lock = Lock()
         self.player = None
         self.current_player = None
+        self.wallet_password = {}
+        self.wallet_keys = {}
 
         self.email = email
         self.password = password  # SHA512 digest

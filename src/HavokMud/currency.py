@@ -11,6 +11,7 @@ base_values = {}
 base_type = None
 sorted_coins = []
 reverse_sorted_coins = []
+coin_names = []
 
 
 def load_exchange_data():
@@ -31,6 +32,8 @@ def load_exchange_data():
     global reverse_sorted_coins
     reverse_sorted_coins = list(reversed(sorted_coins))
 
+    global coin_names
+    coin_names = list(base_values.keys())
 
 class Currency(object):
     coinRe = re.compile(r'^(?P<quantity>\d+)\s*(?P<type>[a-z]+)$', re.I)

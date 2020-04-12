@@ -12,6 +12,7 @@ from HavokMud.dnslookup import DNSLookup
 from HavokMud.encryption_helper import EncryptionEngine
 from HavokMud.redis_handler import RedisHandler
 from HavokMud.send_email import EmailHandler
+from HavokMud.swaggerapi.eosio_wallet import EOSWalletAPI
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +35,7 @@ class Server(object):
         self.email_handler = EmailHandler(config)
         self.redis = RedisHandler(config)
         self.encryption = EncryptionEngine(config)
+        self.wallet_api = EOSWalletAPI(config)
 
         stackless.schedule()
 

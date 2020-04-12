@@ -23,6 +23,7 @@ class Player(DatabaseObject):
         self.stats = {}
         self.alignment = None
         self.complete = False
+        self.wallet_key = {}
 
     def set_connection(self, connection):
         if self.connection:
