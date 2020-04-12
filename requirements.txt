@@ -1,0 +1,13 @@
+ansicolors
+python-statemachine
+dnspython
+urlextract
+html2text
+imap-tools
+pycryptodome
+redis
+openapi-core
+jinja2
+boto3
+git+https://github.com/Beirdo/pynntp.git
+

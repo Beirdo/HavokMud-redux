@@ -12,7 +12,7 @@ if [ "${BUILD_MODE}" = "testing" ] ; then
     # Start up localstack
     container=`docker ps --format '{{.Names}}' | grep localstack-main`
     if [ "${container}" != "localstack-main" ]; then
-	docker rm localstack_main localstack-main
+	docker rm localstack_main localstack-main 2>&1 > /dev/null
 	screen -d -m -S localstack
         screen -S localstack -X screen -t localstack
         screen -S localstack -p localstack -X exec localstack start
