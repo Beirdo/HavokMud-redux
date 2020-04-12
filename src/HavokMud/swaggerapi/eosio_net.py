@@ -15,4 +15,4 @@ class EOSNetAPI(SwaggerAPI):
             apiConfig.get("hostname", "eosio.havokmud"),
             apiConfig.get("port", 8000),
         ]
-        SwaggerAPI.__init__("EOSNet", "net.swagger.yaml", *args, "/v1")
+        SwaggerAPI.__init__(self, "EOSNet", "net.swagger.yaml", *args, "/v1")

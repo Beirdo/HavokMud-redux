@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-import sys
 
 import openapi_core
 import requests
@@ -14,8 +13,16 @@ from HavokMud.api_handler import api_handler
 
 logger = logging.getLogger(__name__)
 
-baseDir = os.path.realpath(os.path.join(sys.argv[0], "..", ".."))
-swaggerDir = os.path.join(baseDir, "src", "HavokMud", "swagger")
+swaggerDir = os.path.realpath(os.path.join(os.path.dirname(__file__), "..", "swagger"))
+
+
+class SwaggerAPIError(Exception):
+    def __init__(self, code, message):
+        self.code = code
+        self.message = message
+
+    def __repr__(self):
+        return "%s: %s" % (self.code, self.message)
 
 
 class SwaggerAPI(object):
@@ -27,6 +34,7 @@ class SwaggerAPI(object):
         self.name = name
         self.swagger_file = os.path.join(swaggerDir, swagger_file)
         self.base_url = "%s://%s:%s%s" % (scheme, hostname, port, path)
+        self.response = None
 
         logger.info("Loading swagger file: %s" % swagger_file)
         with open(self.swagger_file, "r") as f:
@@ -40,11 +48,12 @@ class SwaggerAPI(object):
         self.response_validator = ResponseValidator(self.api_spec)
         logger.info("Finished loading API for %s" % name)
 
-    def call(self, method, timeout, *args, **kwargs):
+    def call(self, method, *args, **kwargs):
+        timeout = kwargs.pop("timeout", 10)
         if method not in self.methods:
             raise NotImplementedError("Method %s not implemented by %s API" % (method, self.name))
 
-        payload = None
+        payload = "{}"
         if args:
             if len(args) == 1:
                 payload = args[0]
@@ -53,15 +62,22 @@ class SwaggerAPI(object):
         elif kwargs:
             payload = kwargs
 
+        method_item = self.methods.get(method, {})
+        _object = method_item.get("object", None)
+        if _object is None:
+            operation = "POST"
+        else:
+            operation = list(_object.operations.keys()).pop()
+
         params = {
-            "method": 'POST',
-            "url": self.base_url + self.methods.get("path", "/"),
+            "method": operation.upper(),
+            "url": self.base_url + method_item.get("path", ""),
             "headers": {
                 "Content-Type": "application/json",
             },
         }
         if payload is not None:
-            params["body"] = json.dumps(payload)
+            params["data"] = json.dumps(payload)
 
         # Generate a request
         request = requests.Request(**params)
@@ -72,9 +88,16 @@ class SwaggerAPI(object):
         result.raise_for_errors()
 
         response = api_handler.send(request, timeout)
+        self.response = response
+        if int(response.status_code / 100) != 2:
+            try:
+                message = response.json()
+            except Exception as e:
+                message = response.content
+            raise SwaggerAPIError(response.status_code, message)
 
         openapi_response = RequestsOpenAPIResponse(response)
-        result = self.response_validator.validate(openapi_response)
+        result = self.response_validator.validate(openapi_request, openapi_response)
         result.raise_for_errors()
 
         return response.json()

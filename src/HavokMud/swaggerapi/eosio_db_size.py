@@ -15,4 +15,4 @@ class EOSDBSizeAPI(SwaggerAPI):
             apiConfig.get("hostname", "eosio.havokmud"),
             apiConfig.get("port", 8000),
         ]
-        SwaggerAPI.__init__("EOSDBSize", "db_size.swagger.yaml", *args, "/v1")
+        SwaggerAPI.__init__(self, "EOSDBSize", "db_size.swagger.yaml", *args, "/v1")

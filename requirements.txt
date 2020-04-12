@@ -6,8 +6,8 @@ html2text
 imap-tools
 pycryptodome
 redis
-openapi-core
 jinja2
 boto3
 git+https://github.com/Beirdo/pynntp.git
+git+https://github.com/Beirdo/openapi-core.git
 

@@ -15,4 +15,4 @@ class EOSTestControlAPI(SwaggerAPI):
             apiConfig.get("hostname", "eosio.havokmud"),
             apiConfig.get("port", 8000),
         ]
-        SwaggerAPI.__init__("EOSTestControl", "test_control.swagger.yaml", *args, "/v1")
+        SwaggerAPI.__init__(self, "EOSTestControl", "test_control.swagger.yaml", *args, "/v1")

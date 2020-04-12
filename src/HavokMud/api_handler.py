@@ -36,7 +36,7 @@ class APIHandler(object):
     def send(self, request, timeout):
         item = APIRequest(request, timeout)
         self.in_channel.send(item)
-        item = request.channel.receive()
+        item = item.channel.receive()
         if isinstance(item, dict):
             exception = item.get("exception", None)
             if exception:

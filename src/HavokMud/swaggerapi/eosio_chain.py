@@ -15,4 +15,4 @@ class EOSChainAPI(SwaggerAPI):
             apiConfig.get("hostname", "eosio.havokmud"),
             apiConfig.get("port", 8000),
         ]
-        SwaggerAPI.__init__("EOSChain", "chain.swagger.yaml", *args, "/v1")
+        SwaggerAPI.__init__(self, "EOSChain", "chain.swagger.yaml", *args, "/v1")

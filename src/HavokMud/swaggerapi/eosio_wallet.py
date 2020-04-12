@@ -15,4 +15,4 @@ class EOSWalletAPI(SwaggerAPI):
             apiConfig.get("hostname", "eosio.havokmud"),
             apiConfig.get("port", 6666),
         ]
-        SwaggerAPI.__init__("EOSWallet", "wallet.swagger.yaml", *args, "/v1")
+        SwaggerAPI.__init__(self, "EOSWallet", "wallet.swagger.yaml", *args, "/v1")
