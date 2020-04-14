@@ -50,6 +50,8 @@ class SwaggerAPI(object):
 
     def call(self, method, *args, **kwargs):
         timeout = kwargs.pop("timeout", 10)
+        openapi_validate = kwargs.pop("openapi_validate", True)
+
         if method not in self.methods:
             raise NotImplementedError("Method %s not implemented by %s API" % (method, self.name))
 
@@ -83,9 +85,10 @@ class SwaggerAPI(object):
         request = requests.Request(**params)
 
         # Validate the request
-        openapi_request = RequestsOpenAPIRequest(request)
-        result = self.request_validator.validate(openapi_request)
-        result.raise_for_errors()
+        if openapi_validate:
+            openapi_request = RequestsOpenAPIRequest(request)
+            result = self.request_validator.validate(openapi_request)
+            result.raise_for_errors()
 
         response = api_handler.send(request, timeout)
         self.response = response
@@ -96,8 +99,11 @@ class SwaggerAPI(object):
                 message = response.content
             raise SwaggerAPIError(response.status_code, message)
 
-        openapi_response = RequestsOpenAPIResponse(response)
-        result = self.response_validator.validate(openapi_request, openapi_response)
-        result.raise_for_errors()
+        # Validate the response
+        if openapi_validate:
+            openapi_response = RequestsOpenAPIResponse(response)
+            # noinspection PyUnboundLocalVariable
+            result = self.response_validator.validate(openapi_request, openapi_response)
+            result.raise_for_errors()
 
         return response.json()

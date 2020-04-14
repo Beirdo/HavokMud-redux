@@ -27,6 +27,7 @@ systemAccounts = [
     'eosio.token',
     'eosio.vpay',
     'eosio.rex',
+    'mud.havokmud',
 ]
 
 def jsonArg(a):

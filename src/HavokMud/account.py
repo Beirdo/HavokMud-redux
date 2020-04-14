@@ -23,6 +23,8 @@ class Account(DatabaseObject):
         self.player = None
         self.current_player = None
         self.wallet_password = {}
+        self.wallet_owner_key = {}
+        self.wallet_active_key = {}
         self.wallet_keys = {}
 
         self.email = email

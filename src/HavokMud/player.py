@@ -23,7 +23,10 @@ class Player(DatabaseObject):
         self.stats = {}
         self.alignment = None
         self.complete = False
-        self.wallet_key = {}
+        self.wallet_password = {}
+        self.wallet_owner_key = {}
+        self.wallet_active_key = {}
+        self.wallet_keys = {}
 
     def set_connection(self, connection):
         if self.connection:

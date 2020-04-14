@@ -1,17 +1,26 @@
 import base64
 import hashlib
 import logging
+from contextlib import contextmanager
 from enum import Enum
+from typing import Optional
 
 from HavokMud.account import Account
 from HavokMud.bank import Bank
 from HavokMud.currency import Currency, coin_names
+from HavokMud.eosio.action import EOSAction
+from HavokMud.eosio.permission import EOSPermission
+from HavokMud.eosio.transaction import EOSTransaction
 from HavokMud.npcplayer import NPCPlayer
 from HavokMud.player import Player
 from HavokMud.settings import Settings
 from HavokMud.system import System
 
 logger = logging.getLogger(__name__)
+
+
+class WalletError(Exception):
+    pass
 
 
 class WalletType(Enum):
@@ -37,31 +46,37 @@ class Wallet(object):
         System, "name",
     }
 
+    account_wallet_info_map = {}
+
     def __init__(self, server, owner=None, wallet_type: WalletType = None):
         self.server = server
         self.owner = owner
         self.wallet_type = wallet_type
         self.tokens = list(coin_names)
-        self.password = None
+        self.password = {}
+        self.active_key = {}
         self.keys = {}
-        self.name = None
+        self.wallet_name = None
+        self.account_name = None
         self.balance = None
 
-    def deposit(self, currency):
+    def deposit(self, currency: Currency):
         # New funds, these come from the economy as new coins
-        pass
+        system_wallet = Wallet.load(self.server, account_name=System.account_name)
+        return system_wallet.transfer_to(self.owner, self.wallet_type, currency)
 
     def withdraw(self, currency):
         # These funds are spent, and are returned to the economy
-        pass
+        system_wallet = Wallet.load(self.server, account_name=System.account_name)
+        return self.transfer_to(System(), WalletType.Supply, currency)
 
     def transfer_in(self, from_wallet, currency):
         # These funds are transferred in from another wallet
-        pass
+        return from_wallet.transfer_to(self.owner, self.wallet_type, currency)
 
     def transfer_out(self, to_wallet, currency):
         # These funds are transferred out to another wallet
-        pass
+        return self.transfer_to(to_wallet.owner, to_wallet.wallet_type, currency)
 
     def get_balance(self):
         # Returns the current balance as a currency object
@@ -70,7 +85,7 @@ class Wallet(object):
             try:
                 params = {
                     "code": "eosio.token",
-                    "account": self.name,
+                    "account": self.account_name,
                     "symbol": token,
                 }
                 balance = self.server.chain_api.call("get_currency_balance", **params)
@@ -84,47 +99,195 @@ class Wallet(object):
     @staticmethod
     def create(server, owner, wallet_type):
         # Create a new wallet
-        name = Wallet._hash_wallet_name(owner, wallet_type)
+        wallet_info = Wallet._hash_wallet_name(owner, wallet_type)
+        wallet_name = wallet_info.get("wallet_name", None)
+        account_name = wallet_info.get("account_name", None)
 
         try:
-            password = server.wallet_api.call("create", name)
+            password = server.wallet_api.call("create", wallet_name)
         except Exception as e:
-            logger.error("Couldn't create wallet %s: %s" % (name, e))
+            logger.error("Couldn't create wallet %s: %s" % (wallet_name, e))
             return None
 
         wallet = Wallet(server, owner, wallet_type)
-        wallet.name = name
-        wallet.password = server.encryption.encrypt(password)
+        wallet.wallet_name = wallet_name
+        wallet.account_name = account_name
+        wallet.password[wallet_type] = server.encryption.encrypt(password)
 
         try:
-            publicKey = server.wallet_api.call("create_key", name, "")
-            logger.info("Created new public key %s for %s" % (publicKey, name))
+            owner_key = server.wallet_api.call("create_key", wallet_name, "")
+            logger.info("Created new owner public key %s for %s" % (owner_key, wallet_name))
         except Exception as e:
-            logger.error("Couldn't create a key in wallet %s: %s" % (name, e))
+            logger.error("Couldn't create a key in wallet %s: %s" % (wallet_name, e))
             return None
 
         try:
-            server.wallet_api.call("lock", name);
+            active_key = server.wallet_api.call("create_key", wallet_name, "")
+            logger.info("Created new active public key %s for %s" % (active_key, wallet_name))
         except Exception as e:
-            logger.error("Couldn't lock wallet %s: %s" % (name, e))
+            logger.error("Couldn't create a key in wallet %s: %s" % (wallet_name, e))
             return None
 
+        wallet.active_key[wallet_type] = active_key
+
+        owner.wallet_password[wallet_type] = wallet.password[wallet_type]
+        owner.wallet_owner_key[wallet_type] = owner_key
+        owner.wallet_active_key[wallet_type] = active_key
+        owner.save_to_db()
+
+        # Now lock the wallet
+        try:
+            server.wallet_api.call("lock", wallet_name)
+        except Exception as e:
+            logger.error("Couldn't lock wallet %s: %s" % (wallet_name, e))
+            return None
+
+        # List all keys in the wallet
         wallet._list_keys()
+
+        # Need to create the account on the blockchain.  This requires a specific
+        # transaction to be created.
+        system_account_name = System.account_name
+        with wallet.transaction() as transaction:
+            params = {
+                "creator": system_account_name,
+                "name": account_name,
+                "owner": {
+                    "threshold": 1,
+                    "keys": [{
+                        "key": owner_key,
+                        "weight": 1
+                    }],
+                    "accounts": [],
+                    "waits": []
+                },
+                "active": {
+                    "threshold": 1,
+                    "keys": [{
+                        "key": active_key,
+                        "weight": 1
+                    }],
+                    "accounts": [],
+                    "waits": []
+                }
+            }
+            auth = [EOSPermission(system_account_name, "creator")]
+            transaction.add(EOSAction(server, "eosio", "newaccount", auth, **params))
+
+            # Need to buy some RAM
+            params = {
+                "payer": system_account_name,
+                "receiver": account_name,
+                "bytes": 8192
+            }
+            auth = [EOSPermission(system_account_name, "active")]
+            transaction.add(EOSAction(server, "eosio", "buyrambytes", auth, **params))
+
+            # And need to delegate CPU and NET
+            params = {
+                "from": system_account_name,
+                "receiver": account_name,
+                "stake_net_quantity": "1.0000 SYS",
+                "stake_cpu_quantity": "1.0000 SYS",
+                "transfer": False
+            }
+            auth = [EOSPermission(system_account_name, "active")]
+            transaction.add(EOSAction(server, "eosio", "delegatebw", auth, **params))
+
         return wallet
 
-    @staticmethod
-    def load(server, owner, wallet_type):
-        # Load up a wallet based on owner and type of wallet.  If there is no wallet
-        # yet, return None, and the caller should use create()
-        name = Wallet._hash_wallet_name(owner, wallet_type)
+    def transfer_to(self, target, wallet_type: WalletType, currency: Currency):
+        with self.transaction() as transaction:
+            return self._transaction_transfer_to(transaction, target, wallet_type, currency)
+
+    def _transaction_transfer_to(self, transaction: EOSTransaction, target, wallet_type: WalletType,
+                                 currency: Currency, pending_payment: Currency = None,
+                                 break_coins: bool = False):
+
+        target_info = Wallet._hash_wallet_name(target, wallet_type)
+        target_account = target_info.get("account_name", None)
+        if not target_account:
+            raise WalletError("Can't transfer to an unknown account")
+        if self.balance is None:
+            self.get_balance()
+
+        balance = Currency(currency=self.balance)
+        if pending_payment:
+            balance.add_value(pending_payment)
+
         try:
-            server.wallet_api.call("open", name)
+            if break_coins:
+                (from_system, payment) = balance.break_coins_payment(currency)
+            else:
+                payment = balance.minimal_payment(currency)
+                from_system = Currency()
         except Exception as e:
-            logger.error("Couldn't load wallet %s: %s" % (name, e))
+            raise WalletError("Can't transfer %s: %s" % (currency, e))
+
+        for (count, token) in payment.get_as_tokens():
+            self._transfer_tokens(transaction, target_account, count, token)
+
+        if from_system:
+            system_wallet: Wallet = Wallet.load(self.server, account_name=System.account_name)
+            for (count, token) in from_system.get_as_tokens():
+                if count > 0:
+                    system_wallet._transfer_tokens(transaction, self.account_name, count, token)
+                elif count < 0:
+                    self._transfer_tokens(transaction, System.account_name, -count, token)
+
+        change = currency.subtract_value(payment)
+        if not change.is_zero():
+            target_wallet = Wallet.load(account_name=target_account)
+            if not target_wallet:
+                target_wallet = Wallet.create(target, wallet_type)
+                if not target_wallet._transaction_transfer_to(transaction, self.owner, self.wallet_type, change,
+                                                              pending_payment=payment):
+                    target_wallet._transaction_transfer_to(transaction, self.owner, self.wallet_type, change,
+                                                           pending_payment=payment, break_coins=True)
+
+        return change.is_zero()
+
+    def _transfer_tokens(self, transaction: EOSTransaction, target_account_name: str, count: int, token: str, memo: str):
+        params = {
+            "from": self.account_name,
+            "to": target_account_name,
+            "quantity": "%.4f %s" % (count, token),
+            "memo": transaction.memo,
+        }
+        auth = [EOSPermission(self.account_name, "active")]
+        action = EOSAction(self.server, "eosio.token", "transfer", auth, **params)
+        transaction.add(action)
+
+    @staticmethod
+    def load(server, owner=None, wallet_type=None, account_name=None):
+
+        wallet_info = None
+        if account_name:
+            wallet_info = Wallet.account_wallet_info_map.get(account_name, {})
+        elif owner is not None and wallet_type is not None:
+            # Load up a wallet based on owner and type of wallet.  If there is no wallet
+            # yet, return None, and the caller should use create()
+            wallet_info = Wallet._hash_wallet_name(owner, wallet_type)
+            if wallet_info is None:
+                raise WalletError("Wallet mapping error")
+
+        if wallet_info is None:
+            raise WalletError("No identifying parameters given")
+
+        wallet_name = wallet_info.get("wallet_name", None)
+        owner = wallet_info.get("owner", None)
+        wallet_type = wallet_info.get("wallet_type", None)
+
+        try:
+            server.wallet_api.call("open", wallet_name)
+        except Exception as e:
+            logger.error("Couldn't load wallet %s: %s" % (wallet_name, e))
             return None
 
         wallet = Wallet(server, owner, wallet_type)
-        wallet.name = name
+        wallet.wallet_name = wallet_name
+        wallet.account_name = account_name
+
         # Keep encrypted until needed
         wallet.password = owner.wallet_password.get(wallet_type, None)
         wallet._list_keys()
@@ -135,9 +298,9 @@ class Wallet(object):
 
         keys = self.owner.wallet_keys.get(self.wallet_type, {})
         try:
-            new_keys = self.server.wallet_api.call("list_keys", self.name, password)
+            new_keys = self.server.wallet_api.call("list_keys", self.wallet_name, password)
         except Exception as e:
-            logger.error("Couldn't list keys for owner %s, type %s: %s" % (self.name, self.wallet_type, e))
+            logger.error("Couldn't list keys for owner %s, type %s: %s" % (self.wallet_name, self.wallet_type, e))
             new_keys = {}
 
         # Keep our private keys encrypted in memory until they are needed
@@ -162,32 +325,56 @@ class Wallet(object):
         return password
 
     @staticmethod
-    def _hash_wallet_name(owner, wallet_type):
+    def _hash_wallet_name(owner, wallet_type: WalletType):
+        klass = owner.__class__.__name__
         names = list(map(lambda x: x[1], filter(lambda x: isinstance(owner, x[0]), Wallet.name_map.items())))
         if not names:
             name = "unknown"
         else:
             attrib = names[0]
             name = getattr(owner, attrib, "unknown")
-        base = ":".join([name, str(wallet_type)])
+        wallet_name = ".".join([klass, name, wallet_type.name])
 
         # EOSIO account names are 12 bytes long, start with a letter, and contain:
         # [a-z], [1-5], "."
 
         # We need a 10 character string.  Use Blake2b to get a 6-byte hash
-        full_hash = hashlib.blake2b(base.encode("utf-8"), digest_size=6, key=b"HavokMud:wallet")
+        full_hash = hashlib.blake2b(wallet_name.encode("utf-8"), digest_size=6, key=b"HavokMud:wallet")
 
         # Convert the 6 byte hash into 16 byte encoding (base32), and strip off the padding
         # giving us 10 bytes, which we want lower case, not upper
         encoded = base64.b32encode(full_hash.digest()).decode("utf-8").lower()[:10]
 
         # Base32 does [A-Z], [2-7], so translate all "6" to "1", and all "7" to "."
-        encoded.replace("6", "1")
-        encoded.replace("7", ".")
+        encoded = encoded.replace("6", "1")
+        encoded = encoded.replace("7", ".")
+
+        # Can't end an account name with a ".", so let's remove it
+        if encoded.endswith("."):
+            encoded = encoded[:-1]
 
         prefixes = list(map(lambda x: x[1], filter(lambda x: isinstance(owner, x[0]), Wallet.prefix_map.items())))
         if not prefixes:
             prefixes = ["x."]
         prefix = prefixes[0]
 
-        return prefix + encoded
+        account_name = prefix + encoded
+
+        wallet_info = {
+            "account_name": account_name,
+            "wallet_name": wallet_name,
+            "owner": owner,
+            "wallet_type": wallet_type,
+        }
+        Wallet.account_wallet_info_map[account_name] = wallet_info
+
+        return wallet_info
+
+    @contextmanager
+    def transaction(self):
+        transaction = EOSTransaction()
+        try:
+            yield transaction
+        finally:
+            if transaction.actions:
+                transaction.send(self.server)

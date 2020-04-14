@@ -225,6 +225,29 @@ class Currency(object):
 
         return payment
 
+    def get_coins(self, coin_type):
+        return self.holdings.get(coin_type, 0)
+
+    def break_coins_payment(self, coins):
+        remainder = Currency(currency=self)
+        remainder.subtract_value(coins)
+        payment = coins.convert_to_minimal()
+        from_system = Currency()
+        from_system.holdings = {coin_type: remainder.get_coins(coin_type) - self.get_coins(coin_type) - payment.get_coins(coin_type)
+                                for coin_type in coin_names}
+        return (from_system, payment)
+
+    def get_as_tokens(self):
+        return [(count, coin_type.upper())
+                for (coin_type, count) in self.holdings.items()
+                if count]
+
+    def is_zero(self):
+        for (coin_type, count) in self.holdings:
+            if count * base_values.get(coin_type) > 0:
+                return False
+        return True
+
     def __str__(self):
         holdings = ["%d%s" % (self.holdings.get(coin_type, 0), coin_type)
                     for (coin_type, value) in sorted_coins
