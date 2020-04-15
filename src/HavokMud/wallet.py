@@ -199,6 +199,7 @@ class Wallet(object):
     def transfer_to(self, target, wallet_type: WalletType, currency: Currency):
         with self.transaction() as transaction:
             return self._transaction_transfer_to(transaction, target, wallet_type, currency)
+        self.get_balance()
 
     def _transaction_transfer_to(self, transaction: EOSTransaction, target, wallet_type: WalletType,
                                  currency: Currency, pending_payment: Currency = None,
@@ -208,8 +209,8 @@ class Wallet(object):
         target_account = target_info.get("account_name", None)
         if not target_account:
             raise WalletError("Can't transfer to an unknown account")
-        if self.balance is None:
-            self.get_balance()
+
+        self.get_balance()
 
         balance = Currency(currency=self.balance)
         if pending_payment:
@@ -316,8 +317,10 @@ class Wallet(object):
 
     def destroy(self):
         # The wallet's contents will be transferred to the economy if any value to
-        # be found, and then the wallet destroyed (removed from the system)
-        pass
+        # be found
+        self.get_balance()
+        with self.transaction() as transaction:
+            self._transaction_transfer_to(transaction, System(), WalletType.Supply, self.balance())
 
     def _load_wallet_password(self):
         setting = Settings.lookup_by_key(self.server, "wallet_password")
