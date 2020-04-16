@@ -1,5 +1,6 @@
 #include <eosio/eosio.hpp>
 #include <eosio/asset.hpp>
+#include <eosio/system.hpp>
 
 using namespace eosio;
 
@@ -7,21 +8,14 @@ class [[eosio::contract("banker")]] banker : public eosio::contract {
   public:
     using contract::contract;
 
-    enum token_names {
-      CP = 0,
-      SP,
-      EP,
-      GP,
-      PP,
-      MAX_TOKEN
-    };
-
     banker(name receiver, name code, datastream<const char*>ds) :
         contract(receiver, code, ds) {
 
       account_index accounts(get_self(), get_self().value);
       accounts.emplace(vault, [&](auto& row) {
         row.key = vault;
+        row.last_interest_timestamp = now();
+        row.interest_bearing = false;
         for(int i = CP; i < MAX_TOKEN; i++) {
           row.balance[i] = eosio::asset(0, symbol_names[i]);
         }
@@ -37,6 +31,8 @@ class [[eosio::contract("banker")]] banker : public eosio::contract {
         // The user isn't in the table
         accounts.emplace(user, [&](auto& row) {
           row.key = user;
+          row.last_interest_timestamp = now();
+          row.interest_bearing = true;
           for(int i = CP; i < MAX_TOKEN; i++) {
             row.balance[i] = eosio::asset(0, symbol_names[i]);
           }
@@ -51,6 +47,8 @@ class [[eosio::contract("banker")]] banker : public eosio::contract {
       auto iterator = accounts.find(user.value);
       check(iterator != accounts.end(), "Account does not exist");
 
+      token_balance vault_balance;
+      do_individual_interest(iterator, now(), vault_balance);
       for(int i = CP; i < MAX_TOKEN; i++) {
         const eosio::asset& coin = iterator->balance[i];
         if(coin.amount == 0) {
@@ -108,9 +106,9 @@ class [[eosio::contract("banker")]] banker : public eosio::contract {
       auto vault_it = accounts.find(vault.value);
       auto user_it = accounts.find(user.value);
       
-      check(verify_value(user_it->balance, amount),
+      check(get_value(user_it->balance) >= amount,
             "Sorry, you don't have that much to withdraw.");
-      check(verify_value(vault_it->balance, amount),
+      check(get_value(vault_it->balance) >= amount,
             "Sorry, the vault doesn't contain that much, come back later");
 
       token_balance out_balance;
@@ -125,27 +123,74 @@ class [[eosio::contract("banker")]] banker : public eosio::contract {
           continue;
         }
 
-        action {
+        action(
           permission_level {get_self(), "active"_n},
           "eosio.token"_n,
           "transfer"_n,
           std::make_tuple(get_self(), user, coin, std::string("N/A"))
-        }.send();
+        ).send();
+      }
+    }
+
+    [[eosio::action]]
+    void setinterest(uint64_t rate) {
+      require_auth(system_account);
+
+      action(
+        permission_level {system_account, "active"_n},
+        get_self(),
+        "calcinterest"_n,
+        std::make_tuple()
+      ).send();
+
+      interest_rate = double(rate) / 10000.0;
+    }
+
+    [[eosio::action]]
+    void calcinterest() {
+      require_auth(system_account);
+
+      uint32_t sync = now();
+
+      account_index accounts(get_self(), vault.value);
+      auto vault_it = accounts.find(vault.value);
+      token_balance vault_balance;
+
+      for ( auto iterator = accounts.begin();
+            iterator != accounts.end(); iterator++ ) {
+        if(!iterator->interest_bearing) {
+          continue;
+        }
+
+        do_individual_interest(iterator, sync, vault_balance);
       }
     }
 
   private:
+    enum token_names {
+      CP = 0,
+      SP,
+      EP,
+      GP,
+      PP,
+      MAX_TOKEN
+    };
+
     typedef eosio::asset token_balance[MAX_TOKEN];
 
     struct [[eosio::table]] bank_account {
       name key;
 
       token_balance balance;
+      bool interest_bearing;
+      uint32_t last_interest_timestamp;
 
       uint64_t primary_key() const { return key.value; };
     };
 
     typedef eosio::multi_index<"accounts"_n, bank_account> account_index;
+
+    double interest_rate;  // In 1/100 of a percent, per-annum
 
     const name system_account = name("mud.havokmud");
     const name vault = name("bank_vault");
@@ -163,12 +208,12 @@ class [[eosio::contract("banker")]] banker : public eosio::contract {
       {symbol("PP", 4).raw(), PP}, 
     };
 
-    bool verify_value(const token_balance& balance, uint64_t value) {
+    uint64_t get_value(const token_balance& balance) {
       uint64_t total = 0;
       for(int i = CP; i < MAX_TOKEN; i++) {
         total += balance[i].amount * base_value[i];
       }
-      return total >= value;
+      return total;
     }
 
     void remove_value(account_index::const_iterator iterator,
@@ -186,6 +231,35 @@ class [[eosio::contract("banker")]] banker : public eosio::contract {
           row.balance[i].amount -= count;
           out_coins[i] = asset(count, symbol_names[i]);
         }
+      });
+    }
+
+    uint32_t now() {
+      return current_time_point().sec_since_epoch();
+    }
+
+    void do_individual_interest(account_index::const_iterator iterator,
+                                uint32_t sync, token_balance& vault_balance) {
+      int32_t duration = sync - iterator->last_interest_timestamp;
+      if(duration < 0) {
+        duration = 0;
+      }
+
+      double years = double(duration) / double(365.35 * 24.0 * 3600.0);
+      uint64_t total = get_value(iterator->balance);
+      uint64_t interest = uint64_t(double(total) * years * interest_rate);
+
+      account_index accounts(get_self(), vault.value);
+      auto vault_it = accounts.find(vault.value);
+      if(get_value(vault_it->balance) < interest) {
+        // vault is getting too empty, skip this one
+        return;
+      }
+      remove_value(iterator, interest, vault_balance);
+
+      accounts.modify(iterator, iterator->key, [&](auto& row) {
+        row.last_interest_timestamp = sync;
+        row.balance[CP].amount += interest;
       });
     }
 };
