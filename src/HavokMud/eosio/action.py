@@ -1,7 +1,6 @@
 import logging
 
 from HavokMud.eosio.abi import EOSAbi
-from HavokMud.server import Server
 
 logger = logging.getLogger(__name__)
 
@@ -11,7 +10,7 @@ class EOSActionError(Exception):
 
 
 class EOSAction(object):
-    def __init__(self, server: Server, contract: str, action_name: str,
+    def __init__(self, server, contract: str, action_name: str,
                  authorization: list, *args, **kwargs):
         self.contract = contract
         self.action_name = action_name

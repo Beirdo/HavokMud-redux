@@ -30,10 +30,16 @@ class SwaggerAPI(object):
     swagger_file = None
     base_url = None
 
-    def __init__(self, name, swagger_file, scheme, hostname, port, path):
+    def __init__(self, name, swagger_file, scheme, hostname, port, path, spec_url=None):
         self.name = name
         self.swagger_file = os.path.join(swaggerDir, swagger_file)
         self.base_url = "%s://%s:%s%s" % (scheme, hostname, port, path)
+        if spec_url:
+            self.spec_url = spec_url
+        else:
+            self.spec_url = self.base_url
+        if not self.spec_url.endswith("/"):
+            self.spec_url += "/"
         self.response = None
 
         logger.info("Loading swagger file: %s" % swagger_file)
@@ -41,7 +47,7 @@ class SwaggerAPI(object):
             self.swagger_object = yaml.safe_load(f.read())
 
         logger.info("Creating API spec for %s" % name)
-        self.api_spec = openapi_core.create_spec(self.swagger_object, self.base_url)
+        self.api_spec = openapi_core.create_spec(self.swagger_object, self.spec_url)
         self.methods = {os.path.basename(key): {"path": key, "object": value}
                         for (key, value) in self.api_spec.paths.items()}
         self.request_validator = RequestValidator(self.api_spec)

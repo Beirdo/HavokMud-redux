@@ -11,10 +11,6 @@ class SettingsDB(Database):
         {
             'AttributeName': "key",
             'AttributeType': "S"
-        },
-        {
-            'AttributeName': 'value',
-            'AttributeType': "S"
         }
     ]
 

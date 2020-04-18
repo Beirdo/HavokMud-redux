@@ -49,7 +49,7 @@ class DatabaseHandler(object):
             if db:
                 func = getattr(db, item.command, None)
                 if func and hasattr(func, "__call__"):
-                    logger.debug("Func: %s, args: %s, kwargs: %s" % (func, item.args, item.kwargs))
+                    logger.info("Func: %s, args: %s, kwargs: %s" % (func, item.args, item.kwargs))
                     response = func(*item.args, **item.kwargs)
 
         logger.debug("Response: %s" % response)

@@ -10,8 +10,6 @@ from threading import Lock
 import base58
 from Crypto.Hash import RIPEMD160
 
-from HavokMud.server import Server
-
 logger = logging.getLogger(__name__)
 
 
@@ -21,11 +19,6 @@ class EOSAbiError(Exception):
 
 abi_map = {}
 abi_map_lock = Lock()
-
-
-def _create_type(name, base_name=None, fields=None, alias=None, array_of=None,
-                 optional_of=None, extension_of=None, pack_=None, hex_digits=None, variant=None):
-    return EOSAbiType(name, base_name, fields, alias, array_of, optional_of, extension_of, pack_, hex_digits, variant)
 
 
 class EOSAbiState(object):
@@ -39,45 +32,6 @@ class EOSAbiState(object):
 
 
 class EOSAbiType(object):
-    base_types = {
-        'bool': _create_type('bool', pack_="?"),
-        'uint8': _create_type('uint8', pack_="B"),
-        'int8': _create_type('int8', pack_="b"),
-        'uint16': _create_type('uint16', pack_='<H'),
-        'int16': _create_type('int16', pack_='<h'),
-        'uint32': _create_type('uint32', pack_='<L'),
-        'int32': _create_type('int32', pack_='<l'),
-        'uint64': _create_type('uint64', pack_="<Q"),
-        'int64': _create_type('int64', pack_="<q"),
-        'varuint32': _create_type('varuint32'),
-        'varint32': _create_type('varint32'),
-        'uint128': _create_type('uint128'),
-        'int128': _create_type('int128'),
-        'float32': _create_type('float32', pack_="<f"),
-        'float64': _create_type('float64', pack_="<d"),
-        'float128': _create_type('float128', hex_digits=16),
-        'bytes': _create_type('bytes'),
-        'string': _create_type('string'),
-        'name': _create_type('name'),
-        'time_point': _create_type('time_point'),
-        'time_point_sec': _create_type('time_point_sec'),
-        'block_timestamp_type': _create_type('block_timestamp_type'),
-        'symbol_code': _create_type('symbol_code'),
-        'symbol': _create_type('symbol'),
-        'asset': _create_type('asset'),
-        'checksum160': _create_type('checksum160', hex_digits=20),
-        'checksum256': _create_type('checksum256', hex_digits=32),
-        'checksum512': _create_type('checksum512', hex_digits=64),
-        'public_key': _create_type('public_key'),
-        'private_key': _create_type('private_key'),
-        'signature': _create_type('signature'),
-        'extended_asset': _create_type('extended_asset',
-                                       fields=[
-                                           {"name": 'quantity', 'type': 'asset'},
-                                           {"name": "contract", 'type': 'name'},
-                                       ]),
-    }
-
     def __init__(self, name, base_name=None, fields=None, alias=None, array_of=None,
                  optional_of=None, extension_of=None, pack_=None, hex_digits=None, variant=None):
         self.name = name
@@ -126,15 +80,15 @@ class EOSAbiType(object):
             return type_
 
         if name.endswith("[]"):
-            types[name] = _create_type(name, array_of=EOSAbiType.get(types, name[:-2]))
+            types[name] = EOSAbiType(name, array_of=EOSAbiType.get(types, name[:-2]))
             return types[name]
 
         if name.endswith("?"):
-            types[name] = _create_type(name, optional_of=EOSAbiType.get(types, name[:-1]))
+            types[name] = EOSAbiType(name, optional_of=EOSAbiType.get(types, name[:-1]))
             return types[name]
 
         if name.endswith("$"):
-            types[name] = _create_type(name, extension_of=EOSAbiType.get(types, name[:-1]))
+            types[name] = EOSAbiType(name, extension_of=EOSAbiType.get(types, name[:-1]))
             return types[name]
 
         logger.error("Unknown type: %s" % name)
@@ -590,7 +544,7 @@ class EOSAbiType(object):
 
 class EOSAbi(object):
     @staticmethod
-    def lookup(server: Server, contract: str):
+    def lookup(server, contract: str):
         with abi_map_lock:
             abi = abi_map.get(contract, None)
             if not abi:
@@ -598,7 +552,7 @@ class EOSAbi(object):
                 abi_map[contract] = abi
             return abi
 
-    def __init__(self, server: Server, contract):
+    def __init__(self, server, contract):
         try:
             # The contract is also the name of the account that holds the contract
             response = server.chain_api.call("get_abi", contract)
@@ -612,14 +566,15 @@ class EOSAbi(object):
         self._parse_types()
 
     def _parse_types(self):
-        types = dict(EOSAbiType.base_types)
+        base_types = EOSAbiBaseTypes()
+        types = dict(base_types.types)
 
         # Type aliases
         for item in self.abi.get('types', []):
             type_ = item.get('new_type_name', None)
             if not type_:
                 continue
-            types[type_] = _create_type(type_, alias=item.get('type', None))
+            types[type_] = EOSAbiType(type_, alias=item.get('type', None))
 
         # Structs
         for item in self.abi.get('structs', []):
@@ -630,13 +585,13 @@ class EOSAbi(object):
             fields = item.get("fields", [])
             for field in fields:
                 field['type_name'] = field.get('type', None)
-            types[name] = _create_type(name, base_name=base_type, fields=fields)
+            types[name] = EOSAbiType(name, base_name=base_type, fields=fields)
 
         # Variants
         for item in self.abi.get("variants", []):
             (name, types) = item
             fields = [{"name": type_, "type_name": type_} for type_ in types]
-            types[name] = _create_type(name, variant=True, fields=fields)
+            types[name] = EOSAbiType(name, variant=True, fields=fields)
 
         # Now to extract arrays, etc.
         for (name, item) in types:
@@ -663,3 +618,48 @@ class EOSAbi(object):
             raise KeyError("Type %s not found" % type_name)
         buf = bytearray(codecs.decode(data.encode(), "hex_codec"))
         return type_.deserializer(buf, state)
+
+
+class EOSAbiBaseTypes(object):
+    base_types = {
+        'bool': {"pack_": "?"},
+        'uint8': {"pack_": "B"},
+        'int8': {"pack_": "b"},
+        'uint16': {"pack_": '<H'},
+        'int16': {"pack_": '<h'},
+        'uint32': {"pack_": '<L'},
+        'int32': {"pack_": '<l'},
+        'uint64': {"pack_": "<Q"},
+        'int64': {"pack_": "<q"},
+        'varuint32': {},
+        'varint32': {},
+        'uint128': {},
+        'int128': {},
+        'float32': {"pack_": "<f"},
+        'float64': {"pack_": "<d"},
+        'float128': {"hex_digits": 16},
+        'bytes': {},
+        'string': {},
+        'name': {},
+        'time_point': {},
+        'time_point_sec': {},
+        'block_timestamp_type': {},
+        'symbol_code': {},
+        'symbol': {},
+        'asset': {},
+        'checksum160': {"hex_digits": 20},
+        'checksum256': {"hex_digits": 32},
+        'checksum512': {"hex_digits": 64},
+        'public_key': {},
+        'private_key': {},
+        'signature': {},
+        'extended_asset': {"fields": [
+                              {"name": 'quantity', 'type': 'asset'},
+                              {"name": "contract", 'type': 'name'},
+                           ]},
+    }
+    types = {}
+
+    def __init__(self):
+        self.types = {name: EOSAbiType(name, **kwargs)
+                      for (name, kwargs) in self.base_types.items()}

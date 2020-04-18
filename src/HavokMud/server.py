@@ -1,4 +1,5 @@
 import logging
+import os
 import socket
 import stackless
 import traceback
@@ -12,6 +13,7 @@ from HavokMud.dnslookup import DNSLookup
 from HavokMud.encryption_helper import EncryptionEngine
 from HavokMud.redis_handler import RedisHandler
 from HavokMud.send_email import EmailHandler
+from HavokMud.settings import Settings
 from HavokMud.swaggerapi.eosio_chain import EOSChainAPI
 from HavokMud.swaggerapi.eosio_wallet import EOSWalletAPI
 
@@ -24,14 +26,16 @@ class Server(object):
     port = 3000
     wizlocked = False
     wizlock_reason = None
+    profile = None
 
-    def __init__(self, config):
+    def __init__(self, config, dbs, debug_mode=False):
         self.config = config
+
         self.__dict__.update(self.config.get("mud", {}))
 
+        self.dbs = dbs
         self.user_lock = Lock()
         self.user_index = weakref.WeakValueDictionary()
-        self.dbs = Databases(self.config)
         self.dns_lookup = DNSLookup()
         self.email_handler = EmailHandler(config)
         self.redis = RedisHandler(config)
@@ -50,7 +54,8 @@ class Server(object):
         for account in accounts:
             account.update_redis()
 
-        stackless.tasklet(self.run)()
+        if not debug_mode:
+            stackless.tasklet(self.run)()
 
     def run(self):
         listen_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

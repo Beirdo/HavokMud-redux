@@ -3,16 +3,11 @@ import hashlib
 import logging
 from contextlib import contextmanager
 from enum import Enum
-from typing import Optional
 
-from HavokMud.account import Account
-from HavokMud.bank import Bank
 from HavokMud.currency import Currency, coin_names
 from HavokMud.eosio.action import EOSAction
 from HavokMud.eosio.permission import EOSPermission
 from HavokMud.eosio.transaction import EOSTransaction
-from HavokMud.npcplayer import NPCPlayer
-from HavokMud.player import Player
 from HavokMud.settings import Settings
 from HavokMud.system import System
 
@@ -31,19 +26,19 @@ class WalletType(Enum):
 
 class Wallet(object):
     prefix_map = {
-        Account, "a.",
-        Player, "p.",
-        NPCPlayer, "n.",
-        Bank, "b.",
-        System, "s.",
+        "Account", "a.",
+        "Player", "p.",
+        "NPCPlayer", "n.",
+        "Bank", "b.",
+        "System", "s.",
     }
 
     name_map = {
-        Account, "email",
-        Player, "name",
-        NPCPlayer, "name",
-        Bank, "name",
-        System, "name",
+        "Account", "email",
+        "Player", "name",
+        "NPCPlayer", "name",
+        "Bank", "name",
+        "System", "name",
     }
 
     account_wallet_info_map = {}
@@ -248,7 +243,8 @@ class Wallet(object):
 
         return change.is_zero()
 
-    def _transfer_tokens(self, transaction: EOSTransaction, target_account_name: str, count: int, token: str, memo: str):
+    def _transfer_tokens(self, transaction: EOSTransaction, target_account_name: str, count: int, token: str,
+                         memo: str):
         params = {
             "from": self.account_name,
             "to": target_account_name,
@@ -330,7 +326,7 @@ class Wallet(object):
     @staticmethod
     def _hash_wallet_name(owner, wallet_type: WalletType):
         klass = owner.__class__.__name__
-        names = list(map(lambda x: x[1], filter(lambda x: isinstance(owner, x[0]), Wallet.name_map.items())))
+        names = list(map(lambda x: x[1], filter(lambda x: owner.__class__.__name__ == x[0], Wallet.name_map.items())))
         if not names:
             name = "unknown"
         else:
@@ -356,7 +352,8 @@ class Wallet(object):
         if encoded.endswith("."):
             encoded = encoded[:-1]
 
-        prefixes = list(map(lambda x: x[1], filter(lambda x: isinstance(owner, x[0]), Wallet.prefix_map.items())))
+        prefixes = list(
+            map(lambda x: x[1], filter(lambda x: owner.__class__.__name__ == x[0], Wallet.prefix_map.items())))
         if not prefixes:
             prefixes = ["x."]
         prefix = prefixes[0]

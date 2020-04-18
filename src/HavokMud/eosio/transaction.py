@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 from typing import List
 
 from HavokMud.eosio.action import EOSAction
-from HavokMud.wallet import Wallet
 
 logger = logging.getLogger(__name__)
 
@@ -74,6 +73,8 @@ class EOSTransaction(object):
 
         signatures = []
         if sign:
+            from HavokMud.wallet import Wallet
+
             accounts = [item.contract for item in self.actions]
             wallets = [Wallet.load(server, account_name=item) for item in accounts]
             available_public_keys = {key for wallet in wallets for key in wallet.keys.keys()}
