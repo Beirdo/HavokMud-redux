@@ -17,8 +17,10 @@ print(currency3)
 
 
 print("BLAH")
-currency = Currency(coins="1pp")
-currency2 = Currency(coins="1cp")
+currency = Currency(coins="1 pp")
+print(currency)
+currency2 = Currency(coins="1.000 CP")
+print(currency2)
 currency.subtract_value(currency2)
 print(currency)
 currency.add_value(currency2)

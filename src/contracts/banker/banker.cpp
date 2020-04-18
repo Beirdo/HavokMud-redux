@@ -47,8 +47,7 @@ class [[eosio::contract("banker")]] banker : public eosio::contract {
       auto iterator = accounts.find(user.value);
       check(iterator != accounts.end(), "Account does not exist");
 
-      token_balance vault_balance;
-      do_individual_interest(iterator, now(), vault_balance);
+      do_individual_interest(iterator, now());
       for(int i = CP; i < MAX_TOKEN; i++) {
         const eosio::asset& coin = iterator->balance[i];
         if(coin.amount == 0) {
@@ -87,8 +86,13 @@ class [[eosio::contract("banker")]] banker : public eosio::contract {
         auto iterator = accounts.find(from.value);
         check(iterator != accounts.end(), "Account does not exist");
 
+        uint32_t sync = now();
+        uint64_t interest = do_individual_interest(iterator, sync, false);
+
         accounts.modify(iterator, from, [&](auto& row) {
           row.balance[t_name] += quantity;
+          row.balance[CP].amount += interest;
+          row.last_interest_timestamp = sync;
         });
       }
 
@@ -162,7 +166,7 @@ class [[eosio::contract("banker")]] banker : public eosio::contract {
           continue;
         }
 
-        do_individual_interest(iterator, sync, vault_balance);
+        do_individual_interest(iterator, sync);
       }
     }
 
@@ -279,8 +283,8 @@ class [[eosio::contract("banker")]] banker : public eosio::contract {
       return current_time_point().sec_since_epoch();
     }
 
-    void do_individual_interest(account_index::const_iterator iterator,
-                                uint32_t sync, token_balance& vault_balance) {
+    uint64_t do_individual_interest(account_index::const_iterator iterator,
+                                    uint32_t sync, bool update=false) {
       int32_t duration = sync - iterator->last_interest_timestamp;
       if(duration < 0) {
         duration = 0;
@@ -290,11 +294,15 @@ class [[eosio::contract("banker")]] banker : public eosio::contract {
       uint64_t total = get_value(iterator->balance);
       uint64_t interest = uint64_t(double(total) * years * interest_rate);
 
-      account_index accounts(get_self(), iterator->key.value);
-      accounts.modify(iterator, iterator->key, [&](auto& row) {
-        row.last_interest_timestamp = sync;
-        row.balance[CP].amount += interest;
-      });
+      if(interest > 0 && update) {
+        account_index accounts(get_self(), iterator->key.value);
+        accounts.modify(iterator, iterator->key, [&](auto& row) {
+          row.last_interest_timestamp = sync;
+          row.balance[CP].amount += interest;
+        });
+      }
+
+      return interest;
     }
 };
 

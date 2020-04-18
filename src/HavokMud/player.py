@@ -1,9 +1,10 @@
 from HavokMud.database_object import DatabaseObject
 from HavokMud.utils import roll_dice
+from HavokMud.wallet import WalletType, Wallet
 
 
 class Player(DatabaseObject):
-    __fixed_fields__ = ["server", "connection", "account"]
+    __fixed_fields__ = ["server", "connection", "account", "wallets"]
     __database__ = None
 
     def __init__(self, server, connection, account):
@@ -23,6 +24,7 @@ class Player(DatabaseObject):
         self.stats = {}
         self.alignment = None
         self.complete = False
+        self.wallets = {}
         self.wallet_password = {}
         self.wallet_owner_key = {}
         self.wallet_active_key = {}
@@ -39,10 +41,21 @@ class Player(DatabaseObject):
     def lookup_by_name(account, name):
         player = Player(account.server, account.connection, account)
 
-        # if not in dynamo: return with empty email field
+        # if not in dynamo: return with empty name field
         player.load_from_db(email=player.email, name=name)
 
+        if not player.name:
+            return player
+
+        player.wallets[WalletType.Carried] = Wallet.load(account.server, player, WalletType.Carried)
+        player.wallets[WalletType.Stored] = Wallet.load(account.server, player, WalletType.Stored)
+
         return player
+
+    def create_wallets(self):
+        self.wallets[WalletType.Carried] = Wallet.load(self.server, self, WalletType.Carried)
+        self.wallets[WalletType.Stored] = Wallet.load(self.server, self, WalletType.Stored)
+        self.save_to_db()
 
     def append_line(self, output):
         if output is None:

@@ -6,6 +6,7 @@ from threading import Lock
 from HavokMud.database_object import DatabaseObject
 from HavokMud.jinjaprocessor import jinja_processor
 from HavokMud.logging_support import AccountLogMessage
+from HavokMud.wallet import WalletType, Wallet
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +23,7 @@ class Account(DatabaseObject):
         self.hostname_lock = Lock()
         self.player = None
         self.current_player = None
+        self.wallets = {}
         self.wallet_password = {}
         self.wallet_owner_key = {}
         self.wallet_active_key = {}
@@ -47,6 +49,8 @@ class Account(DatabaseObject):
 
         # if not in dynamo: will return with empty email field
         account.load_from_db(email=email)
+        account.wallets[WalletType.Carried] = Wallet.load(server, account, WalletType.Carried)
+        account.wallets[WalletType.Stored] = Wallet.load(server, account, WalletType.Stored)
 
         if connection:
             account.ip_address = connection.client_address[0]

@@ -37,7 +37,7 @@ def load_exchange_data():
 
 
 class Currency(object):
-    coinRe = re.compile(r'^(?P<quantity>\d+)\s*(?P<type>[a-z]+)$', re.I)
+    coinRe = re.compile(r'(?P<quantity>\d+)(?:\.\d+)?\s*(?P<type>[a-z]+)(?:\s*|$)', re.I)
 
     def __init__(self, currency=None, coins=None, value=None):
         if not base_values:
@@ -48,10 +48,11 @@ class Currency(object):
             self.holdings.update(currency.holdings)
 
         if isinstance(coins, str):
-            coins = coins.split()
+            coins = ["".join(item).lower() for item in self.coinRe.findall(coins)]
         elif not coins:
             coins = []
 
+        print(coins)
         for coin in coins:
             coin_value = self.parse_coin(coin)
             self.holdings.update({coin_type: value + self.holdings.get(coin_type, 0)
@@ -67,7 +68,7 @@ class Currency(object):
             logger.error("Coin '%s' does not parse" % coin)
             return {}
 
-        coin_type = match.group("type")
+        coin_type = match.group("type").lower()
         coin_item = exchange_data.get(coin_type, None)
         if not coin_item:
             logger.error("Coin '%s' has an unconfigured type" % coin)
