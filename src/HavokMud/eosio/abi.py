@@ -555,7 +555,7 @@ class EOSAbi(object):
     def __init__(self, server, contract):
         try:
             # The contract is also the name of the account that holds the contract
-            response = server.chain_api.call("get_abi", contract)
+            response = server.chain_api.call("get_abi", account_name=contract)
         except Exception as e:
             raise EOSAbiError("Could not pull ABI for contract %s: %s" % (contract, e))
 

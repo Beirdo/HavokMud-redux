@@ -90,8 +90,6 @@ class SwaggerAPI(object):
                 os.unlink(self.pickle_file)
                 raise e
 
-        # print(self.api_spec.__dict__)
-
         self.methods = {os.path.basename(key): {"path": key, "object": value}
                         for (key, value) in self.api_spec.paths.items()}
         self.request_validator = RequestValidator(self.api_spec)
@@ -101,7 +99,7 @@ class SwaggerAPI(object):
     @log_call
     def call(self, method, *args, **kwargs):
         timeout = kwargs.pop("timeout", 10)
-        openapi_validate = kwargs.pop("openapi_validate", False)
+        openapi_validate = kwargs.pop("openapi_validate", True)
 
         if method not in self.methods:
             raise NotImplementedError("Method %s not implemented by %s API" % (method, self.name))

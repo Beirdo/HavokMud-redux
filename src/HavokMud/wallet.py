@@ -294,21 +294,23 @@ class Wallet(object):
     def _list_keys(self):
         password = self.server.encryption.decrypt_string(self.password)
 
-        keys = self.owner.wallet_keys.get(self.wallet_type, {})
+        keys = dict(self.owner.wallet_keys.get(self.wallet_type, {}))
         try:
             new_keys = self.server.wallet_api.call("list_keys", self.wallet_name, password)
         except Exception as e:
             logger.error("Couldn't list keys for owner %s, type %s: %s" % (self.wallet_name, self.wallet_type, e))
-            new_keys = {}
+            new_keys = []
 
+        # logger.debug("raw keys: %s" % new_keys)
         # Keep our private keys encrypted in memory until they are needed
-        new_keys = {public: self.server.encryption.encrypt_string(private) for (public, private) in new_keys.items()}
-        old_keys = keys
+        new_keys = {public: self.server.encryption.encrypt_string(private)
+                    for (public, private) in new_keys}
+        # logger.debug("old_keys: %s" % keys)
+        # logger.debug("new_keys: %s" % new_keys)
 
         keys.update(new_keys)
-        if keys != old_keys:
-            self.owner.wallet_keys[self.wallet_type] = keys
-            self.owner.save_to_db()
+        self.owner.wallet_keys[self.wallet_type] = keys
+        self.owner.save_to_db()
 
         self.keys = keys
 
