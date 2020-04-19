@@ -7,12 +7,9 @@ from time import sleep
 import openapi_core
 import requests
 import yaml
-from jsonschema import RefResolver
 from openapi_core.contrib.requests import RequestsOpenAPIRequest, RequestsOpenAPIResponse
-from openapi_core.schema.specs.models import Spec
 from openapi_core.validation.request.validators import RequestValidator
 from openapi_core.validation.response.validators import ResponseValidator
-from openapi_spec_validator import default_handlers
 
 from HavokMud.api_handler import api_handler
 from HavokMud.utils import log_call
@@ -65,7 +62,7 @@ class SwaggerAPI(object):
                         loaded = True
                 except Exception as e:
                     logger.error("Exception unpickling: %s" % e)
-                    raise e
+                    # raise e
 
         if not loaded:
             logger.info("Loading swagger file: %s" % swagger_file)
@@ -93,7 +90,7 @@ class SwaggerAPI(object):
                 os.unlink(self.pickle_file)
                 raise e
 
-        print(self.api_spec.__dict__)
+        # print(self.api_spec.__dict__)
 
         self.methods = {os.path.basename(key): {"path": key, "object": value}
                         for (key, value) in self.api_spec.paths.items()}
@@ -101,9 +98,10 @@ class SwaggerAPI(object):
         self.response_validator = ResponseValidator(self.api_spec)
         logger.info("Finished loading API for %s" % name)
 
+    @log_call
     def call(self, method, *args, **kwargs):
         timeout = kwargs.pop("timeout", 10)
-        openapi_validate = kwargs.pop("openapi_validate", True)
+        openapi_validate = kwargs.pop("openapi_validate", False)
 
         if method not in self.methods:
             raise NotImplementedError("Method %s not implemented by %s API" % (method, self.name))
@@ -146,6 +144,7 @@ class SwaggerAPI(object):
         response = api_handler.send(request, timeout)
         self.response = response
         if int(response.status_code / 100) != 2:
+            logger.error("Error %s on request %s" % (response.status_code, params))
             try:
                 message = response.json()
             except Exception as e:

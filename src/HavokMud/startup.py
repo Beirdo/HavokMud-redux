@@ -23,7 +23,10 @@ from HavokMud.settings import Settings
 logger = logging.getLogger(__name__)
 
 
-def start_mud(loglevel=logging.INFO):
+server_instance = None
+
+
+def start_mud(loglevel=logging.INFO, looping=False):
     logging_setup(loglevel, console=True)
 
     config = load_config_file("config.json")
@@ -50,17 +53,16 @@ def start_mud(loglevel=logging.INFO):
         config.update(load_config_file("bootstrap.json"))
         config = Settings.get_updated_config(dbs, config)
 
-    response = requests.get("https://eosio.github.io/schemata/v2.0/oas/Sha256.yaml")
-    print(response)
-    print(response.content)
-    #sys.exit(1)
-
-    try:
-        Server(config, dbs)
-        while True:
-            stackless.run()
-    except KeyboardInterrupt:
-        logger.info("Server manually stopped")
-        # traceback.print_exc()
+    global server_instance
+    if looping:
+        try:
+            server_instance = Server(config, dbs)
+            while True:
+                stackless.run()
+        except KeyboardInterrupt:
+            logger.info("Server manually stopped")
+            # traceback.print_exc()
+    else:
+        server_instance = Server(config, dbs)
 
     return 0

@@ -26,19 +26,19 @@ class WalletType(Enum):
 
 class Wallet(object):
     prefix_map = {
-        "Account", "a.",
-        "Player", "p.",
-        "NPCPlayer", "n.",
-        "Bank", "b.",
-        "System", "s.",
+        "Account": "a.",
+        "Player": "p.",
+        "NPCPlayer": "n.",
+        "Bank": "b.",
+        "System": "s.",
     }
 
     name_map = {
-        "Account", "email",
-        "Player", "name",
-        "NPCPlayer", "name",
-        "Bank", "name",
-        "System", "name",
+        "Account": "email",
+        "Player": "name",
+        "NPCPlayer": "name",
+        "Bank": "name",
+        "System": "name",
     }
 
     account_wallet_info_map = {}
@@ -48,7 +48,7 @@ class Wallet(object):
         self.owner = owner
         self.wallet_type = wallet_type
         self.tokens = list(coin_names)
-        self.password = {}
+        self.password = None
         self.active_key = {}
         self.keys = {}
         self.wallet_name = None
@@ -97,6 +97,7 @@ class Wallet(object):
         wallet_info = Wallet._hash_wallet_name(owner, wallet_type)
         wallet_name = wallet_info.get("wallet_name", None)
         account_name = wallet_info.get("account_name", None)
+        logger.info("Wallet Info: %s" % wallet_info)
 
         try:
             password = server.wallet_api.call("create", wallet_name)
@@ -107,7 +108,7 @@ class Wallet(object):
         wallet = Wallet(server, owner, wallet_type)
         wallet.wallet_name = wallet_name
         wallet.account_name = account_name
-        wallet.password[wallet_type] = server.encryption.encrypt(password)
+        wallet.password = server.encryption.encrypt_string(password)
 
         try:
             owner_key = server.wallet_api.call("create_key", wallet_name, "")
@@ -125,10 +126,13 @@ class Wallet(object):
 
         wallet.active_key[wallet_type] = active_key
 
-        owner.wallet_password[wallet_type] = wallet.password[wallet_type]
+        owner.wallet_password[wallet_type] = wallet.password
         owner.wallet_owner_key[wallet_type] = owner_key
         owner.wallet_active_key[wallet_type] = active_key
         owner.save_to_db()
+
+        # List all keys in the wallet (must be unlocked)
+        wallet._list_keys()
 
         # Now lock the wallet
         try:
@@ -136,9 +140,6 @@ class Wallet(object):
         except Exception as e:
             logger.error("Couldn't lock wallet %s: %s" % (wallet_name, e))
             return None
-
-        # List all keys in the wallet
-        wallet._list_keys()
 
         # Need to create the account on the blockchain.  This requires a specific
         # transaction to be created.
@@ -291,7 +292,7 @@ class Wallet(object):
         return wallet
 
     def _list_keys(self):
-        password = self.server.encryption.decrypt(self.password)
+        password = self.server.encryption.decrypt_string(self.password)
 
         keys = self.owner.wallet_keys.get(self.wallet_type, {})
         try:
@@ -301,7 +302,7 @@ class Wallet(object):
             new_keys = {}
 
         # Keep our private keys encrypted in memory until they are needed
-        new_keys = {public: self.server.encryption.encrypt(private) for (public, private) in new_keys.items()}
+        new_keys = {public: self.server.encryption.encrypt_string(private) for (public, private) in new_keys.items()}
         old_keys = keys
 
         keys.update(new_keys)
@@ -320,7 +321,7 @@ class Wallet(object):
 
     def _load_wallet_password(self):
         setting = Settings.lookup_by_key(self.server, "wallet_password")
-        password = self.server.encryption.decrypt(setting)
+        password = self.server.encryption.decrypt_string(setting)
         return password
 
     @staticmethod
@@ -333,6 +334,7 @@ class Wallet(object):
             attrib = names[0]
             name = getattr(owner, attrib, "unknown")
         wallet_name = ".".join([klass, name, wallet_type.name])
+        wallet_name = wallet_name.replace(" ", "_")
 
         # EOSIO account names are 12 bytes long, start with a letter, and contain:
         # [a-z], [1-5], "."
@@ -363,6 +365,7 @@ class Wallet(object):
         wallet_info = {
             "account_name": account_name,
             "wallet_name": wallet_name,
+            "full_name": wallet_name,
             "owner": owner,
             "wallet_type": wallet_type,
         }

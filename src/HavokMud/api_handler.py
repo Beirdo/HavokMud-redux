@@ -35,7 +35,6 @@ class APIHandler(object):
             response = {"exception": e}
         request.channel.send(response)
 
-    @log_call
     def send(self, request, timeout):
         item = APIRequest(request, timeout)
         self.in_channel.send(item)

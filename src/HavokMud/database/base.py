@@ -25,7 +25,7 @@ def _convert_to_dynamodb(item):
     if item is None:
         return {'NULL': True}
     if isinstance(item, dict):
-        return {'M': {_convert_to_dynamodb(value) for (key, value) in item.items()}}
+        return {'M': {key: _convert_to_dynamodb(value) for (key, value) in item.items()}}
     if isinstance(item, (list, tuple, set)):
         return {'L': [_convert_to_dynamodb(value) for value in item]}
     if isinstance(item, (float, int, Decimal)):

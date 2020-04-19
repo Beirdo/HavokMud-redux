@@ -17,18 +17,25 @@ class Bank(DatabaseObject):
     __database__ = None
     name = None
 
-    def __init__(self, server, name):
+    def __init__(self, server=None, name=None, other=None):
         DatabaseObject.__init__(self)
-        self.server = server
-        self.__database__ = self.server.dbs.bank_db
-        self.name = name
-        self.tasklet = None
-        self.wallets = {}
-        self.wallet_password = {}
-        self.wallet_owner_key = {}
-        self.wallet_active_key = {}
-        self.wallet_keys = {}
-        self.interest_rate = 0
+        self.__real_class__ = self.__class__
+
+        if other:
+            self.__dict__.update(other.__dict__)
+        else:
+            if not server or not name:
+                raise ValueError("Must specify server and name")
+            self.server = server
+            self.__database__ = self.server.dbs.bank_db
+            self.name = name
+            self.tasklet = None
+            self.wallets = {}
+            self.wallet_password = {}
+            self.wallet_owner_key = {}
+            self.wallet_active_key = {}
+            self.wallet_keys = {}
+            self.interest_rate = 0
 
     @staticmethod
     def load(server, name):
@@ -39,10 +46,13 @@ class Bank(DatabaseObject):
             bank.load_from_db(name=name)
 
             if bank.name:
-                bank.wallets[WalletType.Stored] = Wallet.load(server, bank, WalletType.Stored)
-                return bank
+                wallet = Wallet.load(server, bank, WalletType.Stored)
+                if wallet:
+                    bank.wallets[WalletType.Stored] = wallet
+                    return bank
 
             # New bank.  Wicked!  Let's create the wallets
+            bank = Bank(server, name)
             bank.name = name
             bank.wallets[WalletType.Stored] = Wallet.create(server, bank, WalletType.Stored)
             # Set default interest rate to 10% (also saves to db)
@@ -107,6 +117,9 @@ class Bank(DatabaseObject):
 
     def calculate_interest_amounts(self):
         wallet: Wallet = self.wallets.get(WalletType.Stored, None)
+        if not wallet:
+            return
+
         with wallet.transaction() as transaction:
             auth = [EOSPermission(System.account_name, "active")]
             action = EOSAction(self.server, "banker", "calcinterest", auth)
