@@ -26,6 +26,7 @@
 # - Launching each bit of incoming data in its own tasklet on the recvChannel
 #   send is a little over the top.  It should be possible to add it to the
 #   rest of the queued data
+
 import asyncore
 import errno
 import logging
@@ -62,8 +63,8 @@ def uninstall():
 
 class _new_SocketIO(_old_SocketIO):
     def __init__(self, sock, mode):
-        if not isinstance(sock, _fakesocket):
-            raise RuntimeError("Bad socket '%s'" % sock.__class__.__name__)
+        #if not isinstance(sock, _fakesocket):
+        #    raise RuntimeError("Bad socket '%s.%s'" % (sock.__class__.__module__, sock.__class__.__qualname__))
         _old_SocketIO.__init__(self, sock, mode)
 
 

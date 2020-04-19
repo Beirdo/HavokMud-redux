@@ -6,16 +6,23 @@ logger = logging.getLogger(__name__)
 
 
 class Settings(DatabaseObject):
-    __fixed_fields__ = ["server"]
+    __fixed_fields__ = ["server", "dbs"]
     __database__ = None
 
-    def __init__(self, dbs, key, value=None):
+    def __init__(self, dbs=None, key=None, value=None, other: DatabaseObject = None):
         DatabaseObject.__init__(self)
-        self.dbs = dbs
-        self.__database__ = self.dbs.settings_db
+        self.__real_class__ = self.__class__
 
-        self.key = key
-        self.value = value
+        if other:
+            self.__dict__.update(other.__dict__)
+        else:
+            if dbs is None or key is None:
+                raise ValueError("Must supply dbs and key")
+            self.dbs = dbs
+            self.__database__ = self.dbs.settings_db
+
+            self.key = key
+            self.value = value
 
     @staticmethod
     def lookup_by_key(server, key):
@@ -29,15 +36,16 @@ class Settings(DatabaseObject):
 
     @staticmethod
     def get_all_settings(dbs):
-        settings = [Settings(dbs, key=item.get("key", None), value=item.get("value", None))
-                    for item in dbs.settings_db.get_all()]
+        dummy = Settings(dbs, "null")
+        settings = dummy.get_all()
+        # logger.debug("response: %s" % settings)
         return {item.key: item for item in settings}
 
     @staticmethod
     def get_updated_config(dbs, config):
         settings = Settings.get_all_settings(dbs)
         if settings:
-            settings["mud:bootstrapped"] = True
+            settings["mud:bootstrapped"] = Settings(dbs, "mud:bootstrapped", True)
         db_settings = set(settings.keys())
         config_settings = Settings._config_to_settings(dbs, config)
         config_settings.update(settings)

@@ -2,6 +2,7 @@ import hashlib
 import logging
 import random
 import re
+import time
 
 emailRe = re.compile(r'^([a-z0-9_\-.+]+)@([a-z0-9_\-.]+)\.([a-z]{2,20})$', re.I)
 
@@ -90,3 +91,21 @@ def roll_dice(dice):
     text = ["%s" % item.get("roll", []) for item in rolls]
     response["text"] = "Roll: %s = %s: %s" % (orig_dice, response['total'], "+".join(text))
     return response
+
+
+def log_call(func):
+    def wrapper(*args, **kwargs):
+        log_args = ["%s" % item for item in args] + \
+                   ["%s=%s" % (key, value) for (key, value) in kwargs.items()]
+        func_name = ".".join([func.__module__, func.__qualname__])
+        func_signature = "%s(%s)" % (func_name, ", ".join(log_args))
+        logger.info("Entering %s" % func_signature)
+        start_time = time.time()
+        ret_val = func(*args, **kwargs)
+        end_time = time.time()
+        logger.info("Exiting %s" % func_signature)
+        duration = end_time - start_time
+        logger.info("Duration: %.6fs" % duration)
+        return ret_val
+
+    return wrapper

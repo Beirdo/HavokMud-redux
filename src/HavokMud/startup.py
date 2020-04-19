@@ -1,11 +1,19 @@
-#! /usr/bin/env python
+import sys
+
+import requests
+
+import HavokMud.stacklesssocket
+
+# Monkeypatch in the 'stacklesssocket' module, so we get blocking sockets
+# which are Stackless compatible.
+HavokMud.stacklesssocket.install()
+
 
 import gc
 import logging
 import os
 import stackless
 
-from HavokMud import stacklesssocket
 from HavokMud.config_loader import load_config_file
 from HavokMud.database import Databases
 from HavokMud.logging_support import logging_setup, logging_additional_setup
@@ -16,10 +24,6 @@ logger = logging.getLogger(__name__)
 
 
 def start_mud(loglevel=logging.INFO):
-    # Monkeypatch in the 'stacklesssocket' module, so we get blocking sockets
-    # which are Stackless compatible.
-    stacklesssocket.install()
-
     logging_setup(loglevel, console=True)
 
     config = load_config_file("config.json")
@@ -45,6 +49,11 @@ def start_mud(loglevel=logging.INFO):
         # to preseed the settings db.
         config.update(load_config_file("bootstrap.json"))
         config = Settings.get_updated_config(dbs, config)
+
+    response = requests.get("https://eosio.github.io/schemata/v2.0/oas/Sha256.yaml")
+    print(response)
+    print(response.content)
+    #sys.exit(1)
 
     try:
         Server(config, dbs)

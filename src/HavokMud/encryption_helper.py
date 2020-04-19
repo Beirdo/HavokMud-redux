@@ -21,6 +21,7 @@ class EncryptionEngine(object):
         self.endpoint = encryption_config.get("endpoint", None)
         self.use_ssl = encryption_config.get("useSsl", True)
 
+        logger.info("Endpoint: %s" % self.endpoint)
         self.session = boto3.session.Session(region_name=self.region)
         self.smclient = self.session.client('secretsmanager', endpoint_url=self.endpoint, use_ssl=self.use_ssl)
 

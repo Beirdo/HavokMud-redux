@@ -3,6 +3,8 @@ import stackless
 
 import requests
 
+from HavokMud.utils import log_call
+
 logger = logging.getLogger(__name__)
 
 
@@ -33,6 +35,7 @@ class APIHandler(object):
             response = {"exception": e}
         request.channel.send(response)
 
+    @log_call
     def send(self, request, timeout):
         item = APIRequest(request, timeout)
         self.in_channel.send(item)

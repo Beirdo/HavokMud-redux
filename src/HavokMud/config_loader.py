@@ -8,7 +8,7 @@ configDir = os.path.expanduser("~/.havokmud")
 
 
 def load_config_file(filename):
-    config_file = os.path.join(configDir, "filename")
+    config_file = os.path.join(configDir, filename)
     try:
         with open(config_file) as f:
             config = json.load(f)

@@ -1,15 +1,21 @@
 import json
 import logging
 import os
+import pickle
+from time import sleep
 
 import openapi_core
 import requests
 import yaml
+from jsonschema import RefResolver
 from openapi_core.contrib.requests import RequestsOpenAPIRequest, RequestsOpenAPIResponse
+from openapi_core.schema.specs.models import Spec
 from openapi_core.validation.request.validators import RequestValidator
 from openapi_core.validation.response.validators import ResponseValidator
+from openapi_spec_validator import default_handlers
 
 from HavokMud.api_handler import api_handler
+from HavokMud.utils import log_call
 
 logger = logging.getLogger(__name__)
 
@@ -30,9 +36,12 @@ class SwaggerAPI(object):
     swagger_file = None
     base_url = None
 
+    @log_call
     def __init__(self, name, swagger_file, scheme, hostname, port, path, spec_url=None):
         self.name = name
+        (base_file, _) = os.path.splitext(swagger_file)
         self.swagger_file = os.path.join(swaggerDir, swagger_file)
+        self.pickle_file = os.path.join(swaggerDir, base_file + ".pickle")
         self.base_url = "%s://%s:%s%s" % (scheme, hostname, port, path)
         if spec_url:
             self.spec_url = spec_url
@@ -42,12 +51,50 @@ class SwaggerAPI(object):
             self.spec_url += "/"
         self.response = None
 
-        logger.info("Loading swagger file: %s" % swagger_file)
-        with open(self.swagger_file, "r") as f:
-            self.swagger_object = yaml.safe_load(f.read())
+        logger.info("Attempting to load pickled API spec for %s" % name)
+        loaded = False
+        if os.path.exists(self.pickle_file):
+            pickle_time = os.path.getmtime(self.pickle_file)
+            swagger_time = os.path.getmtime(self.swagger_file)
+            if swagger_time >= pickle_time:
+                logger.info("Alas, the swagger file is newer than the pickled API")
+            else:
+                try:
+                    with open(self.pickle_file, "rb") as f:
+                        self.api_spec = pickle.load(f)
+                        loaded = True
+                except Exception as e:
+                    logger.error("Exception unpickling: %s" % e)
+                    raise e
 
-        logger.info("Creating API spec for %s" % name)
-        self.api_spec = openapi_core.create_spec(self.swagger_object, self.spec_url)
+        if not loaded:
+            logger.info("Loading swagger file: %s" % swagger_file)
+            with open(self.swagger_file, "r") as f:
+                self.swagger_object = yaml.safe_load(f.read())
+
+            logger.info("Creating API spec for %s" % name)
+            count = 30
+            while count and not loaded:
+                try:
+                    self.api_spec = openapi_core.create_spec(self.swagger_object, self.spec_url)
+                    loaded = True
+                except Exception as e:
+                    count -= 1
+                    logger.exception("Belched on create_spec, %s retries left: %s" % (count, e))
+                    sleep(1.0)
+
+            if not loaded:
+                raise Exception("Can't load API Spec for %s" % name)
+
+            try:
+                with open(self.pickle_file, "wb") as f:
+                    pickle.dump(self.api_spec, f, protocol=pickle.HIGHEST_PROTOCOL)
+            except Exception as e:
+                os.unlink(self.pickle_file)
+                raise e
+
+        print(self.api_spec.__dict__)
+
         self.methods = {os.path.basename(key): {"path": key, "object": value}
                         for (key, value) in self.api_spec.paths.items()}
         self.request_validator = RequestValidator(self.api_spec)

@@ -1,6 +1,8 @@
 import logging
 import stackless
 
+from HavokMud.utils import log_call
+
 logger = logging.getLogger(__name__)
 
 
@@ -55,6 +57,7 @@ class DatabaseHandler(object):
         logger.debug("Response: %s" % response)
         response_channel.send(response)
 
+    @log_call
     def send_request(self, table_name, command, *args, **kwargs):
         request = DatabaseRequest(table_name, command, *args, **kwargs)
         self.in_channel.send(request)

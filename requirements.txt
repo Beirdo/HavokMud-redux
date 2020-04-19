@@ -10,5 +10,6 @@ jinja2
 boto3
 base58
 git+https://github.com/Beirdo/pynntp.git
+git+https://github.com/Beirdo/openapi-spec-validator.git
 git+https://github.com/Beirdo/openapi-core.git
 
