@@ -2,7 +2,31 @@ import json
 import logging
 import os
 import pickle
+from functools import lru_cache
 from time import sleep
+from urllib.parse import urljoin
+from jsonschema.validators import RefResolver as oldRefResolver
+import jsonschema.validators
+
+
+class newRefResolver(oldRefResolver):
+    def __setstate__(self, state):
+        # print("unpickling")
+        self.__dict__.update(state)
+        self._urljoin_cache = lru_cache(1024)(urljoin)
+        self._remote_cache = lru_cache(1024)(self.resolve_from_url)
+
+    def __getstate__(self):
+        # print("pickling")
+        d = dict(self.__dict__)
+        d.pop("_urljoin_cache", None)
+        d.pop("_remote_cache", None)
+        return d
+
+
+# MonkeyPatch this
+jsonschema.validators.RefResolver = newRefResolver
+
 
 import openapi_core
 import requests
