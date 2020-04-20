@@ -21,7 +21,7 @@ RUN apt-get update \
 	jq \
 	less \
 	libssl1.0-dev \
-        libusb-1.0 \
+    libusb-1.0 \
 	netcat \
 	net-tools \
 	psmisc \
@@ -66,18 +66,13 @@ RUN git checkout release/1.9.x
 RUN echo y | ./build.sh
 ENV EOSIO_CONTRACTS_DIRECTORY /home/eosio/src/eosio.contracts-1.9.x/build/contracts
 
-RUN pip3 install numpy
-ADD docker/eosio/eosio /home/eosio/chain
-WORKDIR /home/eosio/chain
+ADD src/contracts /home/eosio/src/HavokMud-contracts
+
+ADD docker/eosio/eosio /home/eosio/basechain
+WORKDIR /home/eosio/basechain
 ENV PATH=$PATH:/home/eosio/eosio/2.0/bin
 
 USER root
 RUN chown -R eosio /home/eosio
 
 USER eosio
-
-## keosd
-#EXPOSE 6666
-#
-## nodeos
-#EXPOSE 8000

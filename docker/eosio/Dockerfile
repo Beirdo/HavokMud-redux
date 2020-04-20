@@ -21,7 +21,7 @@ RUN apt-get update \
 	jq \
 	less \
 	libssl1.0-dev \
-        libusb-1.0 \
+    libusb-1.0 \
 	netcat \
 	net-tools \
 	psmisc \
@@ -45,8 +45,8 @@ RUN chown -R eosio /home/eosio
 USER eosio
 
 RUN pip3 install numpy
-ADD docker/eosio/eosio /home/eosio/chain
-WORKDIR /home/eosio/chain
+ADD docker/eosio/eosio /home/eosio/basechain
+WORKDIR /home/eosio/basechain
 ENV PATH=$PATH:/home/eosio/eosio/2.0/bin
 
 USER root
