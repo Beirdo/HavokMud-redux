@@ -1,4 +1,5 @@
 import codecs
+import json
 import logging
 import re
 import struct
@@ -72,24 +73,29 @@ class EOSAbiType(object):
             self.deserializer = getattr(self, "_deserialize_%s" % name, None)
 
     @staticmethod
-    def get(types: dict, name):
+    def get(types: dict, new_types: dict, name):
         type_ = types.get(name, None)
         if type_ and type_.alias_of:
-            return EOSAbiType.get(types, type_.alias_of)
+            new_type = EOSAbiType.get(types, new_types, type_.alias_of)
+            new_types.update({new_type.name: new_type})
+            return new_type
         if type_:
             return type_
 
         if name.endswith("[]"):
-            types[name] = EOSAbiType(name, array_of=EOSAbiType.get(types, name[:-2]))
-            return types[name]
+            new_type = EOSAbiType(name, array_of=EOSAbiType.get(types, new_types, name[:-2]))
+            new_types.update({new_type.name: new_type})
+            return new_type
 
         if name.endswith("?"):
-            types[name] = EOSAbiType(name, optional_of=EOSAbiType.get(types, name[:-1]))
-            return types[name]
+            new_type = EOSAbiType(name, optional_of=EOSAbiType.get(types, new_types, name[:-1]))
+            new_types.update({new_type.name: new_type})
+            return new_type
 
         if name.endswith("$"):
-            types[name] = EOSAbiType(name, extension_of=EOSAbiType.get(types, name[:-1]))
-            return types[name]
+            new_type = EOSAbiType(name, extension_of=EOSAbiType.get(types, new_types, name[:-1]))
+            new_types.update({new_type.name: new_type})
+            return new_type
 
         logger.error("Unknown type: %s" % name)
         return None
@@ -555,15 +561,30 @@ class EOSAbi(object):
     def __init__(self, server, contract):
         try:
             # The contract is also the name of the account that holds the contract
-            response = server.chain_api.call("get_abi", account_name=contract)
+            response = server.chain_api.call("get_abi", account_name=contract, openapi_validate=False)
         except Exception as e:
+            logger.exception("Contract: %s" % contract)
             raise EOSAbiError("Could not pull ABI for contract %s: %s" % (contract, e))
 
-        self.abi = response
+        with open("/tmp/abi-%s.json" % contract, "w") as f:
+            json.dump(response, f, indent=2, sort_keys=True)
+
+        self.abi = response.get("abi", {})
 
         # Now for the fun...  Time to parse out the types and structures and variants
         self.types = None
         self._parse_types()
+
+        # Let's flatten the actions for easier use
+        actions = {item.get("name", None): item
+                   for item in self.abi.get("actions", [])
+                   if isinstance(item, dict)}
+        self.abi['actions'] = actions
+
+
+
+    def get(self, key, default):
+        return self.abi.get(key, default)
 
     def _parse_types(self):
         base_types = EOSAbiBaseTypes()
@@ -594,11 +615,19 @@ class EOSAbi(object):
             types[name] = EOSAbiType(name, variant=True, fields=fields)
 
         # Now to extract arrays, etc.
-        for (name, item) in types:
-            if item.base_name:
-                item.base_type = EOSAbiType.get(types, item.base_name)
-            for field in item.fields:
-                field['type'] = EOSAbiType.get(types, field.get('type_name', None))
+        check_types = dict(types)
+        while check_types:
+            new_types = {}
+            for (name, item) in check_types.items():
+                # logger.debug("name: %s, item: %s" % (name, item.__dict__))
+                if item.base_name:
+                    item.base_type = EOSAbiType.get(types, new_types, item.base_name)
+                if hasattr(item, "fields") and isinstance(item.fields, list):
+                    for field in item.fields:
+                        field['type'] = EOSAbiType.get(types, new_types, field.get('type_name', None))
+
+            types.update(check_types)
+            check_types = new_types
 
         self.types = types
 
@@ -654,8 +683,8 @@ class EOSAbiBaseTypes(object):
         'private_key': {},
         'signature': {},
         'extended_asset': {"fields": [
-                              {"name": 'quantity', 'type': 'asset'},
-                              {"name": "contract", 'type': 'name'},
+                              {"name": 'quantity', 'type_name': 'asset'},
+                              {"name": "contract", 'type_name': 'name'},
                            ]},
     }
     types = {}

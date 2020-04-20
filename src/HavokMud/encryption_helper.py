@@ -6,6 +6,7 @@ from Crypto import Random
 from Crypto.Cipher import PKCS1_OAEP, AES
 from Crypto.PublicKey import RSA
 from Crypto.Random import get_random_bytes
+from botocore.exceptions import ClientError
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +55,7 @@ class EncryptionEngine(object):
                 }
                 try:
                     self.smclient.create_secret(**params)
-                except self.smclient.exceptions.ResourceExistsException:
+                except (self.smclient.exceptions.ResourceExistsException, ClientError):
                     # Hmm, seems it told us a lie, it's already set, so try again
                     logger.info("Retrying, seems it already IS there")
                     privatekey = None

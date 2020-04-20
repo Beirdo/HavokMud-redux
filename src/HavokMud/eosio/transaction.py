@@ -32,7 +32,7 @@ class EOSTransaction(object):
     def send(self, server, broadcast=True, sign=True, blocks_behind=3, expire_seconds=30):
         # First we need some blockchain information
         try:
-            result = server.chain_api.call("get_info")
+            result = server.chain_api.call("get_info", openapi_validate=False)
         except Exception as e:
             logger.error("Couldn't get blockchain info: %s" % e)
             raise e
@@ -46,8 +46,9 @@ class EOSTransaction(object):
 
         # Now we need the timestamp of the reference block
         try:
-            result = server.chain_api.call("get_block", ref_block_num)
+            result = server.chain_api.call("get_block", block_num_or_id=str(ref_block_num))
         except Exception as e:
+            logger.exception("result: %s" % result)
             logger.error("Couldn't get reference block: %s" % e)
             raise e
 

@@ -177,7 +177,7 @@ class Wallet(object):
                 "bytes": 8192
             }
             auth = [EOSPermission(system_account_name, "active")]
-            transaction.add(EOSAction(server, "eosio", "buyrambytes", auth, **params))
+            transaction.add(EOSAction(server, "eosio.msig", "buyrambytes", auth, **params))
 
             # And need to delegate CPU and NET
             params = {
@@ -188,7 +188,7 @@ class Wallet(object):
                 "transfer": False
             }
             auth = [EOSPermission(system_account_name, "active")]
-            transaction.add(EOSAction(server, "eosio", "delegatebw", auth, **params))
+            transaction.add(EOSAction(server, "eosio.msig", "delegatebw", auth, **params))
 
         return wallet
 
@@ -380,6 +380,9 @@ class Wallet(object):
         transaction = EOSTransaction()
         try:
             yield transaction
+        except Exception as e:
+            logger.error("Exception while generating transaction: %s" % e)
+            transaction = None
         finally:
-            if transaction.actions:
+            if transaction and transaction.actions:
                 transaction.send(self.server)

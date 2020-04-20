@@ -1,5 +1,6 @@
 import logging
 import stackless
+import time
 from time import sleep
 
 from HavokMud.currency import Currency
@@ -126,6 +127,10 @@ class Bank(DatabaseObject):
             transaction.add(action)
 
     def calculate_interest_tasklet(self):
+        next_payment_time = time.time()
         while True:
-            self.calculate_interest_amounts()
-            sleep(3600.0)
+            if time.time() >= next_payment_time:
+                if self.interest_rate != 0:
+                    self.calculate_interest_amounts()
+                next_payment_time = time.time() + 3600.0
+            stackless.schedule()

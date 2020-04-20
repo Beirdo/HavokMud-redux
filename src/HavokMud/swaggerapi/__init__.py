@@ -104,7 +104,7 @@ class SwaggerAPI(object):
         if method not in self.methods:
             raise NotImplementedError("Method %s not implemented by %s API" % (method, self.name))
 
-        payload = "{}"
+        payload = {}
         if args:
             if len(args) == 1:
                 payload = args[0]
