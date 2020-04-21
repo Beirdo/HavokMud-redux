@@ -1,7 +1,3 @@
-import sys
-
-import requests
-
 import HavokMud.stacklesssocket
 
 # Monkeypatch in the 'stacklesssocket' module, so we get blocking sockets

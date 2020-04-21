@@ -1,3 +1,4 @@
+import hashlib
 import json
 import logging
 import os
@@ -59,6 +60,8 @@ class SwaggerAPI(object):
 
     @log_call
     def __init__(self, name, swagger_file, scheme, hostname, port, path, spec_url=None):
+        from HavokMud.startup import server_instance
+
         self.name = name
         (base_file, _) = os.path.splitext(swagger_file)
         self.swagger_file = os.path.join(swaggerDir, swagger_file)
@@ -81,9 +84,17 @@ class SwaggerAPI(object):
                 logger.info("Alas, the swagger file is newer than the pickled API")
             else:
                 try:
-                    with open(self.pickle_file, "rb") as f:
-                        self.api_spec = pickle.load(f)
-                        loaded = True
+                    with open(self.pickle_file, "r") as f:
+                        encrypted = f.read()
+                    pickled = server_instance.encryption.decrypt(encrypted)
+                    with open(self.pickle_file + ".sha512", "r") as f:
+                        digest = f.read()
+                    calc_digest = hashlib.sha512(pickled).hexdigest()
+                    if digest != calc_digest:
+                        raise ValueError("Pickle file's SHA512 does not match!")
+
+                    self.api_spec = pickle.loads(pickled)
+                    loaded = True
                 except Exception as e:
                     logger.error("Exception unpickling: %s" % e)
                     # raise e
@@ -108,10 +119,16 @@ class SwaggerAPI(object):
                 raise Exception("Can't load API Spec for %s" % name)
 
             try:
-                with open(self.pickle_file, "wb") as f:
-                    pickle.dump(self.api_spec, f, protocol=pickle.HIGHEST_PROTOCOL)
+                pickled = pickle.dumps(self.api_spec, protocol=pickle.HIGHEST_PROTOCOL)
+                encrypted = server_instance.encryption.encrypt(pickled)
+                with open(self.pickle_file, "w") as f:
+                    f.write(encrypted)
+                digest = hashlib.sha512(pickled).hexdigest()
+                with open(self.pickle_file + ".sha512", "w") as f:
+                    f.write(digest)
             except Exception as e:
                 os.unlink(self.pickle_file)
+                os.unlink(self.pickle_file + ".sha512")
                 raise e
 
         self.methods = {os.path.basename(key): {"path": key, "object": value}

@@ -1,2 +1,3 @@
 *.swagger.yaml
 *.swagger.pickle
+*.swagger.pickle.sha512

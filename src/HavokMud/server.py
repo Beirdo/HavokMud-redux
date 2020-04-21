@@ -29,6 +29,9 @@ class Server(object):
     profile = None
 
     def __init__(self, config, dbs, debug_mode=False):
+        import HavokMud.startup
+
+        HavokMud.startup.server_instance = self
         self.config = config
 
         self.__dict__.update(self.config.get("mud", {}))

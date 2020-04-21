@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class EncryptionEngine(object):
-    def __init__(self, config):
+    def __init__(self, config: dict):
         self.config = config
 
         self.region = self.config.get("mud", {}).get("region", "us-east-1")
@@ -63,7 +63,7 @@ class EncryptionEngine(object):
         self.public_key = privatekey.publickey()
         self._private_key = privatekey
 
-    def encrypt(self, data):
+    def encrypt(self, data: bytes) -> str:
         session_key = get_random_bytes(16)
 
         # Encrypt session key with the public RSA key
@@ -78,7 +78,7 @@ class EncryptionEngine(object):
         out_message = "$".join([base64.b64encode(item).decode("utf-8") for item in out_message])
         return out_message
 
-    def decrypt(self, data):
+    def decrypt(self, data: str) -> bytes:
         in_message = [base64.b64decode(item.encode("utf-8")) for item in data.split("$")]
         if len(in_message) != 4:
             raise ValueError("Improperly formed encrypted message")
@@ -93,8 +93,8 @@ class EncryptionEngine(object):
         data = cipher_aes.decrypt_and_verify(ciphertext, tag)
         return data
 
-    def encrypt_string(self, data, encoding="utf-8"):
+    def encrypt_string(self, data: str, encoding="utf-8") -> str:
         return self.encrypt(data.encode(encoding))
 
-    def decrypt_string(self, data, encoding="utf-8"):
+    def decrypt_string(self, data: str, encoding="utf-8") -> str:
         return self.decrypt(data).decode(encoding)
