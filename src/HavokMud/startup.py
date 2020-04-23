@@ -4,7 +4,6 @@ import HavokMud.stacklesssocket
 # which are Stackless compatible.
 HavokMud.stacklesssocket.install()
 
-
 import gc
 import logging
 import os

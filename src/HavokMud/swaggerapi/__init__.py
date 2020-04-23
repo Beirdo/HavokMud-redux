@@ -75,7 +75,7 @@ class SwaggerAPI(object):
             self.spec_url += "/"
         self.response = None
 
-        logger.info("Attempting to load pickled API spec for %s" % name)
+        logger.info("Attempting to load encrypted pickled API spec for %s" % name)
         loaded = False
         if os.path.exists(self.pickle_file):
             pickle_time = os.path.getmtime(self.pickle_file)
@@ -119,6 +119,7 @@ class SwaggerAPI(object):
                 raise Exception("Can't load API Spec for %s" % name)
 
             try:
+                logger.info("Writing encrypted pickled API spec for %s" % name)
                 pickled = pickle.dumps(self.api_spec, protocol=pickle.HIGHEST_PROTOCOL)
                 encrypted = server_instance.encryption.encrypt(pickled)
                 with open(self.pickle_file, "w") as f:
