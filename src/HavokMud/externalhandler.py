@@ -10,12 +10,20 @@ logger = logging.getLogger(__name__)
 class ExternalHandler(BaseHandler):
     external = True
 
-    def __init__(self, server, connection, command: list):
+    def __init__(self, connection, command: list, channel, callback=None,
+                 editor_callback=None):
+        from HavokMud.startup import server_instance
+        server = server_instance
         BaseHandler.__init__(self, server, connection)
         self.command = command
         self.old_handler = connection.handler
         self.sock_fd = connection.client_socket
         self.proc = None
+        self.channel = channel
+        if callback is None:
+            callback = self.default_callback
+        self.handler_callback = callback
+        self.editor_callback = editor_callback
 
     def send_prompt(self, prompt):
         pass
@@ -40,3 +48,7 @@ class ExternalHandler(BaseHandler):
         self.sock_fd.send(b'\xff\xfc\x01')
         # Tell the client to go back into edit mode (line mode) and to echo literally
         self.sock_fd.send(b'\xff\xfa\x22\x01\x11\xff\xf0')
+        self.channel.send(None)
+
+    def default_callback(self):
+        self.channel.receive()

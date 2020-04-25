@@ -57,6 +57,9 @@ class User(object):
 
         if handler.external:
             handler.launch_external_command()
+            handler.handler_callback()
+            if handler.editor_callback:
+                handler.editor_callback()
             self.connection.set_handler(handler.old_handler)
         else:
             handler.send_prompt("> ")
