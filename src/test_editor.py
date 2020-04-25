@@ -28,7 +28,9 @@ class DoEditor(object):
         # tell the client to go into non-edit mode (character mode)
         self.sock_fd.send(b'\xff\xfa\x22\x01\x00\xff\xf0')
 
-        self.proc = subprocess.Popen(["nano", "-R", "/tmp/shitface"], stdin=self.sock_fd, stdout=self.sock_fd)
+        #command = ["nano", "-R", "/tmp/shitface"]
+        command = ["vim", "-Z", "/tmp/shitface"]
+        self.proc = subprocess.Popen(command, stdin=self.sock_fd, stdout=self.sock_fd)
         stackless.tasklet(self.communicate)()
 
     def communicate(self):

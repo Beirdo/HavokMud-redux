@@ -55,14 +55,18 @@ class User(object):
             time.sleep(0.5)
             return
 
-        handler.send_prompt("> ")
+        if handler.external:
+            handler.launch_external_command()
+            self.connection.set_handler(handler.old_handler)
+        else:
+            handler.send_prompt("> ")
 
-        line = self.connection.input_channel.receive()
-        if line is None:
-            raise RemoteDisconnectionError()
+            line = self.connection.input_channel.receive()
+            if line is None:
+                raise RemoteDisconnectionError()
 
-        tokens = handler.tokenize_input(line)
-        handler.handle_input(tokens)
+            tokens = handler.tokenize_input(line)
+            handler.handle_input(tokens)
 
     def on_remote_disconnection(self):
         logger.info(AccountLogMessage(self.account, "Disconnected %s (remote)" % self.account.ip_address, _global=True))
