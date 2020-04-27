@@ -1,7 +1,7 @@
 
 Classes
 ======================
-{% for (index, (klass, item)) in enumerate(klasses.items()) -%}
+{% for (index, (klass, item)) in klasses -%}
 {{ "%2d. %-16s %-16s %-8s %-30s %s" % \
      (index,
       klass,

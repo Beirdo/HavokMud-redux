@@ -341,6 +341,8 @@ class Wallet(object):
         else:
             attrib = names[0]
             name = getattr(owner, attrib, "unknown")
+        if not name:
+            name = "unknown"
         wallet_name = ".".join([klass, name, wallet_type.name])
         wallet_name = wallet_name.replace(" ", "_")
 

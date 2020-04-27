@@ -411,8 +411,13 @@ class LoginStateMachine(StateMachine):
         return self.show_creation_menu
 
     def on_choose_class(self):
-        # TODO:  do this!
-        self.model.account.player.klass = "warrior"
+        klasses = load_data_file("classes.json")
+        klasses = sorted(klasses.keys())
+        try:
+            choice = int(self.token.pop(0))
+            self.model.account.player.klass = klasses[choice]
+        except Exception:
+            self.append_line("Bad choice!")
         return self.show_creation_menu
 
     def on_choose_stats(self):
@@ -531,6 +536,7 @@ class LoginStateMachine(StateMachine):
 
     def on_enter_choose_class(self):
         klasses = load_data_file("classes.json")
+        klasses = enumerate(sorted(klasses.items()))
         self.append_output(
             {"template": "class_list.jinja", "params": {"klasses": klasses}})
 
