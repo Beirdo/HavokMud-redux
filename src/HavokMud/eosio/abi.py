@@ -550,16 +550,19 @@ class EOSAbiType(object):
 
 class EOSAbi(object):
     @staticmethod
-    def lookup(server, contract: str):
+    def lookup(contract: str):
         with abi_map_lock:
             abi = abi_map.get(contract, None)
             if not abi:
-                abi = EOSAbi(server, contract)
+                abi = EOSAbi(contract)
                 abi_map[contract] = abi
             return abi
 
-    def __init__(self, server, contract):
+    def __init__(self, contract):
         try:
+            from HavokMud.startup import server_instance
+            server = server_instance
+
             # The contract is also the name of the account that holds the contract
             response = server.chain_api.call("get_abi", account_name=contract, openapi_validate=False)
         except Exception as e:
@@ -580,8 +583,6 @@ class EOSAbi(object):
                    for item in self.abi.get("actions", [])
                    if isinstance(item, dict)}
         self.abi['actions'] = actions
-
-
 
     def get(self, key, default):
         return self.abi.get(key, default)
@@ -683,9 +684,9 @@ class EOSAbiBaseTypes(object):
         'private_key': {},
         'signature': {},
         'extended_asset': {"fields": [
-                              {"name": 'quantity', 'type_name': 'asset'},
-                              {"name": "contract", 'type_name': 'name'},
-                           ]},
+            {"name": 'quantity', 'type_name': 'asset'},
+            {"name": "contract", 'type_name': 'name'},
+        ]},
     }
     types = {}
 

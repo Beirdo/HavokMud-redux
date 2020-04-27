@@ -8,8 +8,9 @@ logger = logging.getLogger(__name__)
 class BaseHandler(object):
     external = False
 
-    def __init__(self, server, connection):
-        self.server = server
+    def __init__(self, connection):
+        from HavokMud.startup import server_instance
+        self.server = server_instance
         self.connection = connection
         self.output = []
         self.output_lock = Lock()

@@ -12,58 +12,82 @@ logger = logging.getLogger(__name__)
 
 
 class Account(DatabaseObject):
-    __fixed_fields__ = ["server", "connection", "hostname_lock", "player", "current_player"]
+    __fixed_fields__ = ["server", "connection", "hostname_lock", "player", "current_player",
+                        "wallets"]
     __database__ = None
 
-    def __init__(self, server, connection, email=None, password=None):
+    def __init__(self, connection=None, email=None, password=None, other=None):
         DatabaseObject.__init__(self)
-        self.server = server
-        self.__database__ = self.server.dbs.account_db
-        self.connection = connection
-        self.hostname_lock = Lock()
-        self.player = None
-        self.current_player = None
-        self.wallets = {}
-        self.wallet_password = {}
-        self.wallet_owner_key = {}
-        self.wallet_active_key = {}
-        self.wallet_keys = {}
+        self.__real_class__ = self.__class__
 
-        self.email = email
-        self.password = password  # SHA512 digest
-        self.new_password = None  # SHA512 digest
-        self.ip_address = None
-        self.hostname = None
-        self.ansi_mode = False
-        self.confcode = None
-        self.confirmed = False
-        self.players = []
+        if other:
+            self.__dict__.update(other.__dict__)
+            if not hasattr(self, "wallets") or not self.wallets:
+                self.wallets = {}
+            if not hasattr(self, "wallet_password") or not self.wallet_password:
+                self.wallet_password = {}
+
+            if not hasattr(self, "wallet_owner_key") or not self.wallet_owner_key:
+                self.wallet_owner_key = {}
+
+            if not hasattr(self, "wallet_active_key") or not self.wallet_active_key:
+                self.wallet_active_key = {}
+
+            if not hasattr(self, "wallet_keys") or not self.wallet_keys:
+                self.wallet_keys = {}
+        else:
+            self.__database__ = self.server.dbs.account_db
+            self.connection = connection
+            self.hostname_lock = Lock()
+            self.player = None
+            self.current_player = None
+            self.wallets = {}
+            self.wallet_password = {}
+            self.wallet_owner_key = {}
+            self.wallet_active_key = {}
+            self.wallet_keys = {}
+
+            self.email = email
+            self.password = password  # SHA512 digest
+            self.new_password = None  # SHA512 digest
+            self.ip_address = None
+            self.hostname = None
+            self.ansi_mode = False
+            self.confcode = None
+            self.confirmed = False
+            self.players = []
 
     @staticmethod
-    def lookup_by_email(server, connection, email):
+    def lookup_by_email(connection, email):
+        account = Account()
+
         # Look this up in DynamoDB
-        account = Account(server, connection, email)
-
-        if connection:
-            connection.ansi_mode = account.ansi_mode
-
         # if not in dynamo: will return with empty email field
         account.load_from_db(email=email)
-        account.wallets[WalletType.Carried] = Wallet.load(server, account, WalletType.Carried)
-        account.wallets[WalletType.Stored] = Wallet.load(server, account, WalletType.Stored)
+        if not account or not account.email:
+            return Account()
+
+        if not account.players:
+            account.players = []
+
+        account.wallets = {
+            WalletType.Carried: Wallet.load(account, WalletType.Carried),
+            WalletType.Stored: Wallet.load(account, WalletType.Stored),
+        }
 
         if connection:
+            account.connection = connection
             account.ip_address = connection.client_address[0]
             with account.hostname_lock:
-                account.hostname = server.dns_lookup.do_reverse_dns(account.ip_address)
+                account.hostname = account.server.dns_lookup.do_reverse_dns(account.ip_address)
             connection.ansi_mode = account.ansi_mode
             connection.user.account = account
         return account
 
     @staticmethod
-    def get_all_accounts(server):
-        return [Account(server, None, email=item.get("email", None), password=item.get("password", None))
-                for item in server.dbs.account_db.get_all()]
+    def get_all_accounts():
+        dummy = Account()
+        return dummy.get_all()
 
     def send_confirmation_email(self):
         if not self.confcode:
@@ -102,13 +126,16 @@ class Account(DatabaseObject):
             return self.hostname
 
     def update_redis(self):
+        if not self.players:
+            self.players = []
+
         for player in self.players:
             player = player.lower()
-            userItem = {
+            user_item = {
                 "user": "%s@%s" % (player, self.server.domain)
             }
-            self.server.redis.do_command("set", "userdb/%s" % player, json.dumps(userItem))
-            passItem = {
+            self.server.redis.do_command("set", "userdb/%s" % player, json.dumps(user_item))
+            pass_item = {
                 "password": "{PLAIN}%s" % self.password
             }
-            self.server.redis.do_command("set", "passdb/%s" % player, json.dumps(passItem))
+            self.server.redis.do_command("set", "passdb/%s" % player, json.dumps(pass_item))

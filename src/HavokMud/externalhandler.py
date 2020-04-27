@@ -12,9 +12,7 @@ class ExternalHandler(BaseHandler):
 
     def __init__(self, connection, command: list, channel, callback=None,
                  editor_callback=None):
-        from HavokMud.startup import server_instance
-        server = server_instance
-        BaseHandler.__init__(self, server, connection)
+        BaseHandler.__init__(self, connection)
         self.command = command
         self.old_handler = connection.handler
         self.sock_fd = connection.client_socket

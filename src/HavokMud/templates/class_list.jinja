@@ -1,0 +1,14 @@
+
+Classes
+======================
+{% for (index, (klass, item)) in enumerate(klasses.items()) -%}
+{{ "%2d. %-16s %-16s %-8s %-30s %s" % \
+     (index,
+      klass,
+      item.get('primary ability', None),
+      item.get('hit die', {}).get("per-level", None),
+      item.get('hit points', {}).get("initial", []),
+      item.get('hit points', {}).get("per-level", None)) }}
+{% endfor -%}
+
+Hit enter to continue

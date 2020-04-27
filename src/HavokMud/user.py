@@ -8,15 +8,17 @@ from HavokMud.logging_support import AccountLogHandler, PlayerLogHandler, Accoun
 
 logger = logging.getLogger(__name__)
 
+
 class RemoteDisconnectionError(RuntimeError):
     pass
 
 
 class User(object):
     def __init__(self, connection):
+        from HavokMud.startup import server_instance
         self.connection = connection
-        self.server = self.connection.server
-        self.account = Account(self.server, self.connection, None)
+        self.server = server_instance
+        self.account = Account(self.connection, None)
         self.disconnect = False
 
         self.server.register_user(self)

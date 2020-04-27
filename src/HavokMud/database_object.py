@@ -10,8 +10,10 @@ class DatabaseObject(object):
     __real_class__ = None
 
     def __init__(self):
+        from HavokMud.startup import server_instance
         self.__fixed_fields__.extend(["__fixed_fields__", "__database__", "__real_class__"])
         self.__real_class__ = self.__class__
+        self.server = server_instance
 
     def __setattr__(self, name, value):
         self.__dict__[name] = value

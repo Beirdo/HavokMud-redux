@@ -97,7 +97,7 @@ class Bank(DatabaseObject):
                 "user": target.account_name,
                 "amount": currency.convert_to_base()
             }
-            action = EOSAction(self.server, "banker", "withdraw", auth, **params)
+            action = EOSAction("banker", "withdraw", auth, **params)
             transaction.add(action)
 
         return True
@@ -113,7 +113,7 @@ class Bank(DatabaseObject):
             params = {
                 "rate": new_rate,
             }
-            action = EOSAction(self.server, "banker", "setinterest", auth, **params)
+            action = EOSAction("banker", "setinterest", auth, **params)
             transaction.add(action)
 
     def calculate_interest_amounts(self):
@@ -123,7 +123,7 @@ class Bank(DatabaseObject):
 
         with wallet.transaction() as transaction:
             auth = [EOSPermission(System.account_name, "active")]
-            action = EOSAction(self.server, "banker", "calcinterest", auth)
+            action = EOSAction("banker", "calcinterest", auth)
             transaction.add(action)
 
     def calculate_interest_tasklet(self):

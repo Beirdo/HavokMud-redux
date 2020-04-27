@@ -234,8 +234,9 @@ class Currency(object):
         remainder.subtract_value(coins)
         payment = coins.convert_to_minimal()
         from_system = Currency()
-        from_system.holdings = {coin_type: remainder.get_coins(coin_type) - self.get_coins(coin_type) - payment.get_coins(coin_type)
-                                for coin_type in coin_names}
+        from_system.holdings = {
+            coin_type: remainder.get_coins(coin_type) - self.get_coins(coin_type) - payment.get_coins(coin_type)
+            for coin_type in coin_names}
         return (from_system, payment)
 
     def get_as_tokens(self):

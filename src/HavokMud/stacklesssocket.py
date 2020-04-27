@@ -63,7 +63,7 @@ def uninstall():
 
 class _new_SocketIO(_old_SocketIO):
     def __init__(self, sock, mode):
-        #if not isinstance(sock, _fakesocket):
+        # if not isinstance(sock, _fakesocket):
         #    raise RuntimeError("Bad socket '%s.%s'" % (sock.__class__.__module__, sock.__class__.__qualname__))
         _old_SocketIO.__init__(self, sock, mode)
 

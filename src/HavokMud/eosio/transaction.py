@@ -29,7 +29,10 @@ class EOSTransaction(object):
     def add(self, action: EOSAction):
         self.actions.append(action)
 
-    def send(self, server, broadcast=True, sign=True, blocks_behind=3, expire_seconds=30):
+    def send(self, broadcast=True, sign=True, blocks_behind=3, expire_seconds=30):
+        from HavokMud.startup import server_instance
+        server = server_instance
+
         # First we need some blockchain information
         try:
             result = server.chain_api.call("get_info", openapi_validate=False)

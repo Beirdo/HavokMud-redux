@@ -22,8 +22,8 @@ class CommandHandler(BaseHandler):
         "echo": "CommandHandler.handler_standard",
     }
 
-    def __init__(self, server, connection):
-        BaseHandler.__init__(self, server, connection)
+    def __init__(self, connection):
+        BaseHandler.__init__(self, connection)
         self.commands.update({key: {"handler": value} for (key, value) in self.commands.items()
                               if not isinstance(value, dict)})
 

@@ -13,8 +13,9 @@ logger = logging.getLogger(__name__)
 class Connection(object):
     telnet_cmd_with_options = range(251, 255)  # 251-254.  Remember end param is end + 1
 
-    def __init__(self, server, client_socket, client_address):
-        self.server = server
+    def __init__(self, client_socket, client_address):
+        from HavokMud.startup import server_instance
+        self.server = server_instance
         self.client_socket = client_socket
         # We want blocking I/O.
         self.client_socket.settimeout(None)
@@ -34,7 +35,7 @@ class Connection(object):
 
         logger.info("Connection from %s:%s" % (self.client_address[0], self.client_address[1]))
 
-        self.set_handler(LoginHandler(self.server, self))
+        self.set_handler(LoginHandler(self))
 
         stackless.tasklet(self.read_tasklet)()
         stackless.tasklet(self.write_tasklet)()

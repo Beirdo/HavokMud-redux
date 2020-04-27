@@ -9,8 +9,8 @@ logger = logging.getLogger(__name__)
 
 
 class LoginHandler(BaseHandler):
-    def __init__(self, server, connection):
-        BaseHandler.__init__(self, server, connection)
+    def __init__(self, connection):
+        BaseHandler.__init__(self, connection)
         self.tokens = None
         self.state = "initial"
         self.fsm = LoginStateMachine(self)

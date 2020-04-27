@@ -17,7 +17,6 @@ from HavokMud.settings import Settings
 
 logger = logging.getLogger(__name__)
 
-
 server_instance = None
 
 

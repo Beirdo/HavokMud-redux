@@ -10,12 +10,12 @@ class EOSActionError(Exception):
 
 
 class EOSAction(object):
-    def __init__(self, server, contract: str, action_name: str,
+    def __init__(self, contract: str, action_name: str,
                  authorization: list, *args, **kwargs):
         self.contract = contract
         self.action_name = action_name
         self.authorization = authorization
-        self.abi = EOSAbi.lookup(server, contract)
+        self.abi = EOSAbi.lookup(contract)
 
         actions = self.abi.get("actions", [])
         action = actions.get(self.action_name, None)

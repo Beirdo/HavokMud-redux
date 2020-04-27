@@ -25,7 +25,10 @@ class Settings(DatabaseObject):
             self.value = value
 
     @staticmethod
-    def lookup_by_key(server, key):
+    def lookup_by_key(key):
+        from HavokMud.startup import server_instance
+        server = server_instance
+
         # Look this up in DynamoDB
         item = Settings(server.dbs, key)
 
@@ -59,7 +62,7 @@ class Settings(DatabaseObject):
         return new_config
 
     @staticmethod
-    def _config_to_settings(server, config: dict, prefix: list = None) -> dict:
+    def _config_to_settings(dbs, config: dict, prefix: list = None) -> dict:
         if not prefix:
             prefix = []
         out_map = {}
@@ -68,10 +71,10 @@ class Settings(DatabaseObject):
             new_prefix.append(key)
 
             if isinstance(value, dict):
-                out_map.update(Settings._config_to_settings(server, value, new_prefix))
+                out_map.update(Settings._config_to_settings(dbs, value, new_prefix))
             else:
                 out_key = ":".join(new_prefix)
-                out_map[out_key] = Settings(server, out_key, value)
+                out_map[out_key] = Settings(dbs, out_key, value)
         return out_map
 
     @staticmethod

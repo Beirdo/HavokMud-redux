@@ -43,8 +43,9 @@ class Wallet(object):
 
     account_wallet_info_map = {}
 
-    def __init__(self, server, owner=None, wallet_type: WalletType = None):
-        self.server = server
+    def __init__(self, owner=None, wallet_type: WalletType = None):
+        from HavokMud.startup import server_instance
+        self.server = server_instance
         self.owner = owner
         self.wallet_type = wallet_type
         self.tokens = list(coin_names)
@@ -92,7 +93,10 @@ class Wallet(object):
         return currency
 
     @staticmethod
-    def create(server, owner, wallet_type):
+    def create(owner, wallet_type):
+        from HavokMud.startup import server_instance
+        server = server_instance
+
         # Create a new wallet
         wallet_info = Wallet._hash_wallet_name(owner, wallet_type)
         wallet_name = wallet_info.get("wallet_name", None)
@@ -105,7 +109,7 @@ class Wallet(object):
             logger.error("Couldn't create wallet %s: %s" % (wallet_name, e))
             return None
 
-        wallet = Wallet(server, owner, wallet_type)
+        wallet = Wallet(owner, wallet_type)
         wallet.wallet_name = wallet_name
         wallet.account_name = account_name
         wallet.password = server.encryption.encrypt_string(password)
@@ -168,7 +172,7 @@ class Wallet(object):
                 }
             }
             auth = [EOSPermission(system_account_name, "creator")]
-            transaction.add(EOSAction(server, "eosio", "newaccount", auth, **params))
+            transaction.add(EOSAction("eosio", "newaccount", auth, **params))
 
             # Need to buy some RAM
             params = {
@@ -177,7 +181,7 @@ class Wallet(object):
                 "bytes": 8192
             }
             auth = [EOSPermission(system_account_name, "active")]
-            transaction.add(EOSAction(server, "eosio.msig", "buyrambytes", auth, **params))
+            transaction.add(EOSAction("eosio.msig", "buyrambytes", auth, **params))
 
             # And need to delegate CPU and NET
             params = {
@@ -188,7 +192,7 @@ class Wallet(object):
                 "transfer": False
             }
             auth = [EOSPermission(system_account_name, "active")]
-            transaction.add(EOSAction(server, "eosio.msig", "delegatebw", auth, **params))
+            transaction.add(EOSAction("eosio.msig", "delegatebw", auth, **params))
 
         return wallet
 
@@ -253,11 +257,13 @@ class Wallet(object):
             "memo": transaction.memo,
         }
         auth = [EOSPermission(self.account_name, "active")]
-        action = EOSAction(self.server, "eosio.token", "transfer", auth, **params)
+        action = EOSAction("eosio.token", "transfer", auth, **params)
         transaction.add(action)
 
     @staticmethod
-    def load(server, owner=None, wallet_type=None, account_name=None):
+    def load(owner=None, wallet_type=None, account_name=None):
+        from HavokMud.startup import server_instance
+        server = server_instance
 
         wallet_info = None
         if account_name:
@@ -282,7 +288,7 @@ class Wallet(object):
             logger.error("Couldn't load wallet %s: %s" % (wallet_name, e))
             return None
 
-        wallet = Wallet(server, owner, wallet_type)
+        wallet = Wallet(owner, wallet_type)
         wallet.wallet_name = wallet_name
         wallet.account_name = account_name
 
@@ -322,14 +328,14 @@ class Wallet(object):
             self._transaction_transfer_to(transaction, System(), WalletType.Supply, self.balance())
 
     def _load_wallet_password(self):
-        setting = Settings.lookup_by_key(self.server, "wallet_password")
+        setting = Settings.lookup_by_key("wallet_password")
         password = self.server.encryption.decrypt_string(setting)
         return password
 
     @staticmethod
     def _hash_wallet_name(owner, wallet_type: WalletType):
         klass = owner.__class__.__name__
-        names = list(map(lambda x: x[1], filter(lambda x: owner.__class__.__name__ == x[0], Wallet.name_map.items())))
+        names = list(map(lambda x: x[1], filter(lambda x: klass == x[0], Wallet.name_map.items())))
         if not names:
             name = "unknown"
         else:
@@ -385,4 +391,4 @@ class Wallet(object):
             transaction = None
         finally:
             if transaction and transaction.actions:
-                transaction.send(self.server)
+                transaction.send()

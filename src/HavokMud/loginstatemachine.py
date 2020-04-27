@@ -5,6 +5,7 @@ from statemachine import StateMachine, State
 
 from HavokMud.account import Account
 from HavokMud.commandhandler import CommandHandler
+from HavokMud.data_loader import load_data_file
 from HavokMud.logging_support import AccountLogMessage, PlayerLogMessage
 from HavokMud.player import Player
 from HavokMud.utils import validate_email, validate_yes_no, validate_password, validate_pc_name, validate_sex
@@ -103,7 +104,7 @@ class LoginStateMachine(StateMachine):
             self.append_line("Illegal email address, please try again.")
             return self.get_email
 
-        self.model.account = Account.lookup_by_email(self.model.server, self.model.connection, email)
+        self.model.account = Account.lookup_by_email(connection=self.model.connection, email=email)
 
         # Check if we have banned the source IP/hostname
         if self.model.account.is_sitelocked():
@@ -114,7 +115,7 @@ class LoginStateMachine(StateMachine):
             # Existing account
             return self.get_password
 
-        if self.model.server.is_wizlocked:
+        if self.model.server.is_wizlocked():
             self.append_line("Sorry, no new accounts at this time, please try again later")
             if self.model.server.wizlock_reason:
                 self.append_line(self.model.server.wizlock_reason)
@@ -529,6 +530,10 @@ class LoginStateMachine(StateMachine):
         self.model.account.player.klass = None
 
     def on_enter_choose_class(self):
+        klasses = load_data_file("classes.json")
+        self.append_output(
+            {"template": "class_list.jinja", "params": {"klasses": klasses}})
+
         self.append_output("\r\nSelect your class now.\r\nEnter ? for help.\r\n CLASS: ")
         self.model.account.player.alignment = None
         self.model.account.player.stats.clear()
@@ -558,4 +563,4 @@ class LoginStateMachine(StateMachine):
         # TODO: ask which player and launch that one
         self.model.account.current_player = Player.lookup_by_name(self.model.account.players[0])
         self.model.player = self.model.account.current_player
-        self.model.connection.handler = CommandHandler(self.model.server, self.model.connection)
+        self.model.connection.handler = CommandHandler(self.model.connection)

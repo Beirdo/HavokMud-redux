@@ -1,5 +1,4 @@
 import logging
-import os
 import socket
 import stackless
 import traceback
@@ -8,12 +7,10 @@ from threading import Lock
 
 from HavokMud.account import Account
 from HavokMud.connection import Connection
-from HavokMud.database import Databases
 from HavokMud.dnslookup import DNSLookup
 from HavokMud.encryption_helper import EncryptionEngine
 from HavokMud.redis_handler import RedisHandler
 from HavokMud.send_email import EmailHandler
-from HavokMud.settings import Settings
 from HavokMud.swaggerapi.eosio_chain import EOSChainAPI
 from HavokMud.swaggerapi.eosio_wallet import EOSWalletAPI
 
@@ -53,7 +50,8 @@ class Server(object):
         # Prime up the redis cache
         self.redis.do_command("delete", "userdb/*")
         self.redis.do_command("delete", "passdb/*")
-        accounts = Account.get_all_accounts(self)
+
+        accounts = Account().get_all_accounts()
         for account in accounts:
             account.update_redis()
 
@@ -73,7 +71,7 @@ class Server(object):
                 try:
                     (clientSocket, clientAddress) = listen_socket.accept()
                     logger.info("Accepting on %s" % clientSocket.fileno())
-                    Connection(self, clientSocket, clientAddress)
+                    Connection(clientSocket, clientAddress)
                 except Exception as e:
                     logger.exception("Exception in accept loop")
                     pass

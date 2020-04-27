@@ -7,28 +7,32 @@ class Player(DatabaseObject):
     __fixed_fields__ = ["server", "connection", "account", "wallets"]
     __database__ = None
 
-    def __init__(self, server, connection, account):
+    def __init__(self, connection=None, account=None, other=None):
         DatabaseObject.__init__(self)
-        self.server = server
-        self.__database__ = self.server.dbs.user_db
-        self.connection = connection
-        self.account = account
-        self.email = account.email
-        self.rolls = [0, 0, 0, 0, 0, 0]
-        self.rerolls = None
-        self.name = None
-        self.display_name = None
-        self.sex = None
-        self.race = None
-        self.klass = None
-        self.stats = {}
-        self.alignment = None
-        self.complete = False
-        self.wallets = {}
-        self.wallet_password = {}
-        self.wallet_owner_key = {}
-        self.wallet_active_key = {}
-        self.wallet_keys = {}
+        self.__real_class__ = self.__class__
+
+        if other:
+            self.__dict__.update(other.__dict__)
+        else:
+            self.__database__ = self.server.dbs.user_db
+            self.connection = connection
+            self.account = account
+            self.email = account.email
+            self.rolls = [0, 0, 0, 0, 0, 0]
+            self.rerolls = None
+            self.name = None
+            self.display_name = None
+            self.sex = None
+            self.race = None
+            self.klass = None
+            self.stats = {}
+            self.alignment = None
+            self.complete = False
+            self.wallets = {}
+            self.wallet_password = {}
+            self.wallet_owner_key = {}
+            self.wallet_active_key = {}
+            self.wallet_keys = {}
 
     def set_connection(self, connection):
         if self.connection:
@@ -39,7 +43,7 @@ class Player(DatabaseObject):
 
     @staticmethod
     def lookup_by_name(account, name):
-        player = Player(account.server, account.connection, account)
+        player = Player(account.connection, account)
 
         # if not in dynamo: return with empty name field
         player.load_from_db(email=player.email, name=name)
@@ -47,14 +51,18 @@ class Player(DatabaseObject):
         if not player.name:
             return player
 
-        player.wallets[WalletType.Carried] = Wallet.load(account.server, player, WalletType.Carried)
-        player.wallets[WalletType.Stored] = Wallet.load(account.server, player, WalletType.Stored)
+        player.wallets = {
+            WalletType.Carried: Wallet.load(player, WalletType.Carried),
+            WalletType.Stored: Wallet.load(player, WalletType.Stored),
+        }
 
         return player
 
     def create_wallets(self):
-        self.wallets[WalletType.Carried] = Wallet.load(self.server, self, WalletType.Carried)
-        self.wallets[WalletType.Stored] = Wallet.load(self.server, self, WalletType.Stored)
+        self.wallets = {
+            WalletType.Carried: Wallet.load(self, WalletType.Carried),
+            WalletType.Stored: Wallet.load(self, WalletType.Stored),
+        }
         self.save_to_db()
 
     def append_line(self, output):
