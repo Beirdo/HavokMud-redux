@@ -5,7 +5,6 @@ ENV TERM=vt100
 ARG ENV
 ENV BUILD_MODE=$ENV
 
-ADD docker/eosio/debs /tmp
 RUN apt-get update \
     && apt-get install -y \
 	apt-transport-https \
@@ -31,7 +30,6 @@ RUN apt-get update \
 	sudo \
 	vim-tiny \
 	wget \
-    /tmp/eosio.cdt_1.6.3-1-ubuntu-18.04_amd64.deb \
     && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m -G sudo -d /home/eosio -s /bin/bash -c "EOSIO Account" eosio
@@ -44,7 +42,6 @@ RUN chown -R eosio /home/eosio
 
 USER eosio
 
-RUN pip3 install numpy
 ADD docker/eosio/eosio /home/eosio/basechain
 WORKDIR /home/eosio/basechain
 ENV PATH=$PATH:/home/eosio/eosio/2.0/bin

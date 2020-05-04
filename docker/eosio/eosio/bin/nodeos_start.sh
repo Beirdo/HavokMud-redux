@@ -6,7 +6,7 @@ BASE_DIR=$(
 )
 source ${BASE_DIR}/bin/common_settings.sh
 
-if [ $# -lt 6 ] ; then
+if [ $# -lt 5 ] ; then
   echo "Usage: $0 accountname pubkey privkey rpc_port p2p_port [mode]"
   echo "   where mode can be: genesis, hard_replay or normal (the default)"
   exit 1
@@ -17,13 +17,13 @@ PUBKEY=$2
 PRIVKEY=$3
 RPC_PORT=$4
 P2P_PORT=$5
-MODE=${6:=normal}
+MODE=${6:-normal}
 
 P2P_PORTS="9010 9011 9012 9013"
 P2P_PORTS=$(echo ${P2P_PORTS} | xargs -n 1 echo | grep -v ${P2P_PORT} | xargs echo)
 P2P_ARGS=$(echo ${P2P_PORTS} | sed -e 's/\(\S*\)/--p2p-peer-address 127.0.0.1:\1/g')
 
-BLOCKCHAIN_DIR=${BASE_DIR}/blockchain/${ACCOUNT}
+BLOCKCHAIN_DIR=${BLOCKCHAIN_BASEDIR}/${ACCOUNT}
 mkdir -p ${BLOCKCHAIN_DIR}/data ${BLOCKCHAIN_DIR}/blocks ${BLOCKCHAIN_DIR}/config \
   ${BLOCKCHAIN_DIR}/logs
 
@@ -36,7 +36,7 @@ fi
 # Start the service
 nodeos \
   ${GENESIS_ARGS} \
-  --signature-provider ${PUBKEY}:${PRIVKEY} \
+  --signature-provider ${PUBKEY}=KEY:${PRIVKEY} \
   --plugin eosio::producer_plugin \
   --plugin eosio::producer_api_plugin \
   --plugin eosio::chain_plugin \
@@ -55,7 +55,11 @@ nodeos \
   --http-validate-host false \
   --verbose-http-errors \
   --enable-stale-production \
+  --max-irreversible-block-age -1 \
+  --max-transaction-time=1000 \
+  --abi-serializer-max-time-ms=60 \
   ${P2P_ARGS} \
   ${HARD_REPLAY_ARGS} \
   >> ${BLOCKCHAIN_DIR}/logs/nodeos.log 2>&1 &
 echo $! > ${BLOCKCHAIN_DIR}/nodeos.pid
+sleep 2
