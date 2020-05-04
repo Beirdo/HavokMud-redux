@@ -67,12 +67,16 @@ RUN echo y | ./build.sh
 ENV EOSIO_CONTRACTS_DIRECTORY /home/eosio/src/eosio.contracts-1.9.x/build/contracts
 
 ADD src/contracts /home/eosio/src/HavokMud-contracts
+ENV PATH=$PATH:/home/eosio/eosio/2.0/bin
 
 ADD docker/eosio/eosio /home/eosio/basechain
-WORKDIR /home/eosio/basechain
-ENV PATH=$PATH:/home/eosio/eosio/2.0/bin
 
 USER root
 RUN chown -R eosio /home/eosio
 
 USER eosio
+
+WORKDIR /home/eosio/src/HavokMud-contracts
+RUN make -C banker
+WORKDIR /home/eosio/basechain
+
