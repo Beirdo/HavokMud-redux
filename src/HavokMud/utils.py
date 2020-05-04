@@ -3,6 +3,7 @@ import logging
 import random
 import re
 import time
+from functools import wraps
 
 emailRe = re.compile(r'^([a-z0-9_\-.+]+)@([a-z0-9_\-.]+)\.([a-z]{2,20})$', re.I)
 
@@ -93,12 +94,75 @@ def roll_dice(dice):
     return response
 
 
-def log_call(func):
+def double_wrap(func):
+    '''
+    a decorator decroator allowing the decorator to be used as:
+    @decorator(with, args, and=kwargs)
+    or
+    @decorator
+    '''
+
+    @wraps(func)
+    def new_decorator(*args, **kwargs):
+        if len(args) == 1 and len(kwargs) == 0 and callable(args[0]):
+            # actual decorated function
+            return func(args[0])
+        else:
+            # decorator with arguments
+            return lambda real_func: func(real_func, *args, **kwargs)
+
+    return new_decorator
+
+
+@double_wrap
+def log_call(func, censor=False):
+    def _censor(censor_, key, value):
+        if key in censor_:
+            return "*censored*"
+        return value
+
     def wrapper(*args, **kwargs):
         log_args = ["%s" % item for item in args] + \
                    ["%s=%s" % (key, value) for (key, value) in kwargs.items()]
         func_name = ".".join([func.__module__, func.__qualname__])
-        func_signature = "%s(%s)" % (func_name, ", ".join(log_args))
+        if censor:
+            censors = censor
+            if not isinstance(censors, (list, tuple, set)):
+                censors = {censors}
+
+            censors = set(censors)
+
+            arg_censor = set()
+            kwarg_censor = set()
+
+            if "all_args" in censors:
+                # noinspection PyTypeChecker
+                censors.remove("all_args")
+                arg_censor |= set(range(len(args)))
+
+            if "all_kwargs" in censors:
+                # noinspection PyTypeChecker
+                censors.remove("all_kwargs")
+                kwarg_censor |= set(kwargs.keys())
+
+            exclusions = set(filter(lambda x: str(x).startswith("!"), censors))
+            censors -= exclusions
+
+            exclusions = set(map(lambda x: str(x)[1:], exclusions))
+            arg_exclusions = set(map(int, filter(str.isnumeric, exclusions)))
+            kwarg_exclusions = set(filter(lambda x: not x.isnumeric(), exclusions))
+
+            arg_censor -= arg_exclusions
+            kwarg_censor -= kwarg_exclusions
+
+            arg_censor |= set(filter(lambda x: str(x).isnumeric(), censors))
+            kwarg_censor |= (censors - arg_censor)
+
+            censored_args = ["%s" % _censor(arg_censor, index, item) for (index, item) in enumerate(args)] + \
+                            ["%s=%s" % (key, _censor(kwargs_censor, key, value)) for (key, value) in kwargs.items()]
+            func_signature = "%s(%s)" % (func_name, ", ".join(censored_args))
+        else:
+            func_signature = "%s(%s)" % (func_name, ", ".join(log_args))
         logger.info("Entering %s" % func_signature)
         start_time = time.time()
         ret_val = func(*args, **kwargs)

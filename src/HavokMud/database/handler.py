@@ -51,12 +51,13 @@ class DatabaseHandler(object):
             if db:
                 func = getattr(db, item.command, None)
                 if func and hasattr(func, "__call__"):
-                    logger.info("Func: %s, args: %s, kwargs: %s" % (func, item.args, item.kwargs))
+                    # logger.debug("Func: %s, args: %s, kwargs: %s" % (func, item.args, item.kwargs))
                     response = func(*item.args, **item.kwargs)
 
         logger.debug("Response: %s" % response)
         response_channel.send(response)
 
+    @log_call(censor=["all_args", "!1", "!2", "all_kwargs"])
     def send_request(self, table_name, command, *args, **kwargs):
         request = DatabaseRequest(table_name, command, *args, **kwargs)
         self.in_channel.send(request)
