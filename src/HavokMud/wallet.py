@@ -379,6 +379,11 @@ class Wallet(object):
             "owner": owner,
             "wallet_type": wallet_type,
         }
+
+        # keosd will refuse @, so let's use the encoded name for the wallet_name
+        if klass == "Account":
+            wallet_info["wallet_name"] = account_name
+
         Wallet.account_wallet_info_map[account_name] = wallet_info
 
         return wallet_info

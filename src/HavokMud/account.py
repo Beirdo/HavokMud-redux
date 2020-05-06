@@ -70,10 +70,12 @@ class Account(DatabaseObject):
         if not account.players:
             account.players = []
 
-        account.wallets = {
-            WalletType.Carried: Wallet.load(account, WalletType.Carried),
-            WalletType.Stored: Wallet.load(account, WalletType.Stored),
-        }
+        account.wallets = {}
+        for type_ in [WalletType.Carried, WalletType.Stored]:
+            wallet = Wallet.load(account, type_)
+            if not wallet:
+                wallet = Wallet.create(account, type_)
+            account.wallets[type_] = wallet
 
         if connection:
             account.connection = connection
