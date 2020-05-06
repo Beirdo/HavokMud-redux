@@ -64,6 +64,9 @@ class EncryptionEngine(object):
         self._private_key = privatekey
 
     def encrypt(self, data: bytes) -> str:
+        if data is None:
+            return None
+
         session_key = get_random_bytes(16)
 
         # Encrypt session key with the public RSA key
@@ -79,6 +82,9 @@ class EncryptionEngine(object):
         return out_message
 
     def decrypt(self, data: str) -> bytes:
+        if data is None:
+            return None
+
         in_message = [base64.b64decode(item.encode("utf-8")) for item in data.split("$")]
         if len(in_message) != 4:
             raise ValueError("Improperly formed encrypted message")
@@ -94,7 +100,13 @@ class EncryptionEngine(object):
         return data
 
     def encrypt_string(self, data: str, encoding="utf-8") -> str:
+        if data is None:
+            return None
+
         return self.encrypt(data.encode(encoding))
 
     def decrypt_string(self, data: str, encoding="utf-8") -> str:
+        if data is None:
+            return None
+
         return self.decrypt(data).decode(encoding)

@@ -28,7 +28,6 @@ class newRefResolver(oldRefResolver):
 # MonkeyPatch this
 jsonschema.validators.RefResolver = newRefResolver
 
-
 import openapi_core
 import requests
 import yaml
@@ -198,4 +197,10 @@ class SwaggerAPI(object):
             result = self.response_validator.validate(openapi_request, openapi_response)
             result.raise_for_errors()
 
-        return response.json()
+        try:
+            return response.json()
+        except Exception as e:
+            logger.error("Exception decoding response: %s" % e)
+            with open("/tmp/failedresponse", "w") as f:
+                f.write(response.content)
+            raise e
