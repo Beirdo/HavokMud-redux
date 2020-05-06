@@ -9,12 +9,24 @@ BASE_DIR=$(
 
 source ${BASE_DIR}/bin/common_settings.sh
 
+rm -rf ${BLOCKCHAIN_BASEDIR}/* || /bin/true
+
+exec  > >(tee -ia ${BLOCKCHAIN_BASEDIR}/generate.log)
+exec 2> >(tee -ia ${BLOCKCHAIN_BASEDIR}/generate.log >& 2)
+
 mkdir -p ${KEY_DIR}
 
-# -1. Cleanup old wallets
+# -2. Cleanup old wallets
 echo "Cleaning up old wallets"
 rm ${WALLET_DIR}/* ${KEY_DIR}/* || /bin/true
-rm -rf ${BLOCKCHAIN_BASEDIR}/* || /bin/true
+
+# -1. Preload the EOSIO Stock keys
+cat - > ${KEY_DIR}/eosio_stock.keys << EOF
+Public key: EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV
+Private key: 5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3
+EOF
+EOSIO_STOCK_PUBKEY=$(cat ${KEY_DIR}/eosio_stock.keys | sed -e 's/Public key: \(.*\)/\1/' -e t -e d)
+EOSIO_STOCK_PRIVKEY=$(cat ${KEY_DIR}/eosio_stock.keys | sed -e 's/Private key: \(.*\)/\1/' -e t -e d)
 
 # 0. Startup keosd
 echo "Starting keosd"
@@ -41,6 +53,9 @@ DEVELOPMENT_PUBKEY=$(cat ${KEY_DIR}/development.pubkey | sed -e 's/.*\"\(.*\)\".
 ${CLEOS} wallet create_key -n development >${KEY_DIR}/eosio.pubkey
 EOSIO_PUBKEY=$(cat ${KEY_DIR}/eosio.pubkey | sed -e 's/.*\"\(.*\)\".*/\1/')
 
+${CLEOS} wallet import -n development --private-key ${EOSIO_STOCK_PRIVKEY}
+
+
 # 5. Extract the key pairs
 echo "Extracting key pairs"
 ${CLEOS} wallet private_keys -n development --password ${DEVELOPMENT_PASSWORD} >${KEY_DIR}/development_keys.json
@@ -52,7 +67,8 @@ EOSIO_PRIVKEY=$(${BASE_DIR}/bin/extract_private_key.py ${KEY_DIR}/development_ke
 # 7. Generate the genesis.json file with the new EOSIO key
 echo "Generating genesis.json"
 cat ${BASE_DIR}/genesis/genesis.json.in | sed -e "s/@EOSIO_PUBKEY@/${EOSIO_PUBKEY}/" \
-  >${BASE_DIR}/genesis/genesis.json
+  > ${BASE_DIR}/genesis/genesis.json
+cp ${BASE_DIR}/genesis/genesis.json ${BLOCKCHAIN_BASEDIR}/genesis.json
 
 # 8. Start the genesis producer
 echo "Starting genesis producer"
@@ -191,10 +207,10 @@ declare -A prodpubkeys
 declare -A prodprivkeys
 for account in ${PRODUCER_ACCOUNTS} ; do
   echo "Creating account ${account}"
-  ${CLEOS} wallet create_key -n development > ${KEY_DIR}/${account}.pubkey
-  prodpubkeys[${account}]=$(cat ${KEY_DIR}/${account}.pubkey | sed -e 's/.*\"\(.*\)\".*/\1/')
-  ${CLEOS} wallet private_keys -n development --password ${DEVELOPMENT_PASSWORD} > ${KEY_DIR}/development_keys.json
-  prodprivkeys[${account}]=$(${BASE_DIR}/bin/extract_private_key.py ${KEY_DIR}/development_keys.json ${prodpubkeys[${account}]})
+  ${CLEOS} create key --to-console > ${KEY_DIR}/${account}.keys
+  prodpubkeys[${account}]=$(cat ${KEY_DIR}/${account}.keys | sed -e 's/Public key: \(.*\)/\1/' -e t -e d)
+  prodprivkeys[${account}]=$(cat ${KEY_DIR}/${account}.keys | sed -e 's/Private key: \(.*\)/\1/' -e t -e d)
+  ${CLEOS} wallet import -n development --private-key ${prodprivkeys[${account}]}
   ${CLEOS} system newaccount eosio --transfer ${account} ${DEVELOPMENT_PUBKEY} ${prodpubkeys[${account}]} \
     --stake-net "100000000.0000 SYS" --stake-cpu "100000000.0000 SYS" --buy-ram-kbytes 8192
   rpc_port=${account/prod.1./800}
@@ -218,13 +234,13 @@ echo "Voting for the new producers"
 ${CLEOS} system voteproducer prods ${PRODUCER_ACCOUNTS}
 
 # 23. Resign all the system accounts - not sure I wanna do this...
-echo "NOT Resigning all the system accounts"
-exit 0
+echo "Resigning all the system accounts"
+#exit 0
 
 echo "Resigning eosio"
-${CLEOS} push action eosio updateauth '{"account": "eosio", "permission": "owner", "parent": "", "auth": {"threshold": 1, "keys": [], "waits": [], "accounts": [{"weight": 1, "permission": {"actor": "eosio.prods", "permission": "active"}}]}}' \
+${CLEOS} push action eosio updateauth '{"account": "eosio", "permission": "owner", "parent": "", "auth": {"threshold": 1, "keys": [{"key":"'"${DEVELOPMENT_PUBKEY}"'", "weight":1}], "waits": [], "accounts": [{"weight": 1, "permission": {"actor": "eosio.prods", "permission": "active"}}]}}' \
   -p eosio@owner
-${CLEOS} push action eosio updateauth '{"account": "eosio", "permission": "active", "parent": "owner", "auth": {"threshold": 1, "keys": [], "waits": [], "accounts": [{"weight": 1, "permission": {"actor": "eosio.prods", "permission": "active"}}]}}' \
+${CLEOS} push action eosio updateauth '{"account": "eosio", "permission": "active", "parent": "owner", "auth": {"threshold": 1, "keys": [{"key":"'"${EOSIO_PUBKEY}"'", "weight":1}], "waits": [], "accounts": [{"weight": 1, "permission": {"actor": "eosio.prods", "permission": "active"}}]}}' \
   -p eosio@active
 
 for account in ${SYSTEM_ACCOUNTS} ; do
@@ -234,3 +250,5 @@ for account in ${SYSTEM_ACCOUNTS} ; do
   ${CLEOS} push action eosio updateauth '{"account": "'${account}'", "permission": "active", "parent": "owner", "auth": {"threshold": 1, "keys": [], "waits": [], "accounts": [{"weight": 1, "permission": {"actor": "eosio", "permission": "active"}}]}}' \
     -p ${account}@active
 done
+
+echo "Done"

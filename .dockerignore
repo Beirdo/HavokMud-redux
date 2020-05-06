@@ -1,1 +1,2 @@
-docker/eosio/nodes/
+docker/eosio/blockchain/
+docker/eosio/wallets/
