@@ -292,7 +292,7 @@ class EOSAbiType(object):
             raise ValueError("Invalid symbol: %s" % data)
         precision = match.group(1)
         symbol_code = match.group(2)
-        buf += int(precision) & 0xFF
+        buf.append(int(precision) & 0xFF)
         self._serialize_symbol_code(state, buf, symbol_code)
 
     def _deserialize_symbol(self, buf: bytearray, state: EOSAbiState):
@@ -347,15 +347,15 @@ class EOSAbiType(object):
 
     @staticmethod
     def _string_to_key(data: str, key_len: int, suffix: bytes):
-        whole = base58.b58decode(data[:key_len + 4])
+        whole = base58.b58decode(data)[:key_len + 4]
         h = RIPEMD160.new()
-        h.update(whole)
+        h.update(whole[:key_len])
         if suffix:
             h.update(suffix)
         digest = h.digest()
         if digest[:4] != whole[-4:]:
             raise ValueError("Checksum doesn't match")
-        return whole
+        return whole[:key_len]
 
     def _serialize_public_key(self, state: EOSAbiState, buf: bytearray, data: str):
         if data.startswith("EOS"):
@@ -611,8 +611,11 @@ class EOSAbi(object):
 
         # Variants
         for item in self.abi.get("variants", []):
-            (name, types) = item
-            fields = [{"name": type_, "type_name": type_} for type_ in types]
+            name = item.get("name", None)
+            types_ = item.get("types", [])
+            if not name or not types_:
+                continue
+            fields = [{"name": type_, "type_name": type_} for type_ in types_]
             types[name] = EOSAbiType(name, variant=True, fields=fields)
 
         # Now to extract arrays, etc.

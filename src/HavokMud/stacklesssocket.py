@@ -148,6 +148,7 @@ class _new_socket(object):
         # Close dispatcher if it isn't already closed
         if self.dispatcher._fileno is not None:
             try:
+                self.dispatcher.recv_channel = None
                 self.dispatcher.close()
             finally:
                 self.dispatcher = None
@@ -293,27 +294,25 @@ class _fakesocket(asyncore.dispatcher):
     def recv_into(self, buffer, nbytes=0, flags=0):
         logger.debug("recv_into: buflen: %s, nbytes: %s" % (len(buffer), nbytes))
 
-        if len(buffer):
-            nbytes = min(len(buffer), nbytes)
-
         # recv() must not concatenate two or more data fragments sent with
         # send() on the remote side. Single fragment sent with single send()
         # call should be split into strings of length less than or equal
         # to 'byteCount', and returned by one or more recv() calls.
 
-        remaining_bytes = self.read_index != len(self.read_bytes)
+        remaining_bytes = max(0, len(self.read_bytes) - self.read_index)
+        logger.debug(
+            "read_index: %s, read_bytes: %s, remaining: %s" % (self.read_index, len(self.read_bytes), remaining_bytes))
+
         # TODO: Verify this connectivity behaviour.
+        # Sockets which have never been connected do this.
+        if not self.connected and not self.was_connected:
+            raise error(10057, 'Socket is not connected')
 
-        if not self.connected:
-            # Sockets which have never been connected do this.
-            if not self.was_connected:
-                raise error(10057, 'Socket is not connected')
-
-            # Sockets which were connected, but no longer are, use
-            # up the remaining input.  Observed this with urllib.urlopen
-            # where it closes the socket and then allows the caller to
-            # use a file to access the body of the web page.
-        elif not remaining_bytes:
+        # Sockets which were connected, but no longer are, use
+        # up the remaining input.  Observed this with urllib.urlopen
+        # where it closes the socket and then allows the caller to
+        # use a file to access the body of the web page.
+        if not remaining_bytes:
             timeout = self.gettimeout()
             logger.debug("timeout: %s", timeout)
             if timeout == 0:
@@ -324,36 +323,28 @@ class _fakesocket(asyncore.dispatcher):
             self.read_index = 0
             remaining_bytes = len(self.read_bytes)
 
+        if remaining_bytes == 0:
+            logger.debug("returning 0")
+            return 0
+
         if nbytes == 0:
-            nbytes = len(self.read_bytes)
-            if len(buffer):
-                nbytes = min(len(buffer), nbytes)
-            if nbytes == 0:
-                return 0
+            nbytes = remaining_bytes
 
-        if nbytes == 1 and remaining_bytes:
-            buffer[:1] = self.read_bytes[self.read_index]
-            self.read_index += 1
-            return 1
+        if len(buffer):
+            nbytes = min(len(buffer), nbytes)
 
-        if self.read_index == 0 and nbytes >= len(self.read_bytes):
-            nbytes = len(self.read_bytes)
-            buffer[:nbytes] = self.read_bytes
-            self.read_bytes = bytearray()
-            return nbytes
+        nbytes = min(remaining_bytes, nbytes)
 
         idx = self.read_index + nbytes
-        buffer[:] = self.read_bytes[self.read_index:idx]
-        self.read_bytes = self.read_bytes[idx:]
-        self.read_index = 0
+        buffer[:nbytes] = self.read_bytes[self.read_index:idx]
+        self.read_index = idx
+        logger.debug("returning %s" % nbytes)
         return nbytes
 
     def close(self):
         logger.debug("Closing %s (%s)" % (self._fileno, self.fileno()))
         if self._fileno is None:
             return
-
-        asyncore.dispatcher.close(self)
 
         self.connected = False
         self.accepting = False
@@ -364,12 +355,27 @@ class _fakesocket(asyncore.dispatcher):
             self.accept_channel.send_exception(error, 9, 'Bad file descriptor')
         while self.connect_channel and self.connect_channel.balance < 0:
             self.connect_channel.send_exception(error, 10061, 'Connection refused')
-        while self.recv_channel and self.recv_channel.balance < 0:
-            # The closing of a socket is indicted by receiving nothing.  The
-            # exception would have been sent if the server was killed, rather
-            # than closed down gracefully.
-            self.recv_channel.send(bytearray())
-            # self.recv_channel.send_exception(error, 10054, 'Connection reset by peer')
+
+        # The closing of a socket is indicted by receiving nothing.  The
+        # exception would have been sent if the server was killed, rather
+        # than closed down gracefully.  However, we need to drain the input
+        # from the socket before actually closing as requests will close
+        # the connection early and continue to pull data from it.  We were
+        # seeing nasty race conditions.
+        ret = b"blah"
+        while ret and self.recv_channel:
+            try:
+                self.timeout = 0
+                ret = asyncore.dispatcher.recv(self, 65535)
+            except Exception as e:
+                logger.error("Exception while draining: %s" % e)
+                ret = b""
+
+            logger.debug("Drained %s bytes" % len(ret))
+            # Don't block this tasklet, it may be the last one, and we'd deadlock
+            stackless.tasklet(self.recv_channel.send)(ret)
+
+        asyncore.dispatcher.close(self)
 
     # asyncore doesn't support this.  Why not?
     def fileno(self):
@@ -408,14 +414,18 @@ class _fakesocket(asyncore.dispatcher):
     def handle_read(self):
         try:
             if self.socket.type == SOCK_DGRAM:
-                ret = self.socket.recvfrom(20000)
+                ret = self.socket.recvfrom(65535)
             else:
-                ret = asyncore.dispatcher.recv(self, 20000)
+                ret = asyncore.dispatcher.recv(self, 65535)
                 # Not sure this is correct, but it seems to give the
                 # right behaviour.  Namely removing the socket from
                 # asyncore.
                 if not ret:
+                    ret = b""
+                    logger.debug("not ret, closing")
                     self.close()
+
+            logger.debug('Read %s bytes' % len(ret))
 
             # Do not block.
             if self.recv_channel.balance < 0:

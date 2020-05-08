@@ -49,7 +49,8 @@ class EOSTransaction(object):
 
         # Now we need the timestamp of the reference block
         try:
-            result = server.chain_api.call("get_block", block_num_or_id=str(ref_block_num))
+            result = server.chain_api.call("get_block", block_num_or_id=str(ref_block_num),
+                                           openapi_validate=False)
         except Exception as e:
             logger.exception("result: %s" % result)
             logger.error("Couldn't get reference block: %s" % e)
@@ -79,8 +80,8 @@ class EOSTransaction(object):
         if sign:
             from HavokMud.wallet import Wallet
 
-            accounts = [item.contract for item in self.actions]
-            wallets = [Wallet.load(server, account_name=item) for item in accounts]
+            accounts = {item.contract for item in self.actions}
+            wallets = [Wallet.load(account_name=item) for item in accounts]
             available_public_keys = {key for wallet in wallets for key in wallet.keys.keys()}
 
             # Now get the list of required public keys

@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 server_instance = None
 
 
-def start_mud(loglevel=logging.INFO, looping=False):
+def start_mud(loglevel=logging.DEBUG, looping=False):
     logging_setup(loglevel, console=True)
 
     config = load_config_file("config.json")

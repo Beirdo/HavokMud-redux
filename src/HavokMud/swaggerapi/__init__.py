@@ -6,8 +6,9 @@ import pickle
 from functools import lru_cache
 from time import sleep
 from urllib.parse import urljoin
-from jsonschema.validators import RefResolver as oldRefResolver
+
 import jsonschema.validators
+from jsonschema.validators import RefResolver as oldRefResolver
 
 
 class newRefResolver(oldRefResolver):
@@ -166,6 +167,8 @@ class SwaggerAPI(object):
             "url": self.base_url + method_item.get("path", ""),
             "headers": {
                 "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Connection": "close",
             },
         }
         if payload is not None:
@@ -182,12 +185,17 @@ class SwaggerAPI(object):
 
         response = api_handler.send(request, timeout)
         self.response = response
+        try:
+            message = response.json()
+        except Exception as e:
+            logger.error("Exception decoding response: %s" % e)
+            logger.debug("length: %s, headers: %s" % (len(response.content), response.headers))
+            with open("/tmp/failedresponse", "wb") as f:
+                f.write(response.content)
+            raise SwaggerAPIError(500, response.content)
+
         if int(response.status_code / 100) != 2:
             logger.error("Error %s on request %s" % (response.status_code, params))
-            try:
-                message = response.json()
-            except Exception as e:
-                message = response.content
             raise SwaggerAPIError(response.status_code, message)
 
         # Validate the response
@@ -197,10 +205,4 @@ class SwaggerAPI(object):
             result = self.response_validator.validate(openapi_request, openapi_response)
             result.raise_for_errors()
 
-        try:
-            return response.json()
-        except Exception as e:
-            logger.error("Exception decoding response: %s" % e)
-            with open("/tmp/failedresponse", "w") as f:
-                f.write(response.content)
-            raise e
+        return message

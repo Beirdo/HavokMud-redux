@@ -181,7 +181,7 @@ class Wallet(object):
                 "bytes": 8192
             }
             auth = [EOSPermission(system_account_name, "active")]
-            transaction.add(EOSAction("eosio.msig", "buyrambytes", auth, **params))
+            transaction.add(EOSAction("eosio", "buyrambytes", auth, **params))
 
             # And need to delegate CPU and NET
             params = {
@@ -192,7 +192,7 @@ class Wallet(object):
                 "transfer": False
             }
             auth = [EOSPermission(system_account_name, "active")]
-            transaction.add(EOSAction("eosio.msig", "delegatebw", auth, **params))
+            transaction.add(EOSAction("eosio", "delegatebw", auth, **params))
 
         return wallet
 
@@ -267,15 +267,17 @@ class Wallet(object):
 
         wallet_info = None
         if account_name:
-            wallet_info = Wallet.account_wallet_info_map.get(account_name, {})
+            wallet_info = Wallet.account_wallet_info_map.get(account_name, None)
+            if not wallet_info:
+                raise WalletError("Wallet %s not yet created" % account_name)
         elif owner is not None and wallet_type is not None:
             # Load up a wallet based on owner and type of wallet.  If there is no wallet
             # yet, return None, and the caller should use create()
             wallet_info = Wallet._hash_wallet_name(owner, wallet_type)
-            if wallet_info is None:
+            if not wallet_info:
                 raise WalletError("Wallet mapping error")
 
-        if wallet_info is None:
+        if not wallet_info:
             raise WalletError("No identifying parameters given")
 
         wallet_name = wallet_info.get("wallet_name", None)
@@ -394,7 +396,7 @@ class Wallet(object):
         try:
             yield transaction
         except Exception as e:
-            logger.error("Exception while generating transaction: %s" % e)
+            logger.exception("Exception while generating transaction: %s" % e)
             transaction = None
         finally:
             if transaction and transaction.actions:
