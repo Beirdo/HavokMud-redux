@@ -36,7 +36,8 @@ fi
 # Start the service
 nodeos \
   ${GENESIS_ARGS} \
-  --signature-provider ${PUBKEY}=KEY:${PRIVKEY} \
+  --signature-provider ${PUBKEY}=KEOSD:http://127.0.0.1:6666 \
+  --keosd-provider-timeout 100 \
   --plugin eosio::producer_plugin \
   --plugin eosio::producer_api_plugin \
   --plugin eosio::chain_plugin \
@@ -62,4 +63,5 @@ nodeos \
   ${HARD_REPLAY_ARGS} \
   >> ${BLOCKCHAIN_DIR}/logs/nodeos.log 2>&1 &
 echo $! > ${BLOCKCHAIN_DIR}/nodeos.pid
+echo "Started nodeos for ${ACCOUNT} as PID $(cat ${BLOCKCHAIN_DIR}/nodeos.pid)"
 sleep 2

@@ -225,6 +225,9 @@ sleep 2
 echo "Making eosio.msig a privileged account"
 ${CLEOS} push action eosio setpriv '["eosio.msig", 1]' -p eosio@active
 
+# 19.5 Make the mud.havokmud a privileged account
+${CLEOS} push action eosio setpriv '["mud.havokmud", 1]' -p eosio@active
+
 # 20. Initialize the system token
 echo "Initializing syste token"
 ${CLEOS} push action eosio init '["0", "4,SYS"]' -p eosio@active
@@ -261,7 +264,9 @@ done
 
 # 22. Vote for the new producers
 echo "Voting for the new producers"
-${CLEOS} system voteproducer prods ${PRODUCER_ACCOUNTS}
+for voter in ${PRODUCER_ACCOUNTS} ; do
+  ${CLEOS} system voteproducer prods ${voter} ${PRODUCER_ACCOUNTS}
+done
 
 # 23. Resign all the system accounts - not sure I wanna do this...
 echo "Resigning all the system accounts"

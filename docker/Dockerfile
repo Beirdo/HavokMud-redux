@@ -38,6 +38,7 @@ RUN chmod 700 /home/havokmud
 RUN mkdir -p /etc/sudoers.d
 RUN echo "havokmud ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/havokmud
 ADD src /home/havokmud/src/havokmud
+ADD data /home/havokmud/src/havokmud/data
 ADD docker/aws-$ENV /home/havokmud/.aws
 ADD docker/config-$ENV /home/havokmud/.havokmud
 ADD docker/eosio/wallets/keys/*password /home/havokmud/.havokmud/passwords/

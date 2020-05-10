@@ -62,10 +62,15 @@ class System(DatabaseObject):
         from HavokMud.wallet import WalletType, Wallet
         self.wallets = {}
         for type_ in [WalletType.System]:
-            wallet = Wallet.load(self, type_)
-            if not wallet:
-                raise KeyError("System wallet %s doesn't exist!" % self.name)
-            self.wallets[str(type_)] = wallet
+            try:
+                wallet = Wallet.load(self, type_)
+                if not wallet:
+                    raise KeyError("System wallet %s doesn't exist!" % self.name)
+                self.wallets[str(type_)] = wallet
+            except KeyError as e:
+                raise e
+            except Exception as e:
+                pass
 
     @staticmethod
     def get_all_system_wallets():

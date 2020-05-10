@@ -11,6 +11,8 @@ from threading import Lock
 import base58
 from Crypto.Hash import RIPEMD160
 
+from HavokMud.data_loader import load_data_file
+
 logger = logging.getLogger(__name__)
 
 
@@ -250,7 +252,7 @@ class EOSAbiType(object):
 
     def _serialize_time_point_sec(self, state: EOSAbiState, buf: bytearray, data: str):
         timestamp = datetime.fromisoformat(data)
-        timestamp = timestamp.timestamp()
+        timestamp = int(timestamp.timestamp())
         self._serialize_packed("<L", state, buf, timestamp)
 
     def _deserialize_time_point_sec(self, buf: bytearray, state: EOSAbiState):
@@ -458,7 +460,7 @@ class EOSAbiType(object):
 
     def _serialize_struct(self, state: EOSAbiState, buf: bytearray, data: dict):
         if self.base_type:
-            self.base_type.serializer(buf, data)
+            self.base_type.serializer(state, buf, data)
 
         for field in self.fields:
             field_name = field.get("name", None)
@@ -559,20 +561,23 @@ class EOSAbi(object):
             return abi
 
     def __init__(self, contract):
-        try:
-            from HavokMud.startup import server_instance
-            server = server_instance
+        if contract == "transaction":
+            self.abi = load_data_file("transaction.abi.json")
+        else:
+            try:
+                from HavokMud.startup import server_instance
+                server = server_instance
 
-            # The contract is also the name of the account that holds the contract
-            response = server.chain_api.call("get_abi", account_name=contract, openapi_validate=False)
-        except Exception as e:
-            logger.exception("Contract: %s" % contract)
-            raise EOSAbiError("Could not pull ABI for contract %s: %s" % (contract, e))
+                # The contract is also the name of the account that holds the contract
+                response = server.chain_api.call("get_abi", account_name=contract, openapi_validate=False)
+            except Exception as e:
+                logger.exception("Contract: %s" % contract)
+                raise EOSAbiError("Could not pull ABI for contract %s: %s" % (contract, e))
 
-        with open("/tmp/abi-%s.json" % contract, "w") as f:
-            json.dump(response, f, indent=2, sort_keys=True)
+            with open("/tmp/abi-%s.json" % contract, "w") as f:
+                json.dump(response, f, indent=2, sort_keys=True)
 
-        self.abi = response.get("abi", {})
+            self.abi = response.get("abi", {})
 
         # Now for the fun...  Time to parse out the types and structures and variants
         self.types = None

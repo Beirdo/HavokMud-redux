@@ -51,20 +51,21 @@ class Server(object):
         # Need to load up self.system_wallet_passwords with encrypted wallet passwords
         system_wallets = {item.name: item for item in System.get_all_system_wallets()}
         wallet_passwords = {name: item.get_password() for (name, item) in system_wallets.items()}
+        old_wallet_passwords = dict(wallet_passwords)
         wallet_passwords = load_all_wallet_passwords(wallet_passwords)
         logger.debug("Wallet passwords: %s" % wallet_passwords)
 
+        self.system_wallets = system_wallets
         # Update/seed the wallets
         for (name, password) in wallet_passwords.items():
-            wallet = system_wallets.get(name, None)
-            if wallet:
-                wallet.set_password(password)
-            else:
-                wallet = System(name=name, password=password)
-            wallet.save_to_db()
-
-        # Now read them all again, this should fully populate any new wallets
-        self.system_wallets = {item.name: item for item in System.get_all_system_wallets()}
+            if password != old_wallet_passwords.get(name, None):
+                wallet = system_wallets.get(name, None)
+                if wallet:
+                    wallet.set_password(password)
+                else:
+                    wallet = System(name=name, password=password)
+                wallet.save_to_db()
+                wallet.prepare_wallet()
 
         self.domain = self.config.get("email", {}).get("domain", None)
 

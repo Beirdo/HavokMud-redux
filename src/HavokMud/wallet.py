@@ -56,6 +56,12 @@ class Wallet(object):
         self.account_name = None
         self.balance = None
 
+    def __str__(self):
+        return "{Wallet: name: %s, owner: %s, type: %s}" % (self.wallet_name, self.owner, self.wallet_type)
+
+    def __repr__(self):
+        return self.__str__()
+
     def deposit(self, currency: Currency):
         # New funds, these come from the economy as new coins
         system_wallet = Wallet.load(self.server, account_name=System.account_name)
@@ -137,13 +143,7 @@ class Wallet(object):
 
         # List all keys in the wallet (must be unlocked)
         wallet._list_keys()
-
-        # Now lock the wallet
-        try:
-            server.wallet_api.call("lock", wallet_name)
-        except Exception as e:
-            logger.error("Couldn't lock wallet %s: %s" % (wallet_name, e))
-            return None
+        wallet.lock()
 
         # Need to create the account on the blockchain.  This requires a specific
         # transaction to be created.
@@ -299,23 +299,26 @@ class Wallet(object):
 
         # Keep encrypted until needed
         wallet.password = owner.wallet_password.get(str(wallet_type), None)
-        password = server.encryption.decrypt_string(wallet.password)
 
-        try:
-            server.wallet_api.call("unlock", wallet_name, password)
-        except Exception as e:
-            logger.error("Couldn't unlock wallet %s: %s" % (wallet_name, e))
-            raise e
-
+        wallet.unlock()
         wallet._list_keys()
+        wallet.lock()
+        return wallet
 
+    def unlock(self):
+        password = self.server.encryption.decrypt_string(self.password)
         try:
-            server.wallet_api.call("lock", wallet_name)
+            self.server.wallet_api.call("unlock", self.wallet_name, password)
         except Exception as e:
-            logger.error("Couldn't lock wallet %s: %s" % (wallet_name, e))
+            logger.error("Couldn't unlock wallet %s: %s" % (self.wallet_name, e))
             raise e
 
-        return wallet
+    def lock(self):
+        try:
+            self.server.wallet_api.call("lock", self.wallet_name)
+        except Exception as e:
+            logger.error("Couldn't lock wallet %s: %s" % (self.wallet_name, e))
+            raise e
 
     def _list_keys(self):
         # Must be unlocked
