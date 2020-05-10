@@ -40,6 +40,7 @@ RUN echo "havokmud ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/havokmud
 ADD src /home/havokmud/src/havokmud
 ADD docker/aws-$ENV /home/havokmud/.aws
 ADD docker/config-$ENV /home/havokmud/.havokmud
+ADD docker/eosio/wallets/keys/*password /home/havokmud/.havokmud/passwords/
 RUN chown -R havokmud /home/havokmud
 USER havokmud
 EXPOSE 3000

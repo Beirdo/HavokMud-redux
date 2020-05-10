@@ -47,7 +47,7 @@ class EOSAction(object):
 
     def toJsonBinary(self):
         item = self.toJson()
-        item["hexdata"] = self.serialize()
+        item["hex_data"] = self.serialize()
         return item
 
     def serialize(self):

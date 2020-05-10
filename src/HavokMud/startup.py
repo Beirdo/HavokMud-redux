@@ -20,7 +20,10 @@ logger = logging.getLogger(__name__)
 server_instance = None
 
 
-def start_mud(loglevel=logging.DEBUG, looping=False):
+def start_mud(loglevel=None, looping=False):
+    if loglevel is None:
+        loglevel = os.environ.get("HAVOKMUD_LOGGING", "INFO")
+        loglevel = getattr(logging, loglevel)
     logging_setup(loglevel, console=True)
 
     config = load_config_file("config.json")

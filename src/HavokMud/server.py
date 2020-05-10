@@ -6,13 +6,16 @@ import weakref
 from threading import Lock
 
 from HavokMud.account import Account
+from HavokMud.config_loader import load_all_wallet_passwords
 from HavokMud.connection import Connection
 from HavokMud.dnslookup import DNSLookup
 from HavokMud.encryption_helper import EncryptionEngine
 from HavokMud.redis_handler import RedisHandler
 from HavokMud.send_email import EmailHandler
+from HavokMud.settings import Settings
 from HavokMud.swaggerapi.eosio_chain import EOSChainAPI
 from HavokMud.swaggerapi.eosio_wallet import EOSWalletAPI
+from HavokMud.system import System
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +47,24 @@ class Server(object):
         self.chain_api = EOSChainAPI(config)
 
         stackless.schedule()
+
+        # Need to load up self.system_wallet_passwords with encrypted wallet passwords
+        system_wallets = {item.name: item for item in System.get_all_system_wallets()}
+        wallet_passwords = {name: item.get_password() for (name, item) in system_wallets.items()}
+        wallet_passwords = load_all_wallet_passwords(wallet_passwords)
+        logger.debug("Wallet passwords: %s" % wallet_passwords)
+
+        # Update/seed the wallets
+        for (name, password) in wallet_passwords.items():
+            wallet = system_wallets.get(name, None)
+            if wallet:
+                wallet.set_password(password)
+            else:
+                wallet = System(name=name, password=password)
+            wallet.save_to_db()
+
+        # Now read them all again, this should fully populate any new wallets
+        self.system_wallets = {item.name: item for item in System.get_all_system_wallets()}
 
         self.domain = self.config.get("email", {}).get("domain", None)
 

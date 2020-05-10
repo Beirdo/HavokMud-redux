@@ -80,14 +80,19 @@ class EOSTransaction(object):
         if sign:
             from HavokMud.wallet import Wallet
 
+            # Need keys for the contract owners
             accounts = {item.contract for item in self.actions}
+            # Also need keys for the permissions used in the action authorization
+            accounts |= {item.actor for action in self.actions
+                         for item in action.authorization}
+            logger.info("Need keys for: %s" % accounts)
             wallets = [Wallet.load(account_name=item) for item in accounts]
             available_public_keys = {key for wallet in wallets for key in wallet.keys.keys()}
 
             # Now get the list of required public keys
             try:
                 required_public_keys = server.chain_api.call("get_required_keys", transaction=transaction,
-                                                             available_keys=available_public_keys)
+                                                             available_keys=list(available_public_keys))
             except Exception as e:
                 raise EOSTransactionError("Couldn't get required keys: %s" % e)
 

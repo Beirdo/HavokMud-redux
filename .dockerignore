@@ -1,2 +1,3 @@
 docker/eosio/blockchain/
 docker/eosio/wallets/
+!docker/eosio/wallets/keys/*.password

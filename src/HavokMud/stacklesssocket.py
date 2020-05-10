@@ -365,8 +365,11 @@ class _fakesocket(asyncore.dispatcher):
         ret = b"blah"
         while ret and self.recv_channel:
             try:
-                self.timeout = 0
+                self.settimeout(0.1)
                 ret = asyncore.dispatcher.recv(self, 65535)
+            except stdsocket.timeout:
+                # This is expected when no more data available
+                ret = b""
             except Exception as e:
                 logger.error("Exception while draining: %s" % e)
                 ret = b""

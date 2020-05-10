@@ -22,6 +22,7 @@ class WalletType(Enum):
     Carried = 1
     Stored = 2
     Supply = 3
+    System = 4
 
 
 class Wallet(object):
@@ -30,7 +31,6 @@ class Wallet(object):
         "Player": "p.",
         "NPCPlayer": "n.",
         "Bank": "b.",
-        "System": "s.",
     }
 
     name_map = {
@@ -128,11 +128,11 @@ class Wallet(object):
             logger.error("Couldn't create a key in wallet %s: %s" % (wallet_name, e))
             return None
 
-        wallet.active_key[wallet_type] = active_key
+        wallet.active_key[str(wallet_type)] = active_key
 
-        owner.wallet_password[wallet_type] = wallet.password
-        owner.wallet_owner_key[wallet_type] = owner_key
-        owner.wallet_active_key[wallet_type] = active_key
+        owner.wallet_password[str(wallet_type)] = wallet.password
+        owner.wallet_owner_key[str(wallet_type)] = owner_key
+        owner.wallet_active_key[str(wallet_type)] = active_key
         owner.save_to_db()
 
         # List all keys in the wallet (must be unlocked)
@@ -171,7 +171,7 @@ class Wallet(object):
                     "waits": []
                 }
             }
-            auth = [EOSPermission(system_account_name, "creator")]
+            auth = [EOSPermission(system_account_name, "active")]
             transaction.add(EOSAction("eosio", "newaccount", auth, **params))
 
             # Need to buy some RAM
@@ -269,7 +269,10 @@ class Wallet(object):
         if account_name:
             wallet_info = Wallet.account_wallet_info_map.get(account_name, None)
             if not wallet_info:
-                raise WalletError("Wallet %s not yet created" % account_name)
+                owner = server.system_wallets.get(account_name, None)
+                if not owner:
+                    raise WalletError("Wallet %s not yet created" % account_name)
+                wallet_info = Wallet._hash_wallet_name(owner, WalletType.System)
         elif owner is not None and wallet_type is not None:
             # Load up a wallet based on owner and type of wallet.  If there is no wallet
             # yet, return None, and the caller should use create()
@@ -295,14 +298,30 @@ class Wallet(object):
         wallet.account_name = account_name
 
         # Keep encrypted until needed
-        wallet.password = owner.wallet_password.get(wallet_type, None)
+        wallet.password = owner.wallet_password.get(str(wallet_type), None)
+        password = server.encryption.decrypt_string(wallet.password)
+
+        try:
+            server.wallet_api.call("unlock", wallet_name, password)
+        except Exception as e:
+            logger.error("Couldn't unlock wallet %s: %s" % (wallet_name, e))
+            raise e
+
         wallet._list_keys()
+
+        try:
+            server.wallet_api.call("lock", wallet_name)
+        except Exception as e:
+            logger.error("Couldn't lock wallet %s: %s" % (wallet_name, e))
+            raise e
+
         return wallet
 
     def _list_keys(self):
+        # Must be unlocked
         password = self.server.encryption.decrypt_string(self.password)
 
-        keys = dict(self.owner.wallet_keys.get(self.wallet_type, {}))
+        keys = dict(self.owner.wallet_keys.get(str(self.wallet_type), {}))
         try:
             new_keys = self.server.wallet_api.call("list_keys", self.wallet_name, password)
         except Exception as e:
@@ -317,7 +336,7 @@ class Wallet(object):
         # logger.debug("new_keys: %s" % new_keys)
 
         keys.update(new_keys)
-        self.owner.wallet_keys[self.wallet_type] = keys
+        self.owner.wallet_keys[str(self.wallet_type)] = keys
         self.owner.save_to_db()
 
         self.keys = keys
@@ -345,34 +364,37 @@ class Wallet(object):
             name = getattr(owner, attrib, "unknown")
         if not name:
             name = "unknown"
-        wallet_name = ".".join([klass, name, wallet_type.name])
-        wallet_name = wallet_name.replace(" ", "_")
 
-        # EOSIO account names are 12 bytes long, start with a letter, and contain:
-        # [a-z], [1-5], "."
+        if wallet_type == WalletType.System:
+            wallet_name = name
+            account_name = name
+        else:
+            wallet_name = ".".join([klass, name, wallet_type.name])
+            wallet_name = wallet_name.replace(" ", "_")
 
-        # We need a 10 character string.  Use Blake2b to get a 6-byte hash
-        full_hash = hashlib.blake2b(wallet_name.encode("utf-8"), digest_size=6, key=b"HavokMud:wallet")
+            # EOSIO account names are 12 bytes long, start with a letter, and contain:
+            # [a-z], [1-5], "."
 
-        # Convert the 6 byte hash into 16 byte encoding (base32), and strip off the padding
-        # giving us 10 bytes, which we want lower case, not upper
-        encoded = base64.b32encode(full_hash.digest()).decode("utf-8").lower()[:10]
+            # We need a 10 character string.  Use Blake2b to get a 6-byte hash
+            full_hash = hashlib.blake2b(wallet_name.encode("utf-8"), digest_size=6, key=b"HavokMud:wallet")
 
-        # Base32 does [A-Z], [2-7], so translate all "6" to "1", and all "7" to "."
-        encoded = encoded.replace("6", "1")
-        encoded = encoded.replace("7", ".")
+            # Convert the 6 byte hash into 16 byte encoding (base32), and strip off the padding
+            # giving us 10 bytes, which we want lower case, not upper
+            encoded = base64.b32encode(full_hash.digest()).decode("utf-8").lower()[:10]
 
-        # Can't end an account name with a ".", so let's remove it
-        if encoded.endswith("."):
-            encoded = encoded[:-1]
+            # Base32 does [A-Z], [2-7], so translate all "6" to "1", and all "7" to "."
+            encoded = encoded.replace("6", "1")
+            encoded = encoded.replace("7", ".")
+            # Can't end an account name with a ".", so let's remove it
+            encoded = encoded.rstrip(".")
 
-        prefixes = list(
-            map(lambda x: x[1], filter(lambda x: owner.__class__.__name__ == x[0], Wallet.prefix_map.items())))
-        if not prefixes:
-            prefixes = ["x."]
-        prefix = prefixes[0]
+            prefixes = list(
+                map(lambda x: x[1], filter(lambda x: owner.__class__.__name__ == x[0], Wallet.prefix_map.items())))
+            if not prefixes:
+                prefixes = ["x."]
+            prefix = prefixes[0]
 
-        account_name = prefix + encoded
+            account_name = prefix + encoded
 
         wallet_info = {
             "account_name": account_name,

@@ -75,7 +75,7 @@ class Account(DatabaseObject):
             wallet = Wallet.load(account, type_)
             if not wallet:
                 wallet = Wallet.create(account, type_)
-            account.wallets[type_] = wallet
+            account.wallets[str(type_)] = wallet
 
         if connection:
             account.connection = connection

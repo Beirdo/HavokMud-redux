@@ -49,13 +49,13 @@ class Bank(DatabaseObject):
             if bank.name:
                 wallet = Wallet.load(server, bank, WalletType.Stored)
                 if wallet:
-                    bank.wallets[WalletType.Stored] = wallet
+                    bank.wallets[str(WalletType.Stored)] = wallet
                     return bank
 
             # New bank.  Wicked!  Let's create the wallets
             bank = Bank(server, name)
             bank.name = name
-            bank.wallets[WalletType.Stored] = Wallet.create(server, bank, WalletType.Stored)
+            bank.wallets[str(WalletType.Stored)] = Wallet.create(server, bank, WalletType.Stored)
             # Set default interest rate to 10% (also saves to db)
             bank.set_interest_rate(10.0)
             return bank
